@@ -24,9 +24,12 @@ body {
 /* POSTS GRID */
 .posts {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
   padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* CARD */
