@@ -219,6 +219,57 @@
       padding-bottom: 30px;
     }
     .back-link a { color: #58a6ff; }
+
+    /* Component Settings Popup */
+    .comp-settings {
+      position: absolute;
+      background: rgba(22,27,34,0.97);
+      border: 1px solid #58a6ff;
+      border-radius: 10px;
+      padding: 15px;
+      min-width: 220px;
+      z-index: 30;
+      box-shadow: 0 4px 25px rgba(88,166,255,0.2);
+    }
+    .comp-settings h4 {
+      margin: 0 0 10px 0;
+      font-size: 0.85rem;
+      color: #58a6ff;
+    }
+    .comp-settings .setting-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+    }
+    .comp-settings .setting-row label {
+      width: 90px;
+      color: #9da5b4;
+      flex-shrink: 0;
+    }
+    .comp-settings .setting-row input[type="range"] {
+      flex: 1;
+      accent-color: #58a6ff;
+    }
+    .comp-settings .setting-row .setting-val {
+      width: 65px;
+      text-align: right;
+      color: #4fc3f7;
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+    .comp-settings .close-settings {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #9da5b4;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .comp-settings .close-settings:hover { color: #e6edf3; }
   </style>
 </head>
 
@@ -227,7 +278,7 @@
 
   <div class="sim-header">
     <h1>🌊 Coolant Loop Simulator</h1>
-    <p>Drag components onto the canvas. Adjust flow rate and heat load to see how the loop responds.</p>
+    <p>Drag components onto the canvas. <strong>Double-click</strong> any placed component to adjust its thermal resistance and properties.</p>
   </div>
 
   <div class="sim-container">
@@ -327,14 +378,14 @@
 </div>
 
 <script>
-// Component registry
+// Component registry with configurable thermal resistance ranges
 const componentDefs = {
-  'heat-source': { icon: '🔥', label: 'Heat Source', thermalR: 0.05 },
-  'cold-plate':  { icon: '❄️', label: 'Cold Plate',  thermalR: 0.02 },
-  'pump':        { icon: '⚙️', label: 'Pump',        thermalR: 0 },
-  'chiller':     { icon: '🧊', label: 'Chiller',     thermalR: -0.03 },
-  'reservoir':   { icon: '🫙', label: 'Reservoir',   thermalR: 0.005 },
-  'radiator':    { icon: '🌡️', label: 'Radiator',    thermalR: -0.015 }
+  'heat-source': { icon: '🔥', label: 'Heat Source', thermalR: 0.05, rMin: 0.01, rMax: 0.15, rStep: 0.005, unit: '°C/W', power: 300, pMin: 50, pMax: 1500, pStep: 10 },
+  'cold-plate':  { icon: '❄️', label: 'Cold Plate',  thermalR: 0.02, rMin: 0.005, rMax: 0.1, rStep: 0.005, unit: '°C/W' },
+  'pump':        { icon: '⚙️', label: 'Pump',        thermalR: 0, rMin: 0, rMax: 0, rStep: 0, unit: '', headPressure: 2.0, hpMin: 0.5, hpMax: 5, hpStep: 0.1 },
+  'chiller':     { icon: '🧊', label: 'Chiller',     thermalR: -0.03, rMin: -0.08, rMax: -0.01, rStep: 0.005, unit: '°C/W', capacity: 500, capMin: 100, capMax: 2000, capStep: 50 },
+  'reservoir':   { icon: '🫙', label: 'Reservoir',   thermalR: 0.005, rMin: 0.001, rMax: 0.02, rStep: 0.001, unit: '°C/W' },
+  'radiator':    { icon: '🌡️', label: 'Radiator',    thermalR: -0.015, rMin: -0.05, rMax: -0.005, rStep: 0.005, unit: '°C/W' }
 };
 
 const coolantCp = { water: 4.18, glycol30: 3.74, glycol50: 3.28, pcs: 8.0 };
@@ -343,6 +394,7 @@ let placedComponents = [];
 let draggedType = null;
 let movingComp = null;
 let moveOffset = { x: 0, y: 0 };
+let activeSettings = null; // currently open settings popup
 
 const canvas = document.getElementById('canvas');
 const connectionsEl = document.getElementById('connections');
@@ -378,7 +430,10 @@ canvas.addEventListener('drop', e => {
 function addComponent(type, x, y) {
   const id = type + '-' + Date.now();
   const def = componentDefs[type];
-  const comp = { id, type, x, y, def };
+  const comp = { id, type, x, y, def: { ...def }, thermalR: def.thermalR };
+  if (def.power !== undefined) comp.power = def.power;
+  if (def.capacity !== undefined) comp.capacity = def.capacity;
+  if (def.headPressure !== undefined) comp.headPressure = def.headPressure;
   placedComponents.push(comp);
 
   const el = document.createElement('div');
@@ -392,6 +447,12 @@ function addComponent(type, x, y) {
     <div class="comp-label">${def.label}</div>
     <div class="temp-display" id="temp-${id}"></div>
   `;
+
+  // Double-click to open settings
+  el.addEventListener('dblclick', e => {
+    e.stopPropagation();
+    openSettings(comp);
+  });
 
   // Drag to move
   el.addEventListener('mousedown', e => {
@@ -408,6 +469,106 @@ function addComponent(type, x, y) {
   updateSimulation();
   drawConnections();
 }
+
+function openSettings(comp) {
+  closeSettings();
+  const def = comp.def;
+  const el = document.getElementById(comp.id);
+  const popup = document.createElement('div');
+  popup.className = 'comp-settings';
+  popup.id = 'settings-' + comp.id;
+  popup.style.left = (comp.x + 110) + 'px';
+  popup.style.top = comp.y + 'px';
+
+  let html = `<button class="close-settings" onclick="closeSettings()">✕</button>`;
+  html += `<h4>${def.icon} ${def.label} Settings</h4>`;
+
+  // Thermal resistance slider (for all except pump)
+  if (def.rMax !== 0 || def.rMin !== 0) {
+    const rVal = comp.thermalR;
+    const rAbs = Math.abs(rVal);
+    html += `<div class="setting-row">
+      <label>Thermal R</label>
+      <input type="range" id="r-${comp.id}" min="${def.rMin}" max="${def.rMax}" step="${def.rStep}" value="${rVal}">
+      <span class="setting-val" id="rv-${comp.id}">${rVal.toFixed(3)} ${def.unit}</span>
+    </div>`;
+  }
+
+  // Power slider for heat sources
+  if (comp.power !== undefined) {
+    html += `<div class="setting-row">
+      <label>Power</label>
+      <input type="range" id="p-${comp.id}" min="${def.pMin}" max="${def.pMax}" step="${def.pStep}" value="${comp.power}">
+      <span class="setting-val" id="pv-${comp.id}">${comp.power} W</span>
+    </div>`;
+  }
+
+  // Cooling capacity for chillers
+  if (comp.capacity !== undefined) {
+    html += `<div class="setting-row">
+      <label>Capacity</label>
+      <input type="range" id="cap-${comp.id}" min="${def.capMin}" max="${def.capMax}" step="${def.capStep}" value="${comp.capacity}">
+      <span class="setting-val" id="capv-${comp.id}">${comp.capacity} W</span>
+    </div>`;
+  }
+
+  // Head pressure for pumps
+  if (comp.headPressure !== undefined) {
+    html += `<div class="setting-row">
+      <label>Head (PSI)</label>
+      <input type="range" id="hp-${comp.id}" min="${def.hpMin}" max="${def.hpMax}" step="${def.hpStep}" value="${comp.headPressure}">
+      <span class="setting-val" id="hpv-${comp.id}">${comp.headPressure.toFixed(1)} PSI</span>
+    </div>`;
+  }
+
+  popup.innerHTML = html;
+  canvas.appendChild(popup);
+  activeSettings = popup;
+
+  // Bind slider events
+  const rSlider = document.getElementById('r-' + comp.id);
+  if (rSlider) {
+    rSlider.addEventListener('input', () => {
+      comp.thermalR = parseFloat(rSlider.value);
+      document.getElementById('rv-' + comp.id).textContent = comp.thermalR.toFixed(3) + ' ' + def.unit;
+      updateSimulation();
+    });
+  }
+
+  const pSlider = document.getElementById('p-' + comp.id);
+  if (pSlider) {
+    pSlider.addEventListener('input', () => {
+      comp.power = parseFloat(pSlider.value);
+      document.getElementById('pv-' + comp.id).textContent = comp.power + ' W';
+      updateSimulation();
+    });
+  }
+
+  const capSlider = document.getElementById('cap-' + comp.id);
+  if (capSlider) {
+    capSlider.addEventListener('input', () => {
+      comp.capacity = parseFloat(capSlider.value);
+      document.getElementById('capv-' + comp.id).textContent = comp.capacity + ' W';
+      updateSimulation();
+    });
+  }
+
+  const hpSlider = document.getElementById('hp-' + comp.id);
+  if (hpSlider) {
+    hpSlider.addEventListener('input', () => {
+      comp.headPressure = parseFloat(hpSlider.value);
+      document.getElementById('hpv-' + comp.id).textContent = comp.headPressure.toFixed(1) + ' PSI';
+      updateSimulation();
+    });
+  }
+}
+
+window.closeSettings = function() {
+  if (activeSettings) {
+    activeSettings.remove();
+    activeSettings = null;
+  }
+};
 
 document.addEventListener('mousemove', e => {
   if (!movingComp) return;
@@ -477,37 +638,49 @@ function updateSimulation() {
   const cp = coolantCp[coolant];
 
   // Q = m_dot * Cp * deltaT  =>  deltaT = Q / (m_dot * Cp)
-  // Assume density ~ 1 kg/L for simplicity
   const massFlow = flowRate / 60; // kg/s
-  const deltaT = heatLoad / (massFlow * cp * 1000);
 
-  // Count cooling components
+  // Sum per-component thermal resistances and effects
   const coolers = placedComponents.filter(c => ['chiller', 'radiator', 'cold-plate'].includes(c.type));
   const heaters = placedComponents.filter(c => c.type === 'heat-source');
   const hasPump = placedComponents.some(c => c.type === 'pump');
 
-  // Cooling effectiveness
+  // Total heat from all sources (use per-component power if available)
+  let totalHeat = 0;
+  if (heaters.length > 0) {
+    heaters.forEach(h => { totalHeat += (h.power !== undefined ? h.power : heatLoad); });
+  } else {
+    totalHeat = heatLoad;
+  }
+
+  // Cooling effectiveness from per-component thermal R
   let coolingFactor = 0;
   coolers.forEach(c => {
-    if (c.type === 'chiller') coolingFactor += 0.7;
-    if (c.type === 'radiator') coolingFactor += 0.3;
-    if (c.type === 'cold-plate') coolingFactor += 0.15;
+    const r = Math.abs(c.thermalR);
+    if (c.type === 'chiller') coolingFactor += 0.5 + r * 8;
+    else if (c.type === 'radiator') coolingFactor += 0.15 + r * 5;
+    else if (c.type === 'cold-plate') coolingFactor += 0.05 + (0.1 - Math.abs(c.thermalR)) * 3;
   });
   coolingFactor = Math.min(coolingFactor, 0.95);
 
-  const heatSources = Math.max(heaters.length, 1);
-  const effectiveHeat = heatLoad * heatSources;
-  const effectiveDeltaT = (effectiveHeat / (massFlow * cp * 1000)) * (1 - coolingFactor);
+  const effectiveDeltaT = (totalHeat / (massFlow * cp * 1000)) * (1 - coolingFactor);
 
   const inletTemp = ambient + (effectiveDeltaT * 0.3);
   const outletTemp = inletTemp + effectiveDeltaT;
-  const junctionTemp = outletTemp + (effectiveHeat * 0.03);
+
+  // Junction temp uses cold plate thermal R
+  let coldPlateR = 0.02; // default
+  const coldPlates = placedComponents.filter(c => c.type === 'cold-plate');
+  if (coldPlates.length > 0) {
+    coldPlateR = coldPlates.reduce((sum, c) => sum + c.thermalR, 0) / coldPlates.length;
+  }
+  const junctionTemp = outletTemp + (totalHeat * coldPlateR);
 
   // Pump effect
   const pumpMultiplier = hasPump ? 1 : 0.3;
   const finalInlet = ambient + (inletTemp - ambient) / pumpMultiplier;
   const finalOutlet = finalInlet + effectiveDeltaT / pumpMultiplier;
-  const finalJunction = finalOutlet + (effectiveHeat * 0.03);
+  const finalJunction = finalOutlet + (totalHeat * coldPlateR);
 
   // Update displays
   document.getElementById('flowRateVal').textContent = flowRate.toFixed(1) + ' L/min';
@@ -564,6 +737,11 @@ function updateSimulation() {
 
     tempEl.textContent = t.toFixed(1) + ' °C';
     setTempColor(tempEl, t);
+
+    // Show R value under temp
+    if (comp.thermalR !== 0 && comp.type !== 'pump') {
+      tempEl.textContent += ` (R=${comp.thermalR.toFixed(3)})`;
+    }
   });
 
   drawConnections();
