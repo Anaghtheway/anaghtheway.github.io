@@ -16,13 +16,20 @@ body {
 
 /* HOME PAGE BACKGROUND */
 .home-page {
-  background: url('bg-main.jpg') no-repeat center center fixed !important;
-  background-size: cover !important;
   animation: none;
 }
 
-.home-page::before {
-  content: '';
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.video-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -33,7 +40,7 @@ body {
   pointer-events: none;
 }
 
-.home-page > * {
+.home-page > *:not(.video-bg):not(.video-overlay) {
   position: relative;
   z-index: 2;
 }
