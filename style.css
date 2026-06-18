@@ -57,3 +57,47 @@ body {
 .card p {
   color: #9da5b4;
 }
+
+/* ARTICLE HERO IMAGE */
+.article-hero {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+/* INLINE FIGURE */
+.figure {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.figure img {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 8px;
+}
+
+.figure figcaption {
+  color: #9da5b4;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ARTICLE BODY */
+article {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+article h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+article a {
+  color: #58a6ff;
+}
