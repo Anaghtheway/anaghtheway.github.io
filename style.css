@@ -49,8 +49,7 @@ body {
 .hero {
   text-align: center;
   padding: 80px 20px;
-  background: linear-gradient(135deg, rgba(31,58,95,0.6), rgba(13,17,23,0.4));
-  backdrop-filter: blur(5px);
+  background: transparent;
 }
 
 .hero h1 {
