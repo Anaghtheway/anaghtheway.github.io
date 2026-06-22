@@ -21,6 +21,73 @@
     <a href="simulator.html" style="color:#4fc3f7; font-size:1rem; text-decoration:none;">🌊 Coolant Loop Simulator →</a>
   </header>
 
+  <!-- Thermal Stack Diagram -->
+  <section class="stack-section">
+    <h2 class="stack-title">The Thermal Stack</h2>
+    <p class="stack-subtitle">Click any layer to dive deeper</p>
+
+    <div class="stack-container">
+
+      <!-- Heat flow arrow (left side) -->
+      <div class="stack-arrow">
+        <svg width="40" height="100%" viewBox="0 0 40 320" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="arrowGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4fc3f7"/>
+              <stop offset="100%" stop-color="#e74c3c"/>
+            </linearGradient>
+          </defs>
+          <line x1="20" y1="10" x2="20" y2="290" stroke="url(#arrowGrad)" stroke-width="3" stroke-dasharray="8,4">
+            <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite"/>
+          </line>
+          <polygon points="10,285 20,310 30,285" fill="#e74c3c" opacity="0.9"/>
+        </svg>
+        <span class="arrow-label arrow-label-top">COOL</span>
+        <span class="arrow-label arrow-label-bottom">HOT</span>
+      </div>
+
+      <!-- Stack layers -->
+      <div class="stack-layers">
+        <a href="cold-plates.html" class="stack-layer layer-coldplate">
+          <div class="layer-icon">❄️</div>
+          <div class="layer-content">
+            <h3>Cold Plate / Cooling Device</h3>
+            <p>Liquid cold plates, heat sinks &amp; active cooling solutions</p>
+          </div>
+          <div class="layer-arrow">→</div>
+        </a>
+
+        <a href="tim.html" class="stack-layer layer-tim">
+          <div class="layer-icon">🧴</div>
+          <div class="layer-content">
+            <h3>Thermal Interface Material (TIM)</h3>
+            <p>Thermal paste, pads, phase-change &amp; liquid metal interfaces</p>
+          </div>
+          <div class="layer-arrow">→</div>
+        </a>
+
+        <a href="chip.html" class="stack-layer layer-chip">
+          <div class="layer-icon">🔥</div>
+          <div class="layer-content">
+            <h3>Chip / Heat Source</h3>
+            <p>CPUs, GPUs, ASICs &amp; power electronics generating heat</p>
+          </div>
+          <div class="layer-arrow">→</div>
+        </a>
+
+        <a href="smt.html" class="stack-layer layer-smt">
+          <div class="layer-icon">🔩</div>
+          <div class="layer-content">
+            <h3>Electronic Packaging &amp; SMT</h3>
+            <p>PCB, substrate, solder joints &amp; surface-mount technology</p>
+          </div>
+          <div class="layer-arrow">→</div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
   <section class="posts">
 
 <a href="cold-plates.html" style="text-decoration:none; color:inherit;">
