@@ -322,3 +322,62 @@ article a {
   );
   text-shadow: 0 0 6px rgba(255,255,255,0.9), 0 0 2px #fff;
 }
+
+/* COOLANT SIMULATOR CALL-TO-ACTION */
+.sim-cta {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 12px 26px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 30px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, #0077ff, #00d4ff, #4fc3f7, #0077ff);
+  background-size: 300% 300%;
+  animation: simGradient 6s ease infinite, simPulse 2.2s ease-in-out infinite;
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.sim-cta:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 28px rgba(0, 212, 255, 0.95);
+}
+
+/* Shimmer sweep */
+.sim-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: skewX(-20deg);
+  animation: simShimmer 3.5s ease-in-out infinite;
+}
+
+@keyframes simGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes simPulse {
+  0%, 100% { box-shadow: 0 0 14px rgba(0, 212, 255, 0.5); }
+  50% { box-shadow: 0 0 26px rgba(0, 212, 255, 0.9); }
+}
+
+@keyframes simShimmer {
+  0% { left: -120%; }
+  60%, 100% { left: 140%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-cta { animation: none; }
+  .sim-cta::after { animation: none; display: none; }
+}
