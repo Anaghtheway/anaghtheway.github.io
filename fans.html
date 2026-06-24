@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All About Fans – Cooling Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="cold-plates-page">
+<article>
+
+  <h1>All About Fans: Design, Laws & Testing</h1>
+  
+  <figure class="article-hero-figure">
+    <img class="article-hero" src="https://images.unsplash.com/photo-1562941747-43fa5db1a6f7?w=800" alt="Industrial cooling fan">
+    <figcaption>Centrifugal fans are essential in electronics cooling systems</figcaption>
+  </figure>
+
+  <p>
+    Fans are critical components in active cooling systems. They move air or liquid to dissipate heat from electronics.
+    Understanding fan laws, testing procedures, and structural design is essential for optimizing thermal performance.
+  </p>
+
+  <!-- FAN LAWS SECTION -->
+  <h2>Fan Laws: Performance Scaling</h2>
+
+  <p>
+    Fan laws describe how key performance parameters scale with changes in fan speed, diameter, and density.
+    These relationships are fundamental for predicting fan performance and scaling designs.
+  </p>
+
+  <h3>The Four Fan Laws</h3>
+  
+  <ul>
+    <li>
+      <strong>Law 1 – Flow Rate vs. Speed:</strong> 
+      Q ∝ N (Flow is proportional to rotational speed). Doubling RPM doubles volumetric flow rate.
+    </li>
+    <li>
+      <strong>Law 2 – Pressure Rise vs. Speed:</strong> 
+      ΔP ∝ N² (Pressure rise is proportional to speed squared). Doubling RPM quadruples pressure capability.
+    </li>
+    <li>
+      <strong>Law 3 – Power Consumption vs. Speed:</strong> 
+      P ∝ N³ (Power scales with the cube of speed). Doubling RPM requires 8× more power.
+    </li>
+    <li>
+      <strong>Law 4 – Diameter Scaling:</strong> 
+      Performance scales with the fifth power of diameter. Doubling fan diameter increases flow capacity by 32×.
+    </li>
+  </ul>
+
+  <div class="figure">
+    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800" alt="Fan performance curves">
+    <figcaption>Performance curves show the cubic relationship between power and RPM</figcaption>
+  </div>
+
+  <p>
+    These laws explain why operating fans at lower speeds is more efficient—a small RPM reduction yields significant power savings.
+    They also guide scaling: a larger diameter fan can move more air at lower speeds, reducing noise and power consumption.
+  </p>
+
+  <!-- TESTING SECTION -->
+  <h2>Fan Testing & Characterization</h2>
+
+  <p>
+    Proper fan testing ensures performance specifications are met and helps optimize cooling system design.
+  </p>
+
+  <h3>Key Performance Metrics</h3>
+  
+  <ul>
+    <li>
+      <strong>Volumetric Flow Rate (CFM or m³/h):</strong> 
+      The volume of air moved per unit time. Measured at the outlet under standard conditions.
+    </li>
+    <li>
+      <strong>Static Pressure (Pa or mmH₂O):</strong> 
+      The pressure rise the fan can generate against system resistance. Critical for overcoming ductwork friction.
+    </li>
+    <li>
+      <strong>Total Pressure:</strong> 
+      Combines static and dynamic (velocity) pressure. Used for total system analysis.
+    </li>
+    <li>
+      <strong>Efficiency (%):</strong> 
+      Useful output power divided by electrical input power. Typical range: 40–85% depending on fan type.
+    </li>
+    <li>
+      <strong>Noise Level (dB):</strong> 
+      Sound power or sound pressure level. Lower is better for consumer applications.
+    </li>
+    <li>
+      <strong>Power Consumption (W):</strong> 
+      Electrical power input, measured across the operating range.
+    </li>
+  </ul>
+
+  <h3>Standard Testing Procedures</h3>
+  
+  <ul>
+    <li>
+      <strong>ISO 5801 / AMCA 210:</strong> 
+      Standard methods for measuring fan performance in various configurations (free delivery, static pressure, etc.).
+    </li>
+    <li>
+      <strong>Temperature Testing:</strong> 
+      Performance is measured at ambient and elevated temperatures to account for air density changes.
+    </li>
+    <li>
+      <strong>Acoustic Testing:</strong> 
+      Conducted in anechoic chambers to measure sound pressure levels at specific frequencies.
+    </li>
+    <li>
+      <strong>Thermal Stress Testing:</strong> 
+      Long-duration runs to verify bearing life, vibration stability, and thermal margins.
+    </li>
+    <li>
+      <strong>Vibration Analysis:</strong> 
+      Mechanical vibration measured to ensure safe operation and identify resonance frequencies.
+    </li>
+  </ul>
+
+  <div class="figure">
+    <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800" alt="Test chamber">
+    <figcaption>Performance testing is conducted in controlled environments per industry standards</figcaption>
+  </div>
+
+  <!-- STRUCTURE SECTION -->
+  <h2>Fan Structure & Design</h2>
+
+  <p>
+    Fan structure directly influences performance, noise, durability, and manufacturing cost.
+  </p>
+
+  <h3>Common Fan Types</h3>
+  
+  <ul>
+    <li>
+      <strong>Axial Fans:</strong> 
+      Blade rotation axis is parallel to airflow. Compact, low pressure rise, suitable for high-volume cooling.
+      Examples: PC case fans, server fans.
+    </li>
+    <li>
+      <strong>Centrifugal Fans:</strong> 
+      Air enters axially, exits radially after passing through an impeller. High pressure rise, lower noise.
+      Examples: HVAC systems, industrial blowers.
+    </li>
+    <li>
+      <strong>Mixed-Flow Fans:</strong> 
+      Hybrid design combining axial inlet with radial outlet. Moderate pressure and flow.
+    </li>
+    <li>
+      <strong>Radial Fans:</strong> 
+      Blades oriented radially. High pressure capability, robust design for harsh environments.
+    </li>
+  </ul>
+
+  <h3>Key Structural Components</h3>
+  
+  <ul>
+    <li>
+      <strong>Impeller/Blades:</strong> 
+      Airfoil or curved blade profile. Material selection affects weight, noise, and durability (aluminum, plastic, steel).
+    </li>
+    <li>
+      <strong>Motor:</strong> 
+      Brushless DC (BLDC), AC induction, or EC (electronically commutated). BLDC dominates in low-power applications.
+    </li>
+    <li>
+      <strong>Bearings:</strong> 
+      Sleeve (sintered bronze), ball, or magnetic bearings. Choice affects lifespan (typically 30,000–80,000 hours).
+    </li>
+    <li>
+      <strong>Housing:</strong> 
+      Casing that directs airflow and reduces noise. Volute design in centrifugal fans increases pressure.
+    </li>
+    <li>
+      <strong>Mounting Vibration Isolation:</strong> 
+      Dampers and rubber mounts reduce vibration transmission to chassis.
+    </li>
+  </ul>
+
+  <h3>Design Optimization Trade-offs</h3>
+  
+  <ul>
+    <li><strong>Flow vs. Pressure:</strong> Axial fans excel at flow; centrifugal at pressure.</li>
+    <li><strong>Noise vs. Performance:</strong> Higher speeds increase noise. Larger, slower fans reduce noise for same performance.</li>
+    <li><strong>Cost vs. Efficiency:</strong> High-efficiency designs require precision manufacturing and advanced bearings.</li>
+    <li><strong>Durability vs. Weight:</strong> Metal housings are robust but heavier; plastic reduces cost and weight.</li>
+    <li><strong>Blade Count:</strong> More blades increase pressure but also increase noise and power.</li>
+  </ul>
+
+  <div class="figure">
+    <img src="https://images.unsplash.com/photo-1581092162562-40038f63dd5d?w=800" alt="Fan blade design">
+    <figcaption>Blade geometry and material selection are critical for performance and longevity</figcaption>
+  </div>
+
+  <h2>Integration into Cooling Systems</h2>
+
+  <p>
+    Fans must be matched to system requirements:
+  </p>
+
+  <ul>
+    <li><strong>System Resistance Curve:</strong> Fans operate at the intersection of their curve and system resistance.</li>
+    <li><strong>Redundancy:</strong> Critical cooling systems use multiple fans for fault tolerance.</li>
+    <li><strong>Speed Control:</strong> PWM or voltage regulation allows dynamic adjustment to load and ambient conditions.</li>
+    <li><strong>Thermal Modeling:</strong> Computational fluid dynamics (CFD) predicts airflow patterns and hot spots.</li>
+  </ul>
+
+  <a href="index.html">⬅ Back to Home</a>
+
+</article>
+</body>
+</html>
