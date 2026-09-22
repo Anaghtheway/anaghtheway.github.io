@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio UI checks</title>
+  <style>
+    body { margin: 0; background: #08131e; color: #edf3f8; font: 14px monospace; }
+    details { padding: 12px; }
+    iframe { display: block; border: 0; height: 3000px; }
+  </style>
+</head>
+<body>
+  <details><summary id="summary">Running...</summary><pre id="results"></pre></details>
+  <script>
+    const messages = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    async function check(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px portfolio';
+      const loaded = new Promise(resolve => { frame.onload = resolve; });
+      frame.src = '../index.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const prefix = width + 'px: ';
+      assert(doc.querySelectorAll('h1').length === 1 && doc.querySelector('h1').textContent === 'Anagh Dave.', prefix + 'personal identity leads the page');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no horizontal overflow');
+      assert(doc.querySelector('video source').getAttribute('src') === 'designer2_coolant_loop_inside_tubes.mp4', prefix + 'original coolant video retained');
+      assert(!doc.querySelector('video').hasAttribute('autoplay'), prefix + 'autoplay respects reduced motion through script');
+      assert(!doc.querySelector('#backgroundToggle').disabled, prefix + 'background playback control available');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(link => doc.getElementById(link.hash.slice(1))), prefix + 'all section links resolve');
+      assert(doc.querySelector('a[href="resume.pdf"]') && doc.querySelector('a[href="https://www.linkedin.com/in/anaghdave/"]'), prefix + 'resume and contact accessible');
+      for (const href of ['cold-plates.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
+        assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
+      }
+      assert(doc.querySelector('#work').compareDocumentPosition(doc.querySelector('#cooling-lab')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'work precedes educational content');
+      assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'images have alternative text');
+      assert([...doc.images].filter(image => image.loading !== 'lazy').every(image => image.complete && image.naturalWidth > 0), prefix + 'profile photo loads');
+      assert(win.getComputedStyle(doc.querySelector('.portfolio-hero')).display === 'grid', prefix + 'portfolio stylesheet loads');
+      const video = doc.querySelector('video');
+      const button = doc.querySelector('#backgroundToggle');
+      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        assert(video.paused, prefix + 'reduced-motion prevents autoplay');
+      }
+      assert(button.textContent === (video.paused ? 'Play background' : 'Pause background'), prefix + 'playback label matches state');
+      video.pause();
+      await new Promise(resolve => win.setTimeout(resolve, 100));
+      assert(button.textContent === 'Play background', prefix + 'pause updates control');
+      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        assert(video.paused, prefix + 'reduced-motion background stays paused');
+      }
+    }
+    (async () => {
+      try {
+        await check(1280);
+        await check(390);
+        await check(320);
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        messages.push('FAIL ' + error.message);
+        document.getElementById('summary').textContent = error.message;
+        document.querySelector('details').open = true;
+      }
+      document.getElementById('results').textContent = messages.join('\n');
+    })();
+  </script>
+</body>
+</html>
