@@ -35,6 +35,15 @@
       assert(!doc.querySelector('#backgroundToggle').disabled, prefix + 'background playback control available');
       assert([...doc.querySelectorAll('a[href^="#"]')].every(link => doc.getElementById(link.hash.slice(1))), prefix + 'all section links resolve');
       assert(doc.querySelector('a[href="resume.pdf"]') && doc.querySelector('a[href="https://www.linkedin.com/in/anaghdave/"]'), prefix + 'resume and contact accessible');
+      const publication = doc.querySelector('#publications');
+      assert(publication && doc.querySelector('nav a[href="#publications"]'), prefix + 'publication section accessible from navigation');
+      assert(publication.querySelector('h3').textContent === 'Design of Herringbone Microchannels for Enhanced Mixing in Augmented Cooling Slurries', prefix + 'exact publication title');
+      assert(publication.querySelector('.publication-authors').textContent === 'Anagh Dave, Vivek V. Manepalli, Roshith Mittakolu, Clayton Pullins, Michael T. Barako, Samuel Graham, and Damena Agonafer', prefix + 'full author list');
+      assert(publication.querySelector('a.publication-link').href === 'https://ieeexplore.ieee.org/document/11655222', prefix + 'original IEEE link preserved');
+      assert(publication.querySelector('cite').textContent === 'IEEE Transactions on Components, Packaging and Manufacturing Technology' && publication.querySelector('time').dateTime === '2026', prefix + 'journal and year');
+      assert(publication.querySelector('.result-baseline').textContent === 'vs. straight microchannels with MEPCM slurry', prefix + 'enhancement comparison names baseline');
+      assert(publication.querySelector('.publication-caveat').textContent.includes('not experimental validation'), prefix + 'numerical result limitation visible');
+      assert(publication.compareDocumentPosition(doc.querySelector('#work')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'research precedes tools and writing');
       for (const href of ['cold-plates.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
       }

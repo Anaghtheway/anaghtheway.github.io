@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anagh Dave | Thermal Engineer &amp; Cooling Lab</title>
-  <meta name="description" content="Anagh Dave's thermal engineering portfolio and Cooling Lab. Explore electronics cooling, interactive tools, and technical writing on heat transfer and thermal materials.">
+  <meta name="description" content="Anagh Dave's thermal engineering portfolio and Cooling Lab. Explore published research on herringbone microchannel cooling, interactive tools, and technical writing.">
   <link rel="canonical" href="https://anaghtheway.github.io/">
   <link rel="icon" href="anagh.jpg" type="image/jpeg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Anagh Dave | Thermal Engineer &amp; Cooling Lab">
-  <meta property="og:description" content="The engineer behind Cooling Lab. Explore my thermal engineering interests, interactive tools, and technical writing.">
+  <meta property="og:description" content="The engineer behind Cooling Lab. Explore my published research on microchannel cooling, interactive tools, and technical writing.">
   <meta property="og:url" content="https://anaghtheway.github.io/">
   <meta property="og:image" content="https://anaghtheway.github.io/anagh.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Anagh Dave | Thermal Engineer &amp; Cooling Lab">
-  <meta name="twitter:description" content="The engineer behind Cooling Lab. Explore my thermal engineering interests, interactive tools, and technical writing.">
+  <meta name="twitter:description" content="The engineer behind Cooling Lab. Explore my published research on microchannel cooling, interactive tools, and technical writing.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="portfolio.css">
@@ -29,6 +29,7 @@
   <header class="portfolio-nav page-width">
     <a class="wordmark" href="index.html" aria-label="Anagh Dave home">AD<span>.</span></a>
     <nav aria-label="Main navigation">
+      <a href="#publications">Publications</a>
       <a href="#work">Selected work</a>
       <a href="#cooling-lab">Cooling Lab</a>
       <a href="about.html">About</a>
@@ -45,7 +46,7 @@
         <p class="hero-statement">Making sense of heat.<br><span>Building better cooling.</span></p>
         <p class="hero-intro">I'm a thermal engineer exploring how we keep electronics cool &mdash; from cold plates and thermal interfaces to the systems that bring them together.</p>
         <div class="hero-actions">
-          <a class="portfolio-button primary" href="#work">Explore my work <span aria-hidden="true">&#8595;</span></a>
+          <a class="portfolio-button primary" href="#publications">Explore my research <span aria-hidden="true">&#8595;</span></a>
           <a class="portfolio-button" href="resume.pdf">View resume <span class="file-label">PDF</span></a>
         </div>
         <ul class="focus-tags" aria-label="Engineering interests">
@@ -68,9 +69,38 @@
       <span id="backgroundStatus" role="status"></span>
     </div>
 
+    <section id="publications" class="portfolio-section" aria-labelledby="publications-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / Publications &amp; research</p><h2 id="publications-title">Exploring better ways to cool.</h2></div>
+        <p>Microchannel design, passive mixing, and phase-change slurries for electronics cooling.</p>
+      </div>
+      <article class="publication-card" aria-labelledby="paper-title">
+        <div class="publication-copy">
+          <p class="eyebrow">Journal article / 2026</p>
+          <h3 id="paper-title"><a href="https://ieeexplore.ieee.org/document/11655222">Design of Herringbone Microchannels for Enhanced Mixing in Augmented Cooling Slurries</a></h3>
+          <p class="publication-authors"><strong>Anagh Dave</strong>, Vivek V. Manepalli, Roshith Mittakolu, Clayton Pullins, Michael T. Barako, Samuel Graham, and Damena Agonafer</p>
+          <p class="publication-venue"><cite>IEEE Transactions on Components, Packaging and Manufacturing Technology</cite> &middot; <time datetime="2026">2026</time></p>
+          <p class="publication-summary">How can microchannel geometry help a microencapsulated phase-change material (MEPCM) slurry use more of its latent heat? This numerical study explores herringbone ribs that generate secondary vortices, improve transverse mixing, and promote particle melting. Regression-based heat-transfer and friction correlations support multi-objective optimization with NSGA-II, balancing cooling enhancement against pressure drop.</p>
+          <ul class="focus-tags" aria-label="Research topics">
+            <li>Microchannel cooling</li><li>MEPCM slurries</li><li>NSGA-II optimization</li>
+          </ul>
+          <a class="portfolio-button primary publication-link" href="https://ieeexplore.ieee.org/document/11655222">View publication on IEEE <span aria-hidden="true">&#8599;</span></a>
+        </div>
+        <aside class="publication-results" aria-label="Selected numerical results">
+          <p class="eyebrow">Selected balanced design</p>
+          <dl>
+            <div><dt>Heat transfer coefficient</dt><dd>7.3 &times; 10<sup>4</sup><span class="result-unit">W/(m&sup2;&middot;K)</span></dd></div>
+            <div><dt>Pressure drop</dt><dd>37.9 <span class="inline-unit">kPa</span></dd></div>
+            <div><dt>Heat transfer enhancement</dt><dd>~3.8&times;</dd><dd class="result-baseline">vs. straight microchannels with MEPCM slurry</dd></div>
+          </dl>
+          <p class="publication-caveat">Numerical results for the selected design case, not experimental validation or a guarantee across operating conditions. Enhanced mixing carries a pressure-drop penalty.</p>
+        </aside>
+      </article>
+    </section>
+
     <section id="work" class="portfolio-section" aria-labelledby="work-title">
       <div class="section-heading">
-        <div><p class="eyebrow">01 / Selected work</p><h2 id="work-title">Ideas, made tangible.</h2></div>
+        <div><p class="eyebrow">02 / Selected work</p><h2 id="work-title">Ideas, made tangible.</h2></div>
         <p>Interactive exploration and technical writing from my Cooling Lab.</p>
       </div>
       <div class="work-grid">
@@ -112,7 +142,7 @@
 
     <section id="cooling-lab" class="portfolio-section lab-section" aria-labelledby="lab-title">
       <div class="lab-intro">
-        <p class="eyebrow">02 / Notes from the lab</p>
+        <p class="eyebrow">03 / Notes from the lab</p>
         <h2 id="lab-title">Cooling Lab<span>.</span></h2>
         <p class="lab-tagline">No such thing as too hot to handle.</p>
         <p>A home for my curiosity about thermal engineering. Explore the components, materials, and ideas behind electronics cooling.</p>
@@ -128,7 +158,7 @@
     </section>
 
     <section id="contact" class="contact-section" aria-labelledby="contact-title">
-      <div><p class="eyebrow">03 / Let's connect</p><h2 id="contact-title">Have a cooling challenge?<br>Let's talk engineering.</h2><p>For engineering opportunities, collaboration, or a conversation about thermal design.</p></div>
+      <div><p class="eyebrow">04 / Let's connect</p><h2 id="contact-title">Have a cooling challenge?<br>Let's talk engineering.</h2><p>For engineering opportunities, collaboration, or a conversation about thermal design.</p></div>
       <div class="contact-actions">
         <a class="portfolio-button primary" href="https://www.linkedin.com/in/anaghdave/">Connect on LinkedIn <span aria-hidden="true">&#8599;</span></a>
         <a class="portfolio-button" href="resume.pdf">View resume <span class="file-label">PDF</span></a>
