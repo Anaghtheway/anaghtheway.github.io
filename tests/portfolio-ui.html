@@ -64,11 +64,44 @@
         assert(video.paused, prefix + 'reduced-motion background stays paused');
       }
     }
+    async function checkAbout(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px about page';
+      const loaded = new Promise(resolve => { frame.onload = resolve; });
+      frame.src = '../about.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const prefix = 'About ' + width + 'px: ';
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no horizontal overflow');
+      assert(doc.querySelectorAll('h1').length === 1 && doc.querySelector('h1').textContent.includes('Anagh'), prefix + 'single personal heading');
+      assert(doc.querySelector('nav a[aria-current="page"]').getAttribute('href') === 'about.html', prefix + 'current navigation page marked');
+      assert(doc.querySelector('.about-loop').getAttribute('src') === 'coolant-loop.svg', prefix + 'coolant loop retained');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(link => doc.getElementById(link.hash.slice(1))), prefix + 'in-page links resolve');
+      for (const href of ['resume.pdf', 'index.html', 'index.html#publications', 'index.html#cooling-lab', 'https://github.com/Ubuntu805', 'https://www.linkedin.com/in/anaghdave/']) {
+        assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' accessible');
+      }
+      assert(doc.querySelector('.about-story-copy').textContent.includes('numerically'), prefix + 'research context preserved');
+      assert(doc.body.textContent.includes('playing guitar'), prefix + 'personal interests preserved');
+      assert([...doc.images].every(image => image.complete && image.naturalWidth > 0 && image.hasAttribute('alt')), prefix + 'images load with alt attributes');
+      assert(JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent).name === 'Anagh Dave', prefix + 'person metadata preserved');
+      assert(win.getComputedStyle(doc.querySelector('.about-hero')).display === 'grid', prefix + 'shared portfolio styles loaded');
+      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        assert(win.getComputedStyle(doc.querySelector('.about-loop')).display === 'none', prefix + 'animated SVG suppressed for reduced motion');
+      } else {
+        assert(win.getComputedStyle(doc.querySelector('.about-loop')).display !== 'none', prefix + 'coolant background visible');
+      }
+    }
     (async () => {
       try {
         await check(1280);
         await check(390);
         await check(320);
+        await checkAbout(1280);
+        await checkAbout(390);
+        await checkAbout(320);
         document.body.dataset.result = 'passed';
         document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
       } catch (error) {

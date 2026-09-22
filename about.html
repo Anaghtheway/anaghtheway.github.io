@@ -38,73 +38,102 @@
   </script>
 
   <link rel="stylesheet" href="style.css">
-  <style>
-    .about-wrapper {
-      position: relative;
-      min-height: 100vh;
-    }
-    .coolant-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    .about-wrapper article {
-      position: relative;
-      z-index: 1;
-    }
-  </style>
+  <link rel="stylesheet" href="portfolio.css">
 </head>
 
-<body>
-<div class="about-wrapper">
-  <img src="coolant-loop.svg" class="coolant-bg" alt="">
+<body class="portfolio-page about-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <img src="coolant-loop.svg" class="about-loop" alt="" aria-hidden="true">
 
-<article>
+  <header class="portfolio-nav page-width">
+    <a class="wordmark" href="index.html" aria-label="Anagh Dave home">AD<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="index.html#publications">Publications</a>
+      <a href="index.html#work">Selected work</a>
+      <a href="index.html#cooling-lab">Cooling Lab</a>
+      <a href="about.html" aria-current="page">About</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-resume" href="resume.pdf">Resume <span aria-hidden="true">&#8599;</span></a>
+    </nav>
+  </header>
 
-  <div style="text-align:center; margin-bottom:30px; padding:50px 20px; background:linear-gradient(135deg, rgba(26,58,92,0.7), rgba(15,43,68,0.7), rgba(31,58,95,0.7)); border-radius:16px; backdrop-filter:blur(5px);">
-    <img src="anagh.jpg" alt="Anagh Dave" style="width:180px; height:180px; border-radius:50%; object-fit:cover; border:4px solid #58a6ff; box-shadow:0 0 30px rgba(88,166,255,0.3);">
-    <h1 style="margin-top:20px; margin-bottom:5px;">Anagh Dave</h1>
-    <p style="color:#9da5b4; font-size:1.1rem;">Thermal Engineer · Thinker · Builder</p>
-  </div>
+  <main id="main" class="page-width">
+    <section class="about-hero" aria-labelledby="about-title">
+      <div class="about-intro">
+        <p class="eyebrow">About / The person behind the portfolio</p>
+        <h1 id="about-title">Hi, I'm Anagh<span>.</span></h1>
+        <p class="hero-statement">A thermal engineer.<br><span>A curious person, first.</span></p>
+        <p class="hero-intro">I like understanding why things work &mdash; and how they could work better. For me, that curiosity leads to heat transfer, cooling systems, and the materials that connect them.</p>
+        <p class="about-lead">From microchannel geometry to the bigger picture of sustainable cooling, I'm drawn to problems where physics meets something we can design and build.</p>
+        <div class="hero-actions">
+          <a class="portfolio-button primary" href="resume.pdf">View my resume <span class="file-label">PDF</span></a>
+          <a class="portfolio-button" href="https://www.linkedin.com/in/anaghdave/">Let's connect <span aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+      <figure class="about-portrait">
+        <img src="anagh.jpg" alt="Anagh Dave outdoors" width="440" height="440" fetchpriority="high">
+        <figcaption><span class="eyebrow">Anagh Dave</span><span>Thermal engineer. Thinker. Builder.</span></figcaption>
+      </figure>
+    </section>
 
-  <hr style="border:none; border-top:1px solid #30363d; margin:30px 0;">
+    <section class="portfolio-section about-story" aria-labelledby="research-title">
+      <div class="about-section-label"><p class="eyebrow">01 / Research</p><h2 id="research-title">Small channels.<br>Interesting questions.</h2></div>
+      <div class="about-story-copy">
+        <p>What happens when a coolant can absorb heat through a phase change, but the flow doesn't mix enough to make full use of it?</p>
+        <p>That question is at the heart of the research I coauthored on herringbone microchannels and microencapsulated phase-change material slurries. The study numerically explores how passive mixing can improve heat transfer, while accounting for the pressure-drop penalty.</p>
+        <a class="about-research-link" href="index.html#publications">
+          <span class="eyebrow">Published in IEEE / 2026</span>
+          <strong>Design of Herringbone Microchannels for Enhanced Mixing in Augmented Cooling Slurries</strong>
+          <span class="text-link">Publication details &amp; results <span aria-hidden="true">&#8594;</span></span>
+        </a>
+      </div>
+    </section>
 
-  <h2>Who I Am</h2>
-  <p>
-    I'm a thermal engineer who loves to learn and build cooling solutions. My curiosity drives me to dig deep
-    into the physics of heat transfer — from cold plates and heat sinks to advanced coolants and thermal
-    interface materials.
-  </p>
+    <section class="portfolio-section" aria-labelledby="interests-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">02 / What keeps me curious</p><h2 id="interests-title">Beyond a temperature number.</h2></div>
+        <p>The questions and ideas I want to keep exploring.</p>
+      </div>
+      <div class="about-interest-grid">
+        <section class="about-interest" aria-labelledby="sustainability-title">
+          <span class="interest-number" aria-hidden="true">01</span><h3 id="sustainability-title">Sustainable cooling</h3>
+          <p>Keeping electronics cool matters. So does the energy and environmental cost of doing it. I'm interested in solutions that consider both.</p>
+        </section>
+        <section class="about-interest" aria-labelledby="materials-title">
+          <span class="interest-number" aria-hidden="true">02</span><h3 id="materials-title">Materials that make a difference</h3>
+          <p>Coolants, thermal interfaces, and phase-change materials &mdash; and how their properties shape the behavior of a cooling system.</p>
+        </section>
+        <section class="about-interest" aria-labelledby="ai-title">
+          <span class="interest-number" aria-hidden="true">03</span><h3 id="ai-title">AI &amp; the environment</h3>
+          <p>How the growth of artificial intelligence intersects with sustainability, and what it asks of the hardware and infrastructure behind it.</p>
+        </section>
+      </div>
+    </section>
 
-  <h2>What I Care About</h2>
-  <ul>
-    <li><strong>Sustainable cooling</strong> — designing solutions that don't cost the earth while keeping things cool</li>
-    <li><strong>AI & the environment</strong> — exploring how artificial intelligence intersects with sustainability and our changing world</li>
-    <li><strong>Materials science</strong> — coolants, TIMs, phase-change materials, and what makes them tick</li>
-  </ul>
+    <section class="portfolio-section about-story" aria-labelledby="personal-title">
+      <div class="about-section-label"><p class="eyebrow">03 / Away from the thermal problem</p><h2 id="personal-title">Music, people,<br>and new perspectives.</h2></div>
+      <div class="about-story-copy">
+        <p>When I'm not thinking about thermal resistance, you'll find me playing guitar, meeting new people, and trying to understand the world through their stories.</p>
+        <p>I believe every conversation is a chance to see things differently. That curiosity doesn't stop when I step away from engineering.</p>
+        <div class="about-lab-note">
+          <h3>Why I made Cooling Lab</h3>
+          <p>It's a place to share and explore the engineering ideas that interest me &mdash; through technical writing and interactive tools.</p>
+          <a class="text-link" href="index.html#cooling-lab">Take a look inside Cooling Lab <span aria-hidden="true">&#8594;</span></a>
+        </div>
+      </div>
+    </section>
 
-  <h2>Beyond Engineering</h2>
-  <p>
-    When I'm not thinking about thermal resistance, you'll find me playing guitar, meeting new people,
-    and trying to understand the world through their stories. I believe every conversation is a chance
-    to see things differently.
-  </p>
-
-  <hr style="border:none; border-top:1px solid #30363d; margin:30px 0;">
-
-  <p style="text-align:center;">
-    <a href="https://github.com/Ubuntu805" style="color:#58a6ff; margin:0 10px;">GitHub</a>
-    <a href="https://www.linkedin.com/in/anaghdave/" style="color:#58a6ff; margin:0 10px;">LinkedIn</a>
-  </p>
-
-  <a href="index.html">⬅ Back to Home</a>
-
-</article>
-</div>
+    <section id="contact" class="contact-section" aria-labelledby="contact-title">
+      <div><p class="eyebrow">04 / Start a conversation</p><h2 id="contact-title">Let's talk cooling.<br>Or something new.</h2><p>For engineering opportunities, research conversations, or a shared curiosity about how things work.</p></div>
+      <div class="contact-actions">
+        <a class="portfolio-button primary" href="https://www.linkedin.com/in/anaghdave/">Connect on LinkedIn <span aria-hidden="true">&#8599;</span></a>
+        <a class="portfolio-button" href="https://github.com/Ubuntu805">Find me on GitHub <span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </section>
+  </main>
+  <footer class="portfolio-footer page-width">
+    <p>Anagh Dave <span>/</span> Thermal engineering &amp; Cooling Lab</p>
+    <a href="index.html">Back to portfolio <span aria-hidden="true">&#8594;</span></a>
+  </footer>
 </body>
 </html>

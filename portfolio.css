@@ -109,7 +109,38 @@
 .portfolio-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 0; border-top: 1px solid #a1c9e02e; color: #b5c7d6; font-size: 0.75rem; }
 .portfolio-footer span { padding: 0 10px; color: #7dcfdc; }
 .portfolio-footer a { white-space: nowrap; text-decoration: none; }
+.about-page { animation: none; background: radial-gradient(ellipse at 85% 5%, #153142, #08131e 60%); }
+.about-page .about-loop { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.45; pointer-events: none; z-index: 0; }
+.about-page > header, .about-page > main, .about-page > footer { position: relative; z-index: 1; }
+.portfolio-nav nav a[aria-current="page"] { color: #92e1e6; text-decoration: underline; text-underline-offset: 7px; }
+.about-hero { display: grid; grid-template-columns: 1.3fr 0.85fr; align-items: center; gap: 72px; padding-block: 80px; }
+.about-intro h1 { font-size: clamp(2.8rem, 5vw, 4.7rem); letter-spacing: -0.055em; line-height: 1.1; margin: 0 0 24px; }
+.about-intro h1 span { color: #77dae1; }
+.about-intro .hero-intro { margin-bottom: 18px; }
+.about-lead { font-size: 0.95rem; color: #b6c9d8; margin: 0 0 30px; }
+.about-portrait { margin: 0; padding: 12px; border: 1px solid #617e9366; border-radius: 14px; background: #102130ee; }
+.about-portrait img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 8px; display: block; }
+.about-portrait figcaption { padding: 20px 10px 12px; display: grid; gap: 5px; color: #b6c9d8; font-size: 0.8rem; }
+.about-portrait .eyebrow { margin: 0; color: #e1f2f6; }
+.about-story { display: grid; grid-template-columns: 0.85fr 1.3fr; gap: 72px; }
+.about-story-copy > p { margin: 0 0 22px; color: #bfceda; font-size: 1rem; }
+.about-research-link { display: block; padding: 24px; border: 1px solid #617e9366; border-left: 3px solid #77dae1; border-radius: 8px; background: #102638ee; text-decoration: none; }
+.about-research-link:hover { background: #193449; }
+.about-research-link .eyebrow { display: block; margin: 0 0 12px; }
+.about-research-link strong { display: block; font-weight: 500; font-size: 1.08rem; line-height: 1.5; }
+.about-research-link .text-link { display: block; margin-top: 8px; }
+.about-interest-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.about-interest { padding: 26px; border: 1px solid #617e934d; border-radius: 10px; background: #102130ee; }
+.interest-number { font: 0.8rem Consolas, monospace; color: #92e1e6; }
+.about-interest h3, .about-lab-note h3 { font-size: 1.1rem; line-height: 1.4; font-weight: 500; margin: 18px 0 14px; }
+.about-interest p, .about-lab-note p { color: #b6c9d8; font-size: 0.9rem; margin: 0; }
+.about-lab-note { margin-top: 32px; padding: 24px; background: #102130ee; border-radius: 8px; border: 1px solid #617e934d; }
+.about-lab-note h3 { margin-top: 0; }
+.about-lab-note .text-link { display: inline-block; margin-top: 8px; }
 @media (max-width: 900px) {
+  .about-hero, .about-story { gap: 36px; }
+  .about-interest-grid { gap: 14px; }
+  .about-interest { padding: 20px; }
   .portfolio-page .publication-card { grid-template-columns: minmax(0, 1fr) 240px; }
   .publication-copy { padding: 26px; }
   .portfolio-hero { gap: 36px; padding-top: 64px; grid-template-columns: 1.4fr 0.8fr; }
@@ -118,6 +149,9 @@
   .contact-section { padding: 28px; }
 }
 @media (max-width: 680px) {
+  .about-hero, .about-story, .about-interest-grid { grid-template-columns: 1fr; }
+  .about-hero { padding-block: 48px; }
+  .about-portrait { width: min(100%, 380px); justify-self: center; }
   .portfolio-page .publication-card { grid-template-columns: 1fr; }
   .publication-copy { padding: 22px; }
   .publication-results { padding: 24px; border-left: 0; border-top: 1px solid #617e934d; }
@@ -144,5 +178,6 @@
   .portfolio-footer p { margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .about-page .about-loop { display: none; }
   .portfolio-page *, .portfolio-page *::before, .portfolio-page *::after { animation: none !important; transition: none !important; }
 }
