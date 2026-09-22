@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulator UI regression checks</title>
+  <style>
+    body { background: #080f1a; color: #e6edf3; font: 14px monospace; }
+    iframe { display: block; border: 0; height: 1200px; margin: 20px 0; }
+    #results { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Simulator UI regression checks</h1>
+  <p>Serve the repository locally and open this page. No dependencies required.</p>
+  <details><summary id="summary">Running checks...</summary><pre id="results">Running...</pre></details>
+  <script>
+    const results = document.getElementById('results');
+    const messages = [];
+    const errors = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    function loadFrame(width) {
+      return new Promise(resolve => {
+        const frame = document.createElement('iframe');
+        frame.style.width = width + 'px';
+        frame.title = width + 'px simulator';
+        frame.onload = () => resolve(frame);
+        frame.src = '../simulator.html';
+        document.body.appendChild(frame);
+      });
+    }
+    async function check(width) {
+      const frame = await loadFrame(width);
+      const win = frame.contentWindow;
+      const doc = frame.contentDocument;
+      win.addEventListener('error', event => errors.push(event.message));
+      const find = selector => doc.querySelector(selector);
+      const cards = () => [...doc.querySelectorAll('.placed-component')];
+      const key = (element, value) => element.dispatchEvent(new win.KeyboardEvent('keydown', { key: value, bubbles: true }));
+      const input = (selector, value) => {
+        find(selector).value = value;
+        find(selector).dispatchEvent(new win.Event('input', { bubbles: true }));
+      };
+      const label = message => width + 'px: ' + message;
+      const contained = () => cards().every(card =>
+        card.offsetLeft >= 0 && card.offsetTop >= 0 &&
+        card.offsetLeft + card.offsetWidth <= find('#canvas').clientWidth &&
+        card.offsetTop + card.offsetHeight <= find('#canvas').clientHeight);
+      assert(find('#systemStatus').textContent.includes('Empty'), label('empty state'));
+      assert(find('#clearCanvas').disabled, label('clear disabled when empty'));
+      assert(doc.documentElement.scrollWidth <= width, label('no page-level horizontal overflow'));
+      key(find('[data-type="heat-source"]'), 'Enter');
+      assert(cards().length === 1, label('keyboard adds a component'));
+      find('[data-type="heat-source"]').click();
+      assert(new Set(cards().map(card => card.id)).size === 2, label('unique IDs for repeated additions'));
+      const source = cards()[0];
+      source.querySelector('.edit-btn').click();
+      assert(find('.comp-settings') && find('.is-selected'), label('visible edit opens properties'));
+      input('.comp-settings input[id^="p-"]', '400');
+      assert(find('.comp-settings .setting-val[id^="pv-"]').textContent === '400 W', label('power input updates'));
+      key(doc, 'Escape');
+      assert(!find('.comp-settings') && doc.activeElement === source, label('Escape closes and restores focus'));
+      const oldX = source.offsetLeft;
+      key(source, 'ArrowRight');
+      assert(source.offsetLeft > oldX, label('keyboard moves card'));
+      source.querySelector('.edit-btn').click();
+      source.querySelector('.remove-btn').click();
+      assert(cards().length === 1 && !find('.comp-settings'), label('removal clears related properties'));
+      win.confirm = () => false;
+      find('#clearCanvas').click();
+      assert(cards().length === 1, label('clear respects cancellation'));
+      find('#loadExample').click();
+      assert(cards().length === 1, label('example respects cancellation'));
+      win.confirm = () => true;
+      find('#loadExample').click();
+      assert(cards().length === 4 && contained(), label('example loads four bounded components'));
+      assert(find('#componentCount').textContent === '4 components', label('component count'));
+      assert(doc.querySelectorAll('.flow-line').length === 4, label('one directed connection per component'));
+      assert(find('#deltaT').textContent === '2.9 °C', label('default calculation preserved'));
+      assert(find('#junctionTemp').textContent === '33.9 °C', label('default junction estimate preserved'));
+      assert(find('#systemStatus').style.color === '', label('stale status color cleared'));
+      input('#flowRate', '3');
+      assert(find('#deltaT').textContent === '1.4 °C', label('flow control updates estimates'));
+      input('#coolantType', 'glycol50');
+      assert(find('#deltaT').textContent === '1.7 °C', label('coolant control updates estimates'));
+      const card = cards()[0];
+      key(card, 'End');
+      for (let i = 0; i < 100; i++) key(card, 'ArrowDown');
+      assert(contained(), label('movement stays inside canvas'));
+      find('.canvas-viewport').scrollLeft = 150;
+      card.querySelector('.edit-btn').click();
+      const popup = find('.comp-settings').getBoundingClientRect();
+      const viewport = find('.canvas-viewport').getBoundingClientRect();
+      assert(popup.left >= viewport.left && popup.right <= viewport.right + 1, label('properties fit visible canvas'));
+      key(doc, 'Escape');
+      key(card, 'Delete');
+      assert(cards().length === 3, label('keyboard deletes card'));
+      const transfer = new win.DataTransfer();
+      const palette = find('.palette-item[data-type="tim"]');
+      palette.dispatchEvent(new win.DragEvent('dragstart', { dataTransfer: transfer, bubbles: true }));
+      const canvasBox = find('#canvas').getBoundingClientRect();
+      find('#canvas').dispatchEvent(new win.DragEvent('drop', {
+        dataTransfer: transfer, bubbles: true, cancelable: true,
+        clientX: canvasBox.left + 200, clientY: canvasBox.top + 180
+      }));
+      palette.dispatchEvent(new win.DragEvent('dragend', { dataTransfer: transfer }));
+      assert(cards().length === 4 && cards().some(item => item.dataset.type === 'tim'), label('drag/drop adds component'));
+      find('#clearCanvas').click();
+      assert(cards().length === 0 && !find('.flow-line') && find('#clearCanvas').disabled, label('clear resets workspace'));
+      assert(find('#inletTemp').textContent.includes('—'), label('clear resets estimates'));
+      input('#flowRate', '1.5');
+      input('#coolantType', 'water');
+      find('#loadExample').click();
+      frame.style.width = '390px';
+      await new Promise(resolve => win.setTimeout(resolve, 100));
+      assert(contained() && doc.documentElement.scrollWidth <= 390, label('resize retains bounded layout'));
+      frame.style.width = width + 'px';
+      assert(errors.length === 0, label('no browser runtime errors'));
+    }
+    (async () => {
+      try {
+        await check(1280);
+        await check(390);
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+        results.textContent = messages.join('\n') + '\nALL PASSED (' + messages.length + ')';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        document.getElementById('summary').textContent = 'Checks failed: ' + error.message;
+        document.querySelector('details').open = true;
+        results.textContent = messages.join('\n') + '\nFAIL ' + error.message + '\n' + errors.join('\n');
+      }
+    })();
+  </script>
+</body>
+</html>

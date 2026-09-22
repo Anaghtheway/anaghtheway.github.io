@@ -19,31 +19,31 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .sim-wrapper {
-      max-width: 1100px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 28px;
       position: relative;
       z-index: 2;
     }
     .sim-header {
-      text-align: center;
-      margin-bottom: 20px;
+      text-align: left;
+      margin: 30px 0;
     }
-    .sim-header h1 { font-size: 2rem; }
-    .sim-header p { color: #9da5b4; }
+    .sim-header h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -0.04em; margin: 8px 0 12px; }
+    .sim-header p { color: #a5b5c7; line-height: 1.6; margin: 0; }
 
     .sim-container {
       display: flex;
-      gap: 20px;
+      gap: 16px;
     }
 
     /* Component Palette */
     .palette {
-      width: 180px;
-      background: rgba(22,27,34,0.85);
-      border: 1px solid rgba(48,54,61,0.5);
+      width: 192px;
+      background: #101b29;
+      border: 1px solid #263548;
       border-radius: 12px;
-      padding: 15px;
+      padding: 16px;
       flex-shrink: 0;
     }
     .palette h3 {
@@ -54,87 +54,93 @@
       margin-bottom: 12px;
     }
     .palette-item {
-      background: rgba(30,40,55,0.9);
-      border: 1px solid #30363d;
+      background: #152234;
+      border: 1px solid #2c3e53;
       border-radius: 8px;
-      padding: 10px;
+      padding: 12px;
       margin-bottom: 8px;
       cursor: grab;
-      text-align: center;
+      text-align: left;
       transition: border-color 0.2s, transform 0.1s;
       user-select: none;
     }
     .palette-item:hover {
       border-color: #58a6ff;
-      transform: scale(1.03);
+      background: #1a2e43;
     }
-    .palette-item .icon { font-size: 1.5rem; }
-    .palette-item .label { font-size: 0.75rem; color: #9da5b4; margin-top: 4px; }
+    .palette-item .icon { display: inline-flex; vertical-align: middle; margin-right: 8px; }
+    .palette-item .label { display: inline; font-size: 0.8rem; color: #dde7f2; }
 
     /* Canvas */
     .canvas-area {
-      flex: 1;
-      background: rgba(13,17,23,0.7);
-      border: 2px dashed rgba(48,54,61,0.6);
-      border-radius: 12px;
-      min-height: 500px;
+      background-color: #0b1421;
+      background-image: radial-gradient(#293b50 1px, transparent 1px);
+      background-size: 24px 24px;
+      min-width: 760px;
+      height: 550px;
       position: relative;
       overflow: hidden;
     }
     .canvas-area.drag-over {
-      border-color: #58a6ff;
-      background: rgba(13,17,23,0.85);
+      box-shadow: inset 0 0 0 2px #59d9e8;
     }
     .canvas-hint {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #30363d;
-      font-size: 1.1rem;
+      color: #a5b5c7;
+      font-size: 0.9rem;
+      text-align: center;
+      line-height: 1.7;
+      width: 340px;
       pointer-events: none;
     }
 
     /* Placed Components */
     .placed-component {
       position: absolute;
-      background: rgba(22,27,34,0.95);
-      border: 2px solid #30363d;
+      background: #142235;
+      border: 1px solid #40566d;
+      border-top: 3px solid var(--component-color, #59d9e8);
       border-radius: 10px;
-      padding: 12px 16px;
-      cursor: move;
+      padding: 14px 10px 10px;
+      cursor: grab;
       user-select: none;
       text-align: center;
-      min-width: 90px;
+      width: 156px;
+      min-height: 140px;
+      touch-action: none;
       transition: box-shadow 0.2s;
       z-index: 10;
     }
     .placed-component:hover {
       box-shadow: 0 0 15px rgba(88,166,255,0.3);
     }
-    .placed-component .icon { font-size: 1.8rem; }
-    .placed-component .comp-label { font-size: 0.7rem; color: #9da5b4; margin-top: 2px; }
+    .placed-component .icon { display: inline-flex; }
+    .placed-component .comp-label { font-size: 0.8rem; color: #dde7f2; margin-top: 8px; }
     .placed-component .temp-display {
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-top: 4px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-top: 10px;
+      font-variant-numeric: tabular-nums;
     }
     .placed-component .remove-btn {
       position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #da3633;
-      color: white;
-      font-size: 0.65rem;
-      border: none;
+      top: 4px;
+      right: 4px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #192b3f;
+      color: #b4c4d6;
+      font-size: 0.85rem;
+      border: 1px solid #31465e;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0;
+      opacity: 1;
       transition: opacity 0.2s;
     }
     .placed-component:hover .remove-btn { opacity: 1; }
@@ -152,11 +158,11 @@
 
     /* Controls Panel */
     .controls-panel {
-      background: rgba(22,27,34,0.85);
-      border: 1px solid rgba(48,54,61,0.5);
+      background: #101b29;
+      border: 1px solid #263548;
       border-radius: 12px;
       padding: 20px;
-      margin-top: 20px;
+      margin-top: 16px;
     }
     .controls-panel h3 {
       font-size: 0.85rem;
@@ -166,43 +172,45 @@
       margin-bottom: 15px;
     }
     .control-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
       align-items: center;
-      gap: 15px;
-      margin-bottom: 12px;
+      gap: 14px;
+      margin-bottom: 0;
+      min-width: 0;
     }
     .control-row label {
-      width: 140px;
       font-size: 0.85rem;
       color: #c9d1d9;
     }
     .control-row input[type="range"] {
-      flex: 1;
-      accent-color: #58a6ff;
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      margin: 0;
+      accent-color: #59d9e8;
     }
     .control-row .value-display {
-      width: 80px;
       text-align: right;
       font-weight: bold;
-      color: #58a6ff;
+      color: #59d9e8;
       font-size: 0.9rem;
     }
 
     /* Stats Bar */
     .stats-bar {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 15px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
     }
     .stat-box {
-      background: rgba(30,40,55,0.8);
-      border: 1px solid #30363d;
+      background: #101b29;
+      border: 1px solid #263548;
       border-radius: 8px;
-      padding: 12px 20px;
-      text-align: center;
-      min-width: 120px;
+      padding: 20px;
+      text-align: left;
+      min-width: 0;
     }
     .stat-box .stat-label {
       font-size: 0.7rem;
@@ -211,9 +219,10 @@
       color: #9da5b4;
     }
     .stat-box .stat-value {
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin-top: 4px;
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      font-weight: 600;
+      margin-top: 12px;
+      font-variant-numeric: tabular-nums;
     }
     .stat-value.hot { color: #f85149; }
     .stat-value.warm { color: #f0883e; }
@@ -241,7 +250,7 @@
       border: 1px solid #58a6ff;
       border-radius: 10px;
       padding: 15px;
-      min-width: 220px;
+      width: 310px;
       z-index: 30;
       box-shadow: 0 4px 25px rgba(88,166,255,0.2);
     }
@@ -264,6 +273,7 @@
     }
     .comp-settings .setting-row input[type="range"] {
       flex: 1;
+      min-width: 0;
       accent-color: #58a6ff;
     }
     .comp-settings .setting-row .setting-val {
@@ -284,28 +294,102 @@
       font-size: 0.9rem;
     }
     .comp-settings .close-settings:hover { color: #e6edf3; }
+    * { box-sizing: border-box; }
+    body.simulator-page {
+      background: radial-gradient(ellipse at 80% 0%, #132c40 0%, #080f1a 55%);
+      animation: none;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color-scheme: dark;
+    }
+    button, input, select { font: inherit; }
+    button, select { cursor: pointer; }
+    :focus-visible { outline: 2px solid #79e8f3; outline-offset: 4px; }
+    .topbar, .workspace-toolbar, .workspace-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .topbar { border-bottom: 1px solid #263548; padding-bottom: 20px; }
+    .brand { color: #edf5ff; text-decoration: none; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.08em; }
+    .brand span { color: #59d9e8; }
+    .badge, .eyebrow { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: #8ca4be; }
+    .badge { border: 1px solid #345064; border-radius: 30px; padding: 7px 12px; color: #88dce5; }
+    .palette h3 { margin: 0 0 8px; }
+    .palette-help, .workspace-footer, .model-note, .stat-note { color: #9db0c5; font-size: 0.75rem; line-height: 1.6; }
+    .palette-help { margin: 0 0 18px; }
+    .workspace { flex: 1; min-width: 0; border: 1px solid #263548; border-radius: 12px; background: #101b29; overflow: hidden; }
+    .workspace-toolbar { padding: 14px 18px; border-bottom: 1px solid #263548; flex-wrap: wrap; }
+    .workspace-title { font-size: 0.85rem; font-weight: 600; }
+    .component-count { color: #9db0c5; font-size: 0.75rem; margin-left: 12px; font-weight: 400; }
+    .toolbar-actions { display: flex; gap: 8px; }
+    .ui-button { border: 1px solid #3b526a; border-radius: 7px; background: #1b3045; color: #e1f4fc; padding: 8px 12px; font-size: 0.75rem; }
+    .ui-button:hover { border-color: #59d9e8; background: #224057; }
+    .ui-button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .ui-button.secondary { background: transparent; color: #b4c4d6; }
+    .canvas-viewport { overflow: auto; }
+    .canvas-hint strong { display: block; color: #e2edf8; font-size: 1.1rem; margin-bottom: 8px; }
+    .canvas-hint .empty-icon { display: block; font-size: 2rem; color: #59d9e8; margin-bottom: 12px; }
+    .workspace-footer { padding: 12px 18px; border-top: 1px solid #263548; flex-wrap: wrap; }
+    .workspace-footer span:first-child::before { content: ""; display: inline-block; width: 6px; height: 6px; background: #59d9e8; border-radius: 50%; margin-right: 8px; }
+    .control-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+    .control-row select { grid-row: 2; grid-column: 1 / -1; width: 100%; min-width: 0; padding: 8px; border: 1px solid #3b526a; border-radius: 6px; background: #152234; color: #dde7f2; font-size: 0.8rem; }
+    .controls-panel h3 { margin-top: 0; }
+    .model-note { padding: 14px 0; margin: 0; }
+    .model-note strong { color: #e9bd78; }
+    .stat-note { display: block; margin-top: 8px; font-size: 0.7rem; }
+    .component-icon { width: 24px; height: 24px; color: var(--component-color, #59d9e8); }
+    [data-type="heat-source"] { --component-color: #ffae80; }
+    [data-type="tim"] { --component-color: #c0a2ff; }
+    [data-type="pump"] { --component-color: #8eb9ff; }
+    [data-type="reservoir"] { --component-color: #8fd9b7; }
+    .component-actions { margin-top: 10px; }
+    .edit-btn { background: transparent; border: 0; border-top: 1px solid #2c4056; color: #a9c5de; width: 100%; padding: 8px 0 0; font-size: 0.7rem; min-height: 28px; }
+    .resistance-display { display: block; color: #9db0c5; font: 0.65rem "Segoe UI", sans-serif; margin-top: 5px; }
+    .placed-component.is-moving { cursor: grabbing; border-color: #59d9e8; box-shadow: 0 12px 24px #0006; }
+    .placed-component.is-selected { box-shadow: 0 0 0 2px #59d9e855; border-color: #59d9e8; }
+    .comp-settings { background: #152234; border-color: #4b8a9d; padding: 18px; }
+    .comp-settings .close-settings { width: 28px; height: 28px; }
+    .settings-note { font-size: 0.7rem; line-height: 1.5; color: #9db0c5; margin: 12px 0 0; }
+    .flow-line { animation: flowDash var(--flow-duration) linear infinite; }
+    @keyframes flowDash { to { stroke-dashoffset: -28; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    @media (max-width: 1000px) {
+      .control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 680px) {
+      .sim-wrapper { padding: 16px; }
+      .sim-header { margin: 24px 0; }
+      .sim-container { flex-direction: column; }
+      .palette { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+      .palette h3, .palette-help { grid-column: 1 / -1; margin: 0; }
+      .palette-item { margin: 0; padding: 10px; }
+      .control-grid { grid-template-columns: 1fr; gap: 22px; }
+      .stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-box { padding: 16px; }
+      .stat-box:last-child { grid-column: 1 / -1; }
+      .badge { font-size: 0.6rem; }
+    }
   </style>
 </head>
 
-<body class="home-page">
+<body class="simulator-page">
 
-  <!-- Video Background -->
-  <video class="video-bg" autoplay muted loop playsinline>
-    <source src="designer2_coolant_loop_inside_tubes.mp4" type="video/mp4">
-  </video>
-  <div class="video-overlay"></div>
-
-<div class="sim-wrapper">
+<main class="sim-wrapper">
+  <nav class="topbar" aria-label="Site navigation">
+    <a class="brand" href="index.html"><span>COOLING</span> LAB /</a>
+    <span class="badge">Interactive sandbox</span>
+  </nav>
 
   <div class="sim-header">
-    <h1>🌊 Coolant Loop Simulator</h1>
-    <p>Drag components onto the canvas. <strong>Double-click</strong> any placed component to adjust its thermal resistance and properties.</p>
+    <span class="eyebrow">Build. Adjust. Explore.</span>
+    <h1>Coolant Loop Simulator</h1>
+    <p>Your thermal playground. Assemble a loop, adjust its properties, and explore how the estimates respond.</p>
   </div>
 
   <div class="sim-container">
     <!-- Palette -->
     <div class="palette">
       <h3>Components</h3>
+      <p class="palette-help">Drag onto the canvas or click to add.</p>
       <div class="palette-item" draggable="true" data-type="heat-source">
         <div class="icon">🔥</div>
         <div class="label">Heat Source</div>
@@ -337,68 +421,89 @@
     </div>
 
     <!-- Canvas -->
-    <div class="canvas-area" id="canvas">
-      <svg class="connections-layer" id="connections"></svg>
-      <div class="canvas-hint" id="canvasHint">Drag components here to build your loop</div>
-    </div>
+    <section class="workspace" aria-label="Loop workspace">
+      <div class="workspace-toolbar">
+        <div class="workspace-title">Loop workspace <span class="component-count" id="componentCount" aria-live="polite">0 components</span></div>
+        <div class="toolbar-actions">
+          <button class="ui-button" id="loadExample" type="button">Load example</button>
+          <button class="ui-button secondary" id="clearCanvas" type="button" disabled>Clear canvas</button>
+        </div>
+      </div>
+      <div class="canvas-viewport" tabindex="0" aria-label="Scrollable component canvas">
+        <div class="canvas-area" id="canvas">
+          <svg class="connections-layer" id="connections" aria-hidden="true"></svg>
+          <div class="canvas-hint" id="canvasHint"><span class="empty-icon" aria-hidden="true">+</span><strong>Start with a single component.</strong>Drag from the library, click to add, or load an example loop above.</div>
+        </div>
+      </div>
+      <div class="workspace-footer"><span>Auto-linked from left to right</span><span>Drag to move &middot; Edit to configure &middot; Scroll to pan</span></div>
+    </section>
   </div>
 
   <!-- Controls -->
   <div class="controls-panel">
     <h3>System Parameters</h3>
+    <div class="control-grid">
     <div class="control-row">
-      <label>Flow Rate</label>
+      <label for="flowRate">Flow Rate</label>
       <input type="range" id="flowRate" min="0.1" max="5" step="0.1" value="1.5">
       <span class="value-display" id="flowRateVal">1.5 L/min</span>
     </div>
     <div class="control-row">
-      <label>Heat Load</label>
+      <label for="heatLoad">Fallback Heat Load</label>
       <input type="range" id="heatLoad" min="50" max="1000" step="10" value="300">
       <span class="value-display" id="heatLoadVal">300 W</span>
     </div>
     <div class="control-row">
-      <label>Ambient Temp</label>
+      <label for="ambientTemp">Ambient Temp</label>
       <input type="range" id="ambientTemp" min="15" max="45" step="1" value="25">
       <span class="value-display" id="ambientTempVal">25 °C</span>
     </div>
     <div class="control-row">
-      <label>Coolant</label>
-      <select id="coolantType" style="flex:1; padding:6px; background:#161b22; color:#e6edf3; border:1px solid #30363d; border-radius:4px;">
+      <label for="coolantType">Coolant</label>
+      <select id="coolantType">
         <option value="water">Water (Cp = 4.18 kJ/kg·K)</option>
         <option value="glycol30">30% Ethylene Glycol (Cp = 3.74)</option>
         <option value="glycol50">50% Ethylene Glycol (Cp = 3.28)</option>
         <option value="pcs">Phase Change Slurry (Cp = 8.0)</option>
       </select>
     </div>
+    </div>
+    <p class="settings-note">Heat-source cards use their own power settings; the fallback load applies only when no heat source is placed.</p>
+  </div>
 
     <!-- Stats -->
-    <div class="stats-bar">
+    <section class="stats-bar" aria-label="Illustrative thermal estimates">
       <div class="stat-box">
         <div class="stat-label">Inlet Temp</div>
         <div class="stat-value cool" id="inletTemp">— °C</div>
+        <span class="stat-note">Estimated coolant inlet</span>
       </div>
       <div class="stat-box">
         <div class="stat-label">Outlet Temp</div>
         <div class="stat-value warm" id="outletTemp">— °C</div>
+        <span class="stat-note">Estimated coolant outlet</span>
       </div>
       <div class="stat-box">
         <div class="stat-label">ΔT Coolant</div>
         <div class="stat-value" id="deltaT" style="color:#f0883e;">— °C</div>
+        <span class="stat-note">Temperature rise</span>
       </div>
       <div class="stat-box">
         <div class="stat-label">Junction Temp</div>
         <div class="stat-value" id="junctionTemp">— °C</div>
+        <span class="stat-note">Estimated source temperature</span>
       </div>
       <div class="stat-box">
-        <div class="stat-label">System Status</div>
-        <div class="stat-value cold" id="systemStatus">✓ OK</div>
+        <div class="stat-label">Model Status</div>
+        <div class="stat-value" id="systemStatus" role="status">Empty</div>
+        <span class="stat-note">Not a safety assessment</span>
       </div>
-    </div>
-  </div>
+    </section>
+  <p class="model-note"><strong>Illustrative model, not a validated design tool.</strong> Heat rejection and passive flow use heuristic assumptions. Connections show layout order, not a solved hydraulic network. Do not use these estimates for equipment sizing or safety decisions.</p>
 
   <div class="back-link">
     <a href="index.html">⬅ Back to Home</a>
-  </div>
+  </main>
 
 </div>
 
@@ -422,7 +527,22 @@ const coolantProps = {
   pcs:      { cp: 8.00, density: 1.02 }
 };
 
+const iconPaths = {
+  'heat-source': '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/>',
+  'cold-plate': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 8v8m5-8v8m5-8v8"/>',
+  'tim': '<path d="m3 8 9-5 9 5-9 5-9-5Zm0 4 9 5 9-5M3 16l9 5 9-5"/>',
+  'pump': '<circle cx="12" cy="12" r="8"/><path d="m10 8 6 4-6 4V8ZM1 12h3m16 0h3"/>',
+  'chiller': '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3"/>',
+  'reservoir': '<ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v14c0 4 14 4 14 0V5M5 13c0 4 14 4 14 0"/>',
+  'radiator': '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 7v10m5-10v10m5-10v10"/>'
+};
+
+function componentIcon(type) {
+  return `<svg class="component-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[type]}</svg>`;
+}
+
 let placedComponents = [];
+let nextComponentId = 0;
 let draggedType = null;
 let movingComp = null;
 let moveOffset = { x: 0, y: 0 };
@@ -431,12 +551,34 @@ let activeSettings = null; // currently open settings popup
 const canvas = document.getElementById('canvas');
 const connectionsEl = document.getElementById('connections');
 const canvasHint = document.getElementById('canvasHint');
+const canvasViewport = document.querySelector('.canvas-viewport');
 
 // Palette drag
 document.querySelectorAll('.palette-item').forEach(item => {
+  item.setAttribute('role', 'button');
+  item.setAttribute('tabindex', '0');
+  item.setAttribute('aria-label', 'Add ' + componentDefs[item.dataset.type].label);
+  item.querySelector('.icon').innerHTML = componentIcon(item.dataset.type);
+  const place = () => {
+    const index = placedComponents.length;
+    addComponent(item.dataset.type, canvasViewport.scrollLeft + 24 + (index % 4) * 180,
+      48 + (Math.floor(index / 4) % 2) * 240);
+  };
+  item.addEventListener('click', place);
+  item.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      place();
+    }
+  });
   item.addEventListener('dragstart', e => {
     draggedType = item.dataset.type;
+    e.dataTransfer.setData('text/plain', draggedType);
     e.dataTransfer.effectAllowed = 'copy';
+  });
+  item.addEventListener('dragend', () => {
+    draggedType = null;
+    canvas.classList.remove('drag-over');
   });
 });
 
@@ -460,7 +602,7 @@ canvas.addEventListener('drop', e => {
 });
 
 function addComponent(type, x, y) {
-  const id = type + '-' + Date.now();
+  const id = type + '-' + (++nextComponentId);
   const def = componentDefs[type];
   const comp = { id, type, x, y, def: { ...def }, thermalR: def.thermalR };
   if (def.power !== undefined) comp.power = def.power;
@@ -470,57 +612,103 @@ function addComponent(type, x, y) {
 
   const el = document.createElement('div');
   el.className = 'placed-component';
+  el.dataset.type = type;
+  el.tabIndex = 0;
+  el.setAttribute('role', 'group');
+  el.setAttribute('aria-label', def.label + '. Enter to edit; arrow keys to move; Delete to remove.');
   el.id = id;
   el.style.left = x + 'px';
   el.style.top = y + 'px';
   el.innerHTML = `
-    <button class="remove-btn" onclick="removeComponent('${id}')">✕</button>
-    <div class="icon">${def.icon}</div>
+    <button class="remove-btn" type="button" aria-label="Remove ${def.label}" onclick="removeComponent('${id}')">&times;</button>
+    <div class="icon">${componentIcon(type)}</div>
     <div class="comp-label">${def.label}</div>
     <div class="temp-display" id="temp-${id}"></div>
+    <div class="component-actions"><button class="edit-btn" type="button">Edit properties</button></div>
   `;
+
+  el.querySelector('.edit-btn').addEventListener('click', () => openSettings(comp));
+  el.addEventListener('keydown', e => {
+    if (e.target !== el) return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      openSettings(comp);
+    } else if (e.key === 'Delete') {
+      e.preventDefault();
+      removeComponent(id);
+    } else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      e.preventDefault();
+      closeSettings();
+      comp.x += e.key === 'ArrowRight' ? 12 : e.key === 'ArrowLeft' ? -12 : 0;
+      comp.y += e.key === 'ArrowDown' ? 12 : e.key === 'ArrowUp' ? -12 : 0;
+      positionComponent(comp);
+      drawConnections();
+    }
+  });
 
   // Double-click to open settings
   el.addEventListener('dblclick', e => {
+    if (e.target.closest('button')) return;
     e.stopPropagation();
     openSettings(comp);
   });
 
   // Drag to move
-  el.addEventListener('mousedown', e => {
-    if (e.target.classList.contains('remove-btn')) return;
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || e.target.closest('button')) return;
+    closeSettings();
     movingComp = comp;
     const elRect = el.getBoundingClientRect();
     moveOffset.x = e.clientX - elRect.left;
     moveOffset.y = e.clientY - elRect.top;
     el.style.zIndex = 20;
+    el.classList.add('is-moving');
+    el.setPointerCapture(e.pointerId);
   });
 
   canvas.appendChild(el);
+  positionComponent(comp);
   canvasHint.style.display = 'none';
+  updateWorkspace();
   updateSimulation();
-  drawConnections();
+  return comp;
+}
+
+function positionComponent(comp) {
+  const el = document.getElementById(comp.id);
+  comp.x = Math.max(12, Math.min(canvas.clientWidth - el.offsetWidth - 12, comp.x));
+  comp.y = Math.max(12, Math.min(canvas.clientHeight - el.offsetHeight - 12, comp.y));
+  el.style.left = comp.x + 'px';
+  el.style.top = comp.y + 'px';
+}
+
+function updateWorkspace() {
+  const count = placedComponents.length;
+  document.getElementById('componentCount').textContent = count + (count === 1 ? ' component' : ' components');
+  document.getElementById('clearCanvas').disabled = count === 0;
+  canvasHint.style.display = count ? 'none' : 'block';
 }
 
 function openSettings(comp) {
   closeSettings();
   const def = comp.def;
   const el = document.getElementById(comp.id);
+  el.classList.add('is-selected');
   const popup = document.createElement('div');
   popup.className = 'comp-settings';
   popup.id = 'settings-' + comp.id;
-  popup.style.left = (comp.x + 110) + 'px';
-  popup.style.top = comp.y + 'px';
+  popup.dataset.componentId = comp.id;
+  popup.setAttribute('role', 'dialog');
+  popup.setAttribute('aria-label', def.label + ' properties');
 
-  let html = `<button class="close-settings" onclick="closeSettings()">✕</button>`;
-  html += `<h4>${def.icon} ${def.label} Settings</h4>`;
+  let html = `<button class="close-settings" type="button" aria-label="Close properties" onclick="closeSettings(true)">&times;</button>`;
+  html += `<h4>${def.label} properties</h4>`;
 
   // Thermal resistance slider (for all except pump)
   if (def.rMax !== 0 || def.rMin !== 0) {
     const rVal = comp.thermalR;
-    const rAbs = Math.abs(rVal);
     html += `<div class="setting-row">
-      <label>Thermal R</label>
+      <label for="r-${comp.id}">Thermal R</label>
       <input type="range" id="r-${comp.id}" min="${def.rMin}" max="${def.rMax}" step="${def.rStep}" value="${rVal}">
       <span class="setting-val" id="rv-${comp.id}">${rVal.toFixed(3)} ${def.unit}</span>
     </div>`;
@@ -529,7 +717,7 @@ function openSettings(comp) {
   // Power slider for heat sources
   if (comp.power !== undefined) {
     html += `<div class="setting-row">
-      <label>Power</label>
+      <label for="p-${comp.id}">Power</label>
       <input type="range" id="p-${comp.id}" min="${def.pMin}" max="${def.pMax}" step="${def.pStep}" value="${comp.power}">
       <span class="setting-val" id="pv-${comp.id}">${comp.power} W</span>
     </div>`;
@@ -538,7 +726,7 @@ function openSettings(comp) {
   // Cooling capacity for chillers
   if (comp.capacity !== undefined) {
     html += `<div class="setting-row">
-      <label>Capacity</label>
+      <label for="cap-${comp.id}">Capacity</label>
       <input type="range" id="cap-${comp.id}" min="${def.capMin}" max="${def.capMax}" step="${def.capStep}" value="${comp.capacity}">
       <span class="setting-val" id="capv-${comp.id}">${comp.capacity} W</span>
     </div>`;
@@ -547,15 +735,23 @@ function openSettings(comp) {
   // Head pressure for pumps
   if (comp.headPressure !== undefined) {
     html += `<div class="setting-row">
-      <label>Head (PSI)</label>
+      <label for="hp-${comp.id}">Head (PSI)</label>
       <input type="range" id="hp-${comp.id}" min="${def.hpMin}" max="${def.hpMax}" step="${def.hpStep}" value="${comp.headPressure}">
       <span class="setting-val" id="hpv-${comp.id}">${comp.headPressure.toFixed(1)} PSI</span>
     </div>`;
   }
 
+  html += '<p class="settings-note">Illustrative inputs. Pump head and heat-source, chiller, and reservoir resistance do not currently affect the estimates.</p>';
   popup.innerHTML = html;
   canvas.appendChild(popup);
   activeSettings = popup;
+  const viewportLeft = canvasViewport.scrollLeft;
+  const visibleWidth = Math.min(canvasViewport.clientWidth, canvas.clientWidth);
+  popup.style.width = Math.min(310, visibleWidth - 24) + 'px';
+  popup.style.left = Math.max(viewportLeft + 12, Math.min(comp.x + el.offsetWidth + 12,
+    viewportLeft + visibleWidth - popup.offsetWidth - 12)) + 'px';
+  popup.style.top = Math.max(12, Math.min(comp.y, canvas.clientHeight - popup.offsetHeight - 12)) + 'px';
+  popup.querySelector('input, button').focus({ preventScroll: true });
 
   // Bind slider events
   const rSlider = document.getElementById('r-' + comp.id);
@@ -595,64 +791,107 @@ function openSettings(comp) {
   }
 }
 
-window.closeSettings = function() {
+window.closeSettings = function(restoreFocus = false) {
   if (activeSettings) {
+    const component = document.getElementById(activeSettings.dataset.componentId);
+    component?.classList.remove('is-selected');
     activeSettings.remove();
     activeSettings = null;
+    if (restoreFocus) component?.focus({ preventScroll: true });
   }
 };
 
-document.addEventListener('mousemove', e => {
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSettings(true);
+});
+
+document.addEventListener('pointerdown', e => {
+  if (activeSettings && !e.target.closest('.comp-settings, .placed-component')) closeSettings();
+});
+
+document.addEventListener('pointermove', e => {
   if (!movingComp) return;
   const rect = canvas.getBoundingClientRect();
-  const x = Math.max(0, Math.min(rect.width - 100, e.clientX - rect.left - moveOffset.x));
-  const y = Math.max(0, Math.min(rect.height - 70, e.clientY - rect.top - moveOffset.y));
-  movingComp.x = x;
-  movingComp.y = y;
-  const el = document.getElementById(movingComp.id);
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
+  movingComp.x = e.clientX - rect.left - moveOffset.x;
+  movingComp.y = e.clientY - rect.top - moveOffset.y;
+  positionComponent(movingComp);
   drawConnections();
 });
 
-document.addEventListener('mouseup', () => {
+function endMove() {
   if (movingComp) {
-    document.getElementById(movingComp.id).style.zIndex = 10;
+    const el = document.getElementById(movingComp.id);
+    el.style.zIndex = 10;
+    el.classList.remove('is-moving');
     movingComp = null;
   }
-});
+}
+
+document.addEventListener('pointerup', endMove);
+document.addEventListener('pointercancel', endMove);
 
 window.removeComponent = function(id) {
+  closeSettings();
+  if (movingComp?.id === id) endMove();
   placedComponents = placedComponents.filter(c => c.id !== id);
   document.getElementById(id).remove();
-  if (placedComponents.length === 0) canvasHint.style.display = 'block';
+  updateWorkspace();
   updateSimulation();
-  drawConnections();
+  document.querySelector('.palette-item').focus({ preventScroll: true });
 };
+
+function clearWorkspace() {
+  closeSettings();
+  endMove();
+  placedComponents.forEach(comp => document.getElementById(comp.id).remove());
+  placedComponents = [];
+  updateWorkspace();
+  updateSimulation();
+}
+
+document.getElementById('clearCanvas').addEventListener('click', () => {
+  if (window.confirm('Clear all components from the canvas?')) clearWorkspace();
+});
+
+document.getElementById('loadExample').addEventListener('click', () => {
+  if (placedComponents.length && !window.confirm('Replace your current components with the example loop?')) return;
+  clearWorkspace();
+  canvasViewport.scrollLeft = 0;
+  ['pump', 'heat-source', 'cold-plate', 'chiller'].forEach((type, index) => {
+    addComponent(type, 28 + index * ((canvas.clientWidth - 212) / 3), index % 2 ? 265 : 90);
+  });
+});
+
+new ResizeObserver(() => {
+  closeSettings();
+  placedComponents.forEach(positionComponent);
+  drawConnections();
+}).observe(canvas);
 
 function drawConnections() {
   if (placedComponents.length < 2) { connectionsEl.innerHTML = ''; return; }
 
   // Sort by x position to form a loop
   const sorted = [...placedComponents].sort((a, b) => a.x - b.x);
-  let svg = '';
+  let svg = '<defs><marker id="flowArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9" fill="none" stroke="#59d9e8" stroke-width="1.5"/></marker></defs>';
 
   for (let i = 0; i < sorted.length; i++) {
     const curr = sorted[i];
     const next = sorted[(i + 1) % sorted.length];
-    const x1 = curr.x + 50;
-    const y1 = curr.y + 35;
-    const x2 = next.x + 50;
-    const y2 = next.y + 35;
-
-    // Pipe
-    svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-            stroke="#2a5a8a" stroke-width="4" stroke-linecap="round" opacity="0.5"/>`;
-    // Coolant flow (animated dash)
-    svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-            stroke="#4fc3f7" stroke-width="2" stroke-dasharray="8,6" stroke-linecap="round" opacity="0.8">
-            <animate attributeName="stroke-dashoffset" from="28" to="0" dur="${2 / getFlowRate()}s" repeatCount="indefinite"/>
-            </line>`;
+    const currEl = document.getElementById(curr.id);
+    const nextEl = document.getElementById(next.id);
+    const isReturn = i === sorted.length - 1;
+    const x1 = curr.x + (isReturn ? currEl.offsetWidth / 2 : currEl.offsetWidth);
+    const y1 = curr.y + (isReturn ? currEl.offsetHeight : currEl.offsetHeight / 2);
+    const x2 = next.x + (isReturn ? nextEl.offsetWidth / 2 : 0);
+    const y2 = next.y + (isReturn ? nextEl.offsetHeight : nextEl.offsetHeight / 2);
+    const middle = (x1 + x2) / 2;
+    const returnY = Math.min(canvas.clientHeight - 8, Math.max(y1, y2) + 70);
+    const path = isReturn
+      ? `M${x1},${y1} C${x1},${returnY} ${x2},${returnY} ${x2},${y2}`
+      : `M${x1},${y1} C${middle},${y1} ${middle},${y2} ${x2},${y2}`;
+    svg += `<path d="${path}" fill="none" stroke="#254358" stroke-width="5"/>
+      <path class="flow-line" d="${path}" fill="none" stroke="#59d9e8" stroke-width="1.5" stroke-dasharray="8 6" marker-end="url(#flowArrow)" style="--flow-duration:${2 / getFlowRate()}s"/>`;
   }
 
   connectionsEl.innerHTML = svg;
@@ -725,6 +964,7 @@ function updateSimulation() {
   const dtEl = document.getElementById('deltaT');
   const jEl = document.getElementById('junctionTemp');
   const statusEl = document.getElementById('systemStatus');
+  statusEl.style.color = '';
 
   // No system in place → show no readings instead of phantom numbers
   if (placedComponents.length === 0) {
@@ -766,7 +1006,7 @@ function updateSimulation() {
     statusEl.textContent = '⚠ Warning';
     statusEl.className = 'stat-value warm';
   } else {
-    statusEl.textContent = '✓ OK';
+    statusEl.textContent = 'Below 80 °C';
     statusEl.className = 'stat-value cold';
   }
 
@@ -788,10 +1028,14 @@ function updateSimulation() {
 
     // Show R value under temp
     if (comp.thermalR !== 0 && comp.type !== 'pump') {
-      tempEl.textContent += ` (R=${comp.thermalR.toFixed(3)})`;
+      const resistance = document.createElement('span');
+      resistance.className = 'resistance-display';
+      resistance.textContent = `R ${comp.thermalR.toFixed(3)} °C/W`;
+      tempEl.appendChild(resistance);
     }
   });
 
+  placedComponents.forEach(positionComponent);
   drawConnections();
 }
 
