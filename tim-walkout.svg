@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1030" viewBox="0 0 1080 1030" role="img" aria-labelledby="title description">
+  <title id="title">Robotic cold-plate engagement and TIM walk-out</title>
+  <desc id="description">Two side-view schematics compare a robot applying downward compression and twist after contact with an aligned, normal approach without commanded twist. A plan-view illustration shows an initially centered TIM sheet and one possible displaced position when contact is asymmetric, exposing part of the die footprint. The example is qualitative, not measured, and symmetric rotation alone need not cause directional migration.</desc>
+  <defs>
+    <marker id="load-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#85dde5"/></marker>
+    <marker id="twist-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#f5ae78"/></marker>
+    <pattern id="exposed" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#59372c"/><path d="M-2 2L2-2M0 9L9 0M7 11L11 7" stroke="#f5ae78" stroke-width="1.5"/></pattern>
+    <style>
+      text { font-family: "Segoe UI", Arial, sans-serif; fill: #e7f0f7; }
+      .heading { font-size: 21px; font-weight: 600; }
+      .label { font-size: 17px; }
+      .small { font-size: 15px; fill: #afc6d7; }
+      .muted { fill: #afc6d7; }
+      .warm { fill: #f5ae78; }
+      .cool { fill: #85dde5; }
+    </style>
+  </defs>
+  <rect width="1080" height="1030" rx="18" fill="#0a1724"/>
+  <text x="36" y="48" font-size="14" letter-spacing="2" class="cool">COOLING LAB / INTERFACE MECHANICS</text>
+  <text x="36" y="88" font-size="32" font-weight="600">When robot motion reaches the TIM</text>
+  <text x="36" y="115" class="label muted">Post-contact twist, pressure asymmetry, and possible loss of die coverage</text>
+
+  <rect x="36" y="140" width="488" height="396" rx="12" fill="#112231" stroke="#876043"/>
+  <text x="58" y="176" class="heading warm">1 / MOTION AFTER CONTACT</text>
+  <text x="58" y="202" class="small">Side view; twist acts about the vertical axis.</text>
+  <path d="M98 238H166L234 271" fill="none" stroke="#536f85" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="234" cy="271" r="22" fill="#203c50" stroke="#9bb3c6" stroke-width="2"/>
+  <circle cx="234" cy="271" r="7" fill="#9bb3c6"/>
+  <path d="M234 295V350" stroke="#8ca7bb" stroke-width="14"/>
+  <text x="66" y="267" class="small">Robot wrist</text>
+  <path d="M192 324C157 291 291 291 278 324" fill="none" stroke="#f5ae78" stroke-width="3" marker-end="url(#twist-arrow)"/>
+  <text x="304" y="312" class="label warm">Mz: twist</text>
+  <path d="M445 283V377" stroke="#85dde5" stroke-width="3" marker-end="url(#load-arrow)"/>
+  <text x="402" y="254" class="label cool">Fz</text>
+  <text x="378" y="276" class="small">Compression</text>
+  <rect x="84" y="350" width="300" height="44" rx="5" fill="#1d4c64" stroke="#85dde5"/>
+  <text x="234" y="379" class="label" text-anchor="middle">Cold plate</text>
+  <rect x="164" y="394" width="140" height="12" fill="#b39aec"/>
+  <rect x="164" y="406" width="140" height="34" fill="#704933" stroke="#efb18c"/>
+  <rect x="105" y="440" width="260" height="22" rx="3" fill="#315248"/>
+  <text x="83" y="406" class="label">TIM</text><path d="M120 400H156" stroke="#b39aec"/>
+  <text x="83" y="432" class="label">Die</text><path d="M120 426H156" stroke="#efb18c"/>
+  <text x="234" y="484" class="small" text-anchor="middle">Package / support (simplified)</text>
+  <text x="58" y="514" class="small">Contact transmits shear until deformation or slip.</text>
+
+  <rect x="556" y="140" width="488" height="396" rx="12" fill="#112231" stroke="#427c80"/>
+  <text x="578" y="176" class="heading cool">2 / ALIGN, THEN LOWER</text>
+  <text x="578" y="202" class="small">Complete the swivel before touching the TIM.</text>
+  <path d="M664 238H732L800 271" fill="none" stroke="#536f85" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="800" cy="271" r="22" fill="#203c50" stroke="#9bb3c6" stroke-width="2"/>
+  <circle cx="800" cy="271" r="7" fill="#9bb3c6"/>
+  <path d="M800 295V350" stroke="#8ca7bb" stroke-width="14"/>
+  <path d="M850 302V337" stroke="#85dde5" stroke-width="3" marker-end="url(#load-arrow)"/>
+  <text x="878" y="322" class="small">Normal approach</text>
+  <path d="M1007 283V377" stroke="#85dde5" stroke-width="3" marker-end="url(#load-arrow)"/>
+  <text x="964" y="254" class="label cool">Fz</text>
+  <text x="940" y="276" class="small">Compression</text>
+  <rect x="650" y="350" width="300" height="44" rx="5" fill="#1d4c64" stroke="#85dde5"/>
+  <text x="800" y="379" class="label" text-anchor="middle">Cold plate</text>
+  <rect x="730" y="394" width="140" height="12" fill="#b39aec"/>
+  <rect x="730" y="406" width="140" height="34" fill="#704933" stroke="#efb18c"/>
+  <rect x="671" y="440" width="260" height="22" rx="3" fill="#315248"/>
+  <text x="599" y="406" class="label">TIM</text><path d="M637 400H722" stroke="#b39aec"/>
+  <text x="599" y="432" class="label">Die</text><path d="M637 426H722" stroke="#efb18c"/>
+  <text x="800" y="484" class="small" text-anchor="middle">Package / support (simplified)</text>
+  <text x="578" y="514" class="small">Avoid commanded twist or lateral correction under load.</text>
+
+  <rect x="36" y="560" width="1008" height="362" rx="12" fill="#112231" stroke="#365064"/>
+  <text x="58" y="598" class="heading">3 / POSSIBLE RESULT WITH ASYMMETRIC CONTACT</text>
+  <text x="58" y="625" class="small">Plan view of a sheet TIM; cold plate omitted to reveal coverage.</text>
+  <text x="188" y="659" class="label" text-anchor="middle">Initially centered</text>
+  <rect x="92" y="686" width="192" height="144" fill="#704933" stroke="#efb18c" stroke-width="2"/>
+  <rect x="92" y="686" width="192" height="144" fill="#b39aec" fill-opacity="0.85" stroke="#d9c9ff"/>
+  <text x="188" y="752" class="label" text-anchor="middle">TIM over</text>
+  <text x="188" y="778" class="label" text-anchor="middle">die footprint</text>
+  <path d="M307 757H386" stroke="#afc6d7" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#load-arrow)"/>
+  <text x="496" y="659" class="label" text-anchor="middle">One possible shifted state</text>
+  <rect x="414" y="686" width="192" height="144" fill="#704933" stroke="#efb18c" stroke-width="2"/>
+  <rect x="414" y="686" width="36" height="144" fill="url(#exposed)"/>
+  <rect x="450" y="686" width="192" height="144" fill="#b39aec" fill-opacity="0.85" stroke="#d9c9ff"/>
+  <rect x="414" y="686" width="192" height="144" fill="none" stroke="#efb18c" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M490 717H580" stroke="#f5ae78" stroke-width="3" marker-end="url(#twist-arrow)"/>
+  <text x="546" y="777" class="label" text-anchor="middle">Shifted TIM</text>
+  <path d="M430 833V851H403" fill="none" stroke="#efb18c"/>
+  <text x="304" y="875" class="small warm">Uncovered die area</text>
+  <path d="M626 833V851H654" fill="none" stroke="#b39aec"/>
+  <text x="582" y="896" class="small">TIM overhang</text>
+  <text x="713" y="697" class="label cool">Look for the bias:</text>
+  <text x="713" y="727" class="label muted">Uneven contact pressure</text>
+  <text x="713" y="755" class="label muted">Lateral motion or tilt</text>
+  <text x="713" y="783" class="label muted">Unequal adhesion / friction</text>
+  <text x="713" y="831" class="small">A sheet can shift, rotate, or tear.</text>
+  <text x="713" y="855" class="small">Grease may smear or deplete instead.</text>
+
+  <text x="36" y="956" class="label warm">Centered, symmetric rotation does not by itself imply directional walk-out.</text>
+  <text x="36" y="982" class="small">Illustrative mechanism, not measured data. Displacement and layer thickness are exaggerated.</text>
+  <text x="36" y="1008" class="small">Respect package load limits; inspect the release path as well as the approach.</text>
+</svg>

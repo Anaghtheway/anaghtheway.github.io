@@ -27,6 +27,8 @@
     .tim-guide figure, .tim-guide .figure { margin-inline: 0; }
     .tim-guide figcaption { font-size: 0.8rem; color: #b5c8d7; }
     .tim-guide img { max-width: 100%; height: auto; }
+    .tim-guide .walkout-diagram img { display: block; width: 100%; border-radius: 10px; }
+    .walkout-diagram figcaption { margin-top: 12px; line-height: 1.6; }
     .tim-contents, .tim-note { padding: 20px 24px; background: #102130; border: 1px solid #365064; border-radius: 10px; margin: 24px 0; }
     .tim-contents ul { columns: 2; padding-left: 20px; margin-bottom: 0; }
     .tim-contents li { break-inside: avoid; }
@@ -183,6 +185,12 @@
 
   <h2 id="robotic-engagement">Case study: robotic cold-plate engagement and TIM &ldquo;walk-out&rdquo;</h2>
   <p><strong>Illustrative scenario, not a report of measured test results:</strong> a robotic arm swivels a cold plate into position and presses it onto a die/TIM stack. If rotation or lateral motion continues <em>after first contact</em>, the interface sees shear as well as compression. A plausible failure mode is assembly-induced TIM migration, informally described here as &ldquo;walk-out.&rdquo;</p>
+  <figure class="walkout-diagram" id="walkout-diagram">
+    <a href="tim-walkout.svg" aria-label="Open full-size diagram of robotic cold-plate engagement and TIM walk-out">
+      <img src="tim-walkout.svg" width="1080" height="1030" loading="lazy" alt="Robot compression and post-contact twist compared with an aligned normal approach. A plan view shows possible sheet TIM displacement under asymmetric contact, leaving part of the die uncovered.">
+    </a>
+    <figcaption>Fz is the normal compressive load; Mz is the twisting moment about the surface normal. The shifted sheet is one possible outcome, not a prediction. <a href="tim-walkout.svg">Open full-size diagram</a> &middot; <a href="tim-walkout.svg" download>Download SVG</a></figcaption>
+  </figure>
   <h3>What motion reaches the interface?</h3>
   <ul>
     <li><strong>Twist about the surface normal:</strong> relative plate rotation imposes tangential surface motion that grows with distance from the rotation axis. Friction or adhesion can transmit that motion into the TIM until it deforms or slips.</li>

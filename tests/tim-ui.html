@@ -45,6 +45,9 @@
       assert(text.includes('Illustrative scenario, not a report of measured test results'), prefix + 'case study is not presented as measured evidence');
       assert(text.includes('not a prediction of TIM migration distance'), prefix + 'surface travel is distinguished from TIM migration');
       assert(text.includes('Rotation alone does not establish directional walk-out'), prefix + 'symmetry limitation is explicit');
+      const diagram = doc.querySelector('#walkout-diagram img');
+      assert(diagram?.getAttribute('src') === 'tim-walkout.svg' && diagram.alt.includes('asymmetric contact'), prefix + 'original walk-out schematic included with descriptive alternative text');
+      assert(doc.querySelector('#walkout-diagram a[download]')?.getAttribute('href') === 'tim-walkout.svg', prefix + 'reusable SVG download linked');
       const radius = Number.parseFloat(doc.getElementById('walkout-radius').textContent);
       const angle = Number.parseFloat(doc.getElementById('walkout-angle').textContent);
       const travel = Number.parseFloat(doc.getElementById('walkout-travel').textContent);
