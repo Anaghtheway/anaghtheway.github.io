@@ -4,73 +4,209 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thermal Interface Materials (TIM) – Cooling Lab by Anagh Dave</title>
-  <meta name="description" content="Thermal interface materials explained — pastes, pads, phase-change and liquid metal interfaces, by thermal engineer Anagh Dave.">
+  <meta name="description" content="Thermal interface material tradeoffs: grease pump-out and dry-out, liquid-metal compatibility, graphene and graphite anisotropy, contact resistance, and reliability testing.">
   <link rel="canonical" href="https://anaghtheway.github.io/tim.html">
   <link rel="icon" href="anagh.jpg" type="image/jpeg">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Thermal Interface Materials (TIM) – Cooling Lab">
-  <meta property="og:description" content="Thermal interface materials explained — pastes, pads, phase-change and liquid metal interfaces, by thermal engineer Anagh Dave.">
+  <meta property="og:description" content="Explore the failure modes and selection tradeoffs of grease, liquid metal, graphene, graphite, pads, and phase-change thermal interfaces.">
   <meta property="og:url" content="https://anaghtheway.github.io/tim.html">
   <meta property="og:image" content="https://anaghtheway.github.io/anagh.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Thermal Interface Materials (TIM) – Cooling Lab">
-  <meta name="twitter:description" content="Thermal interface materials explained — pastes, pads, phase-change and liquid metal interfaces, by thermal engineer Anagh Dave.">
+  <meta name="twitter:description" content="Explore the failure modes and selection tradeoffs of grease, liquid metal, graphene, graphite, pads, and phase-change thermal interfaces.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .tim-guide { line-height: 1.75; }
+    .tim-guide h1, .tim-guide h2, .tim-guide h3 { line-height: 1.3; }
+    .tim-guide h2 { margin-top: 44px; scroll-margin-top: 24px; }
+    .tim-guide li { margin-bottom: 10px; }
+    .tim-guide a { text-underline-offset: 4px; overflow-wrap: anywhere; }
+    .tim-guide a:focus-visible, .tim-guide [tabindex]:focus-visible { outline: 2px solid #83e6eb; outline-offset: 4px; }
+    .tim-guide figure, .tim-guide .figure { margin-inline: 0; }
+    .tim-guide figcaption { font-size: 0.8rem; color: #b5c8d7; }
+    .tim-guide img { max-width: 100%; height: auto; }
+    .tim-contents, .tim-note { padding: 20px 24px; background: #102130; border: 1px solid #365064; border-radius: 10px; margin: 24px 0; }
+    .tim-contents ul { columns: 2; padding-left: 20px; margin-bottom: 0; }
+    .tim-contents li { break-inside: avoid; }
+    .tim-note { border-left: 3px solid #71d8df; }
+    .tim-note p:first-child { margin-top: 0; }
+    .tim-note p:last-child { margin-bottom: 0; }
+    .tim-caution { border-left-color: #e5b277; }
+    .tim-equation { color: #9de5e8; font-family: Consolas, monospace; overflow-wrap: anywhere; }
+    .tim-table-scroll { overflow-x: auto; border: 1px solid #365064; border-radius: 8px; margin: 24px 0; }
+    .tim-guide table { width: 100%; min-width: 680px; border-collapse: collapse; background: #102130; font-size: 0.85rem; }
+    .tim-guide caption { text-align: left; padding: 16px; color: #bed2e1; }
+    .tim-guide th, .tim-guide td { text-align: left; vertical-align: top; padding: 14px; border-top: 1px solid #365064; }
+    .tim-guide th { color: #8fdee7; }
+    .tim-related { display: flex; flex-wrap: wrap; gap: 12px 24px; border-top: 1px solid #365064; padding-top: 24px; margin-top: 36px; }
+    @media (max-width: 600px) {
+      .tim-guide { padding: 28px 18px; }
+      .tim-contents ul { columns: 1; }
+      .tim-contents, .tim-note { padding: 18px; }
+    }
+  </style>
 </head>
 
 <body>
-<article>
+<main>
+<article class="tim-guide">
 
+  <a href="index.html#cooling-lab">Cooling Lab / Technical notes</a>
   <h1>Thermal Interface Materials (TIM)</h1>
   <figure class="article-hero-figure">
-    <img class="article-hero" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/W%C3%A4rmeleitpaste_Thermal_Compound.jpg" alt="Syringe of thermal paste (heatsink compound)">
-    <figcaption>Thermal compound / grease — a silicone and metal-oxide paste used to fill microscopic air gaps. Photo by <a href="https://de.wikipedia.org/wiki/Benutzer:Darkone" target="_blank" rel="noopener">Darkone</a>, <a href="https://creativecommons.org/licenses/by-sa/2.5" target="_blank" rel="noopener">CC BY-SA 2.5</a>, via Wikimedia Commons.</figcaption>
+    <img class="article-hero" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/W%C3%A4rmeleitpaste_Thermal_Compound.jpg" alt="Syringe of thermal paste (heatsink compound)">
+    <figcaption>Thermal compound / grease fills microscopic air gaps between mating surfaces. Photo by <a href="https://de.wikipedia.org/wiki/Benutzer:Darkone" target="_blank" rel="noopener">Darkone</a>, <a href="https://creativecommons.org/licenses/by-sa/2.5" target="_blank" rel="noopener">CC BY-SA 2.5</a>, via Wikimedia Commons.</figcaption>
   </figure>
 
   <p>
     Thermal Interface Materials bridge the microscopic air gaps between a heat source and its cooling solution.
     Without a good TIM, even the best cold plate can't do its job — air gaps create massive thermal resistance.
   </p>
+  <p>The useful question is not simply &ldquo;Which TIM has the highest conductivity?&rdquo; It is <strong>&ldquo;Which interface stays low-resistance, mechanically compatible, and electrically appropriate over this assembly's life?&rdquo;</strong> A material that looks excellent on day one may behave differently after power cycling, storage, vibration, or rework.</p>
+  <nav class="tim-contents" aria-label="On this page">
+    <strong>Material choices, failure modes, and qualification</strong>
+    <ul>
+      <li><a href="#types">TIM families</a></li>
+      <li><a href="#interface-resistance">What controls resistance</a></li>
+      <li><a href="#tradeoffs">At-a-glance comparison</a></li>
+      <li><a href="#grease">Grease: pump-out and dry-out</a></li>
+      <li><a href="#liquid-metal">Liquid metal: compatibility and containment</a></li>
+      <li><a href="#graphene">Graphene and graphite: form and direction</a></li>
+      <li><a href="#other-materials">Pads, phase-change materials, and indium</a></li>
+      <li><a href="#qualification">A practical qualification plan</a></li>
+      <li><a href="#references">References</a></li>
+    </ul>
+  </nav>
 
-  <h2>Types of TIMs</h2>
+  <h2 id="types">Types of TIMs</h2>
 
   <div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Waermeleitpad02.jpg" alt="Thermal pad inside a CD-ROM drive">
+    <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Waermeleitpad02.jpg" alt="Thermal pad inside a CD-ROM drive">
     <figcaption>A thermal pad, about 2 mm thick, conducting heat from an integrated circuit to its heatsink. Photo by <a href="https://de.wikipedia.org/wiki/User:Smial" target="_blank" rel="noopener">Smial</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/de/deed.en" target="_blank" rel="noopener">CC BY-SA 2.0 DE</a>, via Wikimedia Commons.</figcaption>
   </div>
 
   <ul>
-    <li><strong>Thermal Paste (Grease)</strong> – Most common. Silicone or metal-oxide based compounds. Typical conductivity: 1–12 W/m·K.</li>
-    <li><strong>Thermal Pads</strong> – Pre-cut solid pads for gap filling. Easy to apply, lower performance than paste.</li>
-    <li><strong>Phase-Change Materials</strong> – Solid at room temp, soften at operating temp to fill gaps. Good long-term reliability.</li>
-    <li><strong>Liquid Metal</strong> – Gallium-based alloys. Extremely high conductivity (20–70 W/m·K) but electrically conductive — risky near components.</li>
-    <li><strong>Indium Foil</strong> – Soft metal that conforms under clamping pressure. Used in high-reliability applications.</li>
+    <li><strong>Thermal grease:</strong> thermally conductive particles dispersed in a silicone or non-silicone carrier. Designed to wet surfaces and fill small gaps; formulation controls flow, stability, and electrical properties.</li>
+    <li><strong>Gap pads:</strong> compliant, filled sheets that accommodate specified gaps and tolerances. Their thickness and compression behavior must match the assembly.</li>
+    <li><strong>Phase-change TIMs:</strong> materials that soften or transition over a specified temperature range to improve wetting. Transition temperature, conditioning, and cycling performance are product-specific.</li>
+    <li><strong>Liquid metal:</strong> low-melting alloys, often gallium-based, that can form thin interfaces. Electrical conductivity, surface compatibility, and containment are central design constraints.</li>
+    <li><strong>Graphene / graphite-based TIMs:</strong> a broad set of sheets, aligned structures, and filled compounds. The name alone does not specify heat-flow direction, compliance, or electrical insulation.</li>
+    <li><strong>Indium foil:</strong> a soft, electrically conductive metal interface that conforms under load. Surface condition, pressure, and mechanical creep still require attention.</li>
   </ul>
 
-  <h2>Key Properties</h2>
+  <h2 id="interface-resistance">What actually controls interface resistance?</h2>
+  <p>For a simplified uniform interface with one-dimensional heat flow:</p>
+  <p class="tim-equation">R<sub>interface</sub> = R<sub>contact,1</sub> + t/(k<sub>&perp;</sub>A) + R<sub>contact,2</sub></p>
+  <p>Here, <em>t</em> is the installed bond-line thickness (BLT), <em>A</em> is contact area, and k<sub>&perp;</sub> is the conductivity through the layer. All resistance terms in this expression are in K/W. Contact resistances represent the two mating surfaces; they can dominate even when the TIM's bulk conductivity is high.</p>
   <ul>
-    <li>Thermal conductivity (W/m·K)</li>
-    <li>Bond-line thickness (BLT)</li>
-    <li>Pump-out and dry-out resistance over time</li>
-    <li>Electrical conductivity (important for liquid metals)</li>
-    <li>Application pressure and clamping force</li>
+    <li><strong>Thickness and coverage:</strong> too thick a layer adds bulk resistance; too little material or incomplete contact can leave gaps. &ldquo;Thinner&rdquo; is only better if the surfaces remain adequately covered.</li>
+    <li><strong>Pressure and compliance:</strong> pressure helps many interfaces conform, but allowable package load, board deflection, and material compression limits constrain it.</li>
+    <li><strong>Surface condition:</strong> flatness, roughness, cleanliness, coatings, and wetting behavior affect real contact area.</li>
+    <li><strong>Measurement conditions:</strong> compare interface resistance or area-normalized impedance at relevant pressure, temperature, BLT, and surface finish. Do not compare an in-plane conductivity headline with a through-plane interface measurement.</li>
   </ul>
+  <aside class="tim-note"><p><strong>Do not mix units.</strong> Thermal conductivity in W/(m&middot;K), thermal resistance in K/W, and area-normalized thermal impedance in K&middot;cm&sup2;/W are different quantities. A conductivity number alone is not an assembled-interface performance rating.</p></aside>
 
   <h2>TIM in the Thermal Stack</h2>
 
   <div class="figure">
-    <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/IBM_Gekko_Die_Exposed.jpg/1280px-IBM_Gekko_Die_Exposed.jpg" alt="Exposed silicon die of a CPU">
-    <figcaption>An exposed silicon die — in a packaged chip, TIM1 sits between this die and the integrated heat spreader. Photo by ClickClick5, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons.</figcaption>
+    <img loading="lazy" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/IBM_Gekko_Die_Exposed.jpg/1280px-IBM_Gekko_Die_Exposed.jpg" alt="Exposed silicon die of a CPU">
+    <figcaption>An exposed silicon die. In a lidded package that uses a die-to-lid interface material, that layer is often called TIM1. Photo by ClickClick5, <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a>, via Wikimedia Commons.</figcaption>
   </div>
 
   <p>
-    TIM sits between the chip's integrated heat spreader (IHS) and the cold plate or heat sink.
-    In some designs, there are two TIM layers — TIM1 between the die and IHS, and TIM2 between the IHS and cooler.
+    In a lidded package, TIM2 commonly sits between the integrated heat spreader (IHS) and the cold plate or heat sink,
+    while TIM1 connects the die and IHS. Direct-die cooling and exposed-pad packages use different stacks.
+    Identify the actual interface before choosing a material; see the <a href="smt.html#heat-paths">package heat-path guide</a>.
   </p>
 
-  <a href="index.html">⬅ Back to Home</a>
+  <h2 id="tradeoffs">At-a-glance tradeoffs</h2>
+  <div class="tim-table-scroll" role="region" tabindex="0" aria-label="TIM failure-mode comparison, horizontally scrollable">
+    <table>
+      <caption>Selection questions, not a universal performance ranking</caption>
+      <thead><tr><th scope="col">Material</th><th scope="col">Potential benefit</th><th scope="col">Failure modes / limitations</th><th scope="col">What to verify</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Grease</th><td>Thin, conformable contact on well-mated surfaces</td><td>Pump-out, carrier bleed or loss, drying/hardening, inconsistent dispense</td><td>Coverage and resistance after representative cycling and hot storage</td></tr>
+        <tr><th scope="row">Liquid metal</th><td>Low resistance in a compatible, well-wetted interface</td><td>Electrical shorts, migration, oxidation/wetting issues, reactions with mating metals</td><td>Approved surface finishes, containment, aging, and rework controls</td></tr>
+        <tr><th scope="row">Graphene / graphite sheet</th><td>Controlled thickness; binder-free sheets avoid grease-carrier dry-out</td><td>Directional conductivity, contact resistance, tearing, displacement, conductive debris</td><td>Through-plane performance, pressure, handling, and electrical clearance</td></tr>
+        <tr><th scope="row">Graphene-filled compound</th><td>Engineered filler network in a conformable matrix</td><td>Agglomeration, high viscosity, poor wetting; matrix-dependent aging</td><td>Dispersion, installed BLT, electrical behavior, and complete-interface resistance</td></tr>
+        <tr><th scope="row">Gap pad</th><td>Accommodates designed gaps and height tolerances</td><td>Thickness penalty, compression set, insufficient contact or excessive reaction force</td><td>Compressed thickness, force-deflection data, and long-term contact</td></tr>
+        <tr><th scope="row">Phase-change TIM</th><td>Improved wetting after the specified transition/conditioning</td><td>Incomplete activation, material movement, handling damage, product-specific aging</td><td>Cold-start behavior, transition range, conditioning, and cycling data</td></tr>
+        <tr><th scope="row">Indium foil</th><td>Metallic conduction and plastic conformity under load</td><td>Oxide/contact resistance, creep or extrusion, load relaxation, electrical conduction</td><td>Surface preparation, contact pressure, retention, and reusability limits</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="grease">Grease: pump-out is not the same as dry-out</h2>
+  <p><strong>Pump-out</strong> is material displacement from the active interface. Expansion mismatch and warpage can repeatedly change the gap during power or temperature cycling, redistributing grease toward the edges. The result can be a depleted region and increasing thermal resistance, even though plenty of material remains around the perimeter.</p>
+  <p><strong>Dry-out and carrier separation</strong> concern changes in the formulation: carrier migration or loss, separation from filler, and hardening can impair wetting and conformity. These processes may accompany pump-out but are not identical. Their severity depends on the chemistry, temperature, exposure time, and assembly.</p>
+  <ul>
+    <li><strong>Watch for:</strong> a progressive increase in interface temperature drop under the same heat load and boundary conditions. A contact imprint can reveal depleted regions, but disassembly itself can disturb the evidence.</li>
+    <li><strong>Control:</strong> dispense amount, coverage, BLT, surface preparation, flatness, and repeatable mounting load. More grease is not automatically a remedy.</li>
+    <li><strong>Qualify:</strong> thermal/power cycling and high-temperature storage separately, then inspect both thermal performance and physical changes. Supplier reliability data are a starting point, not proof for every assembly. <a href="#ref-phase-change">[4]</a></li>
+  </ul>
+
+  <h2 id="liquid-metal">Liquid metal: the surfaces and containment matter</h2>
+  <p>Gallium-based liquid metals can provide effective contact in an appropriate design, but they are not a drop-in substitute for grease.</p>
+  <aside class="tim-note tim-caution"><p><strong>Material compatibility:</strong> do not apply gallium-based liquid-metal TIM to bare aluminum. Gallium can attack aluminum and compromise the part. Follow the supplier's approved substrate and coating requirements; Thermal Grizzly explicitly prohibits aluminum coolers for Conductonaut and recommends nickel-plated surfaces for long-term stability. <a href="#ref-liquid-metal">[1]</a></p></aside>
+  <ul>
+    <li><strong>Electrical risk:</strong> a conductive droplet or migrated film can bridge exposed contacts. Keep-outs, containment features, orientation, and transport/vibration exposure belong in the design review.</li>
+    <li><strong>Surface evolution:</strong> wetting, oxide films, and reactions or diffusion with mating metals can change the interface over time. Bare copper and nickel-plated copper are not interchangeable aging conditions, and a coating is only useful if its coverage and integrity are adequate.</li>
+    <li><strong>Assembly and rework:</strong> dispensing, wetting consistency, excess-material control, and removal need a defined process. Small quantities outside the intended interface can be difficult to locate.</li>
+    <li><strong>Qualification:</strong> assess thermal performance, substrate/coating condition, leakage or migration, and electrical integrity after representative aging and mechanical exposure. Use the product's temperature-range and handling limits.</li>
+  </ul>
+  <p>High conductivity does not remove either contact resistance or the need to qualify the complete assembly.</p>
+
+  <h2 id="graphene">Graphene and graphite: first identify the material form</h2>
+  <p>&ldquo;Graphene TIM&rdquo; can describe very different constructions. Graphene-filled grease, a graphite heat-spreading sheet, and a vertically oriented carbon interface do not have the same conduction paths or failure mechanisms.</p>
+  <h3>Sheets: distinguish in-plane and through-plane heat flow</h3>
+  <p>Many graphite sheets spread heat effectively along the sheet, while conducting less effectively across its thickness. A high <strong>in-plane</strong> conductivity must not be inserted into the through-plane resistance equation. Panasonic's PGS documentation illustrates why direction and product thickness are part of the specification. <a href="#ref-graphite">[3]</a></p>
+  <p>That does <strong>not</strong> mean every graphene-based interface has poor through-plane performance. Some products deliberately orient the conductive structure through the thickness. Verify the actual architecture and data instead of generalizing from conventional graphite; KryoSheet is one supplier example of a Z-direction-oriented interface. <a href="#ref-carbon-sheet">[2]</a></p>
+  <ul>
+    <li><strong>Contact and compliance:</strong> a dry sheet may not conform to roughness or warpage as readily as a wetting compound. Insufficient or uneven pressure can make surface contact, rather than bulk conduction, the dominant limitation.</li>
+    <li><strong>Handling:</strong> thin sheets can crease, tear, shift during cooler installation, or shed fragments. Do not assume a sheet is reusable after removal; follow the specific product guidance.</li>
+    <li><strong>Electrical behavior:</strong> graphite and graphene-based sheets can be electrically conductive. KryoSheet explicitly carries an electrical-conductivity warning. They are not inherently insulating substitutes for liquid metal; check the exact product, edges, and any insulating laminate. <a href="#ref-carbon-sheet">[2]</a></li>
+    <li><strong>Added layers:</strong> adhesives or dielectric films can improve retention or isolation but also add thermal resistance. Characterize the supplied stack, not just the carbon layer.</li>
+  </ul>
+  <h3>Filled compounds: the matrix still matters</h3>
+  <p>Graphene's intrinsic conductivity is not the conductivity of a finished paste or polymer composite. Filler concentration, dispersion, orientation, filler-to-matrix interfaces, and agglomeration affect the result. Increasing filler loading can also raise viscosity or stiffness, impairing wetting or increasing the achievable BLT. There is no universal optimum loading. <a href="#ref-graphene-review">[5]</a></p>
+  <p>A graphene-filled grease can still experience matrix-related pump-out, separation, or aging. A binder-free sheet avoids those grease-specific carrier mechanisms, but not contact loss, mechanical damage, or electrical risk. Measure the <strong>complete interface</strong> before and after aging.</p>
+
+  <h2 id="other-materials">Pads, phase-change TIMs, and indium have tradeoffs too</h2>
+  <ul>
+    <li><strong>Gap pads:</strong> select from the required installed gap and the supplier's compression/force data. A thicker or harder pad can increase resistance or load the board, while inadequate compression leaves poor contact. Compression set and stress relaxation can change contact over time. A thin grease layer is not a valid replacement for a pad bridging a designed gap.</li>
+    <li><strong>Phase-change TIMs:</strong> verify that the interface reaches the specified transition range under the intended conditioning process. Initial and post-conditioning performance may differ. Products may resist grease-like pump-out and dry-out, but long-term stability and material movement remain formulation- and assembly-dependent; no material family is universally immune. <a href="#ref-phase-change">[4]</a></li>
+    <li><strong>Indium foil:</strong> conformity depends on surface condition and applied load. Oxide films can affect contact, and time-dependent deformation can alter pressure or cause extrusion. Check electrical isolation, substrate compatibility, and the manufacturer's rework guidance.</li>
+  </ul>
+
+  <h2 id="qualification">A practical qualification plan</h2>
+  <ol>
+    <li><strong>Define the interface.</strong> Record contact area, actual gap range, surfaces/coatings, flatness, mounting-load limits, electrical isolation requirements, and operating environment.</li>
+    <li><strong>Measure a repeatable baseline.</strong> Record BLT, pressure, temperature, and relevant heat flow. Control fixture losses and sensor locations; total heater power is not necessarily equal to heat passing through the TIM.</li>
+    <li><strong>Separate mechanisms.</strong> Use relevant power cycling, environmental temperature cycling, hot storage, and mechanical exposure. Add humidity testing where appropriate. These stresses answer different questions and should reflect the product's mission profile.</li>
+    <li><strong>Track changes, not just endpoint temperature.</strong> Compare interface resistance under matched conditions. A hotter device could also reflect a fan, flow, power, or mounting change. Track coolant/ambient conditions and measurement uncertainty.</li>
+    <li><strong>Inspect physical evidence.</strong> Look for depletion, bleed, tears, migration, coating damage, loss of contact, and electrical contamination. Correlate observations with the thermal measurements.</li>
+    <li><strong>Include variation and rework.</strong> Test multiple assemblies, representative tolerances, orientation, and permitted reassembly cycles. Define acceptance criteria from the thermal budget, electrical constraints, and mechanical limits before testing.</li>
+  </ol>
+  <aside class="tim-note"><p><strong>Selection principle:</strong> prefer demonstrated low interface resistance at the intended pressure, temperature, thickness, and aging condition over the largest advertised conductivity number. Accelerated testing does not, by itself, establish a service-life prediction without a justified acceleration model.</p></aside>
+
+  <h2 id="references">References and product-specific examples</h2>
+  <p>Supplier documents below describe particular products, not guarantees for entire material families. Use the current technical data, compatibility guidance, and safety information for the exact material selected.</p>
+  <ol>
+    <li id="ref-liquid-metal"><a href="https://www.thermal-grizzly.com/en/Conductonaut/S-TG-C-001-R">Thermal Grizzly: Conductonaut material properties and aluminum restriction</a>.</li>
+    <li id="ref-carbon-sheet"><a href="https://www.thermal-grizzly.com/media/ea/2a/b3/1708697553/TG_Datasheet_Kryosheet_EN_TGU20231106.pdf">Thermal Grizzly: KryoSheet datasheet (PDF)</a> &mdash; orientation and electrical-conductivity warning.</li>
+    <li id="ref-graphite"><a href="https://industrial.panasonic.com/cdbs/www-data/pdf/AYA0000/AYA0000C27.pdf">Panasonic: PGS graphite sheet documentation (PDF)</a> &mdash; directional heat-spreading properties and product construction.</li>
+    <li id="ref-phase-change"><a href="https://prod-edam.honeywell.com/content/dam/honeywell-edam/pmt/oneam/en-us/electronic-materials/thermal-interface-materials/documents/pmt-am-brochure-tims-2608-english-final-9-6-2022.pdf">Honeywell: Thermal Interface Materials electronics brochure (PDF)</a> &mdash; supplier data for phase-change TIMs and other formulations.</li>
+    <li id="ref-graphene-review"><a href="https://arxiv.org/abs/2008.10752">Review of Graphene-based Thermal Polymer Nanocomposites: Current State of the Art and Future Prospects (arXiv)</a> &mdash; composite material structure and thermal transport.</li>
+  </ol>
+  <nav class="tim-related" aria-label="Related Cooling Lab pages">
+    <a href="index.html#cooling-lab">Back to Cooling Lab</a>
+    <a href="smt.html">Electronic packaging &amp; SMT</a>
+    <a href="cold-plates.html">Cold plates &amp; cooling devices</a>
+  </nav>
 
 </article>
+</main>
 </body>
 </html>

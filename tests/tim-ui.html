@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TIM guide checks</title>
+  <style>
+    body { background: #08131e; color: #edf3f8; font: 14px monospace; }
+    iframe { display: block; border: 0; height: 2200px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <details><summary id="summary">Running...</summary><pre id="results"></pre></details>
+  <script>
+    const messages = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    async function check(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px TIM guide';
+      const loaded = new Promise(resolve => { frame.onload = resolve; });
+      frame.src = '../tim.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const prefix = width + 'px: ';
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no page-level horizontal overflow');
+      assert(doc.querySelectorAll('h1').length === 1, prefix + 'one article heading');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'contents and citation anchors resolve');
+      assert(new Set([...doc.querySelectorAll('[id]')].map(el => el.id)).size === doc.querySelectorAll('[id]').length, prefix + 'unique IDs');
+      for (const id of ['types', 'interface-resistance', 'tradeoffs', 'grease', 'liquid-metal', 'graphene', 'other-materials', 'qualification', 'references']) {
+        assert(doc.getElementById(id)?.tagName === 'H2', prefix + id + ' section present');
+      }
+      assert(doc.querySelectorAll('tbody th[scope="row"]').length === 7 && doc.querySelectorAll('thead th[scope="col"]').length === 4, prefix + 'seven material forms compared with accessible table headers');
+      const table = doc.querySelector('.tim-table-scroll');
+      assert(table.tabIndex === 0, prefix + 'comparison keyboard scrollable');
+      if (width < 680) assert(table.scrollWidth > table.clientWidth, prefix + 'mobile comparison retains readable width');
+      const text = doc.body.textContent;
+      assert(text.includes('Pump-out') && text.includes('Dry-out and carrier separation'), prefix + 'distinct grease failure mechanisms explained');
+      assert(text.includes('do not apply gallium-based liquid-metal TIM to bare aluminum'), prefix + 'aluminum compatibility warning present');
+      assert(text.includes('KryoSheet explicitly carries an electrical-conductivity warning'), prefix + 'carbon sheet electrical risk explicit');
+      assert(text.includes('Graphene-filled grease') && text.includes('through-plane') && text.includes('in-plane'), prefix + 'carbon formulations and heat-flow directions distinguished');
+      assert(doc.querySelectorAll('.tim-guide > ol:last-of-type > li[id^="ref-"]').length === 5, prefix + 'five source references present');
+      assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'image alternative text retained');
+      assert(doc.querySelectorAll('a[href^="https://creativecommons.org/licenses/"]').length === 3, prefix + 'all existing image license attributions retained');
+      for (const href of ['index.html#cooling-lab', 'smt.html', 'cold-plates.html']) {
+        assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' linked');
+      }
+      doc.querySelector('.tim-contents a[href="#tradeoffs"]').click();
+      assert(frame.contentWindow.location.hash === '#tradeoffs', prefix + 'contents link navigates to comparison');
+    }
+    (async () => {
+      try {
+        await check(1280);
+        await check(390);
+        await check(320);
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        messages.push('FAIL ' + error.message);
+        document.getElementById('summary').textContent = error.message;
+        document.querySelector('details').open = true;
+      }
+      document.getElementById('results').textContent = messages.join('\n');
+    })();
+  </script>
+</body>
+</html>
