@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cold-plate guide checks</title>
+  <style>
+    body { background: #08131e; color: #edf3f8; font: 14px monospace; }
+    iframe { display: block; border: 0; height: 2200px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <details><summary id="summary">Running...</summary><pre id="results"></pre></details>
+  <script>
+    const messages = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    async function check(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px cold-plate guide';
+      const loaded = new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error('Article load timed out')), 5000);
+        frame.onload = () => { clearTimeout(timeout); resolve(); };
+      });
+      frame.src = '../cold-plates.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const prefix = width + 'px: ';
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no page-level horizontal overflow');
+      assert(doc.querySelectorAll('h1').length === 1, prefix + 'one article heading');
+      assert(doc.querySelectorAll('h2[id]').length === 10, prefix + 'all ten technical sections present');
+      assert(doc.querySelectorAll('.cp-contents a').length === 10, prefix + 'contents covers ten sections');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'all fragment links resolve');
+      assert(new Set([...doc.querySelectorAll('[id]')].map(el => el.id)).size === doc.querySelectorAll('[id]').length, prefix + 'unique IDs');
+      assert([...doc.querySelectorAll('link[rel="stylesheet"]')].some(link => link.getAttribute('href') === 'cold-plates.css' && link.sheet), prefix + 'article stylesheet loaded');
+      const svg = doc.querySelector('svg[role="img"]');
+      assert(svg && svg.querySelector('title') && svg.querySelector('desc'), prefix + 'diagram has title and description');
+      assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)), prefix + 'diagram accessible-name references resolve');
+      assert(!new DOMParser().parseFromString(svg.outerHTML, 'image/svg+xml').querySelector('parsererror'), prefix + 'diagram is valid SVG XML');
+      for (const text of svg.querySelectorAll('text')) {
+        const bounds = text.getBBox();
+        assert(bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= 900 && bounds.y + bounds.height <= 490, prefix + 'diagram label fits: ' + text.textContent);
+      }
+      const regions = [...doc.querySelectorAll('.cp-table-scroll, .cp-diagram-scroll')];
+      assert(regions.length === 3, prefix + 'diagram and two comparison tables present');
+      for (const region of regions) {
+        assert(region.tabIndex === 0 && region.getAttribute('aria-label'), prefix + 'wide region is named and keyboard focusable');
+        if (width < 760) {
+          assert(region.scrollWidth > region.clientWidth, prefix + 'wide content remains readable on mobile');
+          region.scrollLeft = 100;
+          assert(region.scrollLeft > 0, prefix + 'wide region actually scrolls horizontally');
+          region.scrollLeft = 0;
+        } else {
+          assert(region.scrollWidth <= region.clientWidth, prefix + 'wide region fits desktop without scrollbar');
+        }
+      }
+      assert(doc.querySelectorAll('thead th[scope="col"]').length === 6, prefix + 'both tables have associated column headers');
+      assert(doc.querySelectorAll('tbody th[scope="row"]').length === 10, prefix + 'construction and failure-mode rows have headers');
+      const number = id => {
+        const value = Number(doc.getElementById('example-' + id).textContent);
+        assert(Number.isFinite(value), prefix + id + ' is numeric');
+        return value;
+      };
+      const close = (id, expected, tolerance) => assert(Math.abs(number(id) - expected) <= tolerance, prefix + id + ' matches SI calculation');
+      const heat = number('power');
+      const inlet = number('inlet');
+      const volumeFlow = number('flow') * 1e-3 / 60;
+      const massFlow = number('density') * volumeFlow;
+      const cp = number('cp');
+      const rise = heat / (massFlow * cp);
+      const base = inlet + heat * number('base-resistance');
+      const source = base + heat * number('interface-resistance');
+      const hydraulicPower = number('pressure') * 1000 * volumeFlow;
+      close('volume-flow', volumeFlow, 1e-12);
+      close('mass-flow', massFlow, 1e-12);
+      close('coolant-rise', rise, 0.005);
+      close('outlet', inlet + rise, 0.005);
+      close('base-temperature', base, 0.0001);
+      close('source-temperature', source, 0.0001);
+      close('hydraulic-power', hydraulicPower, 0.0001);
+      close('electrical-power', hydraulicPower / number('efficiency'), 0.005);
+      close('half-flow', number('flow') / 2, 0.0001);
+      close('half-flow-rise', heat / (number('density') * number('half-flow') * 1e-3 / 60 * cp), 0.005);
+      const example = doc.querySelector('.cp-worked-example').textContent;
+      assert(example.includes('assumed example inputs') && example.includes('not measured results'), prefix + 'example is not presented as measured performance');
+      assert(example.includes('not predict maximum die-junction temperature'), prefix + 'junction prediction limitation stated');
+      assert(example.includes('not added again') && example.includes('do not reuse 0.050 K/W'), prefix + 'reference and changed-flow caveats retained');
+      const pageUrl = 'https://anaghtheway.github.io/cold-plates.html';
+      assert(doc.querySelector('link[rel="canonical"]').href === pageUrl && doc.querySelector('meta[property="og:url"]').content === pageUrl, prefix + 'canonical and social URLs preserved');
+      assert(doc.querySelectorAll('.cp-references a[href^="https://"]').length === 4, prefix + 'four technical references provided');
+      assert(doc.querySelector('#ref-ti a').href === 'https://www.ti.com/lit/pdf/spra953', prefix + 'thermal-metric reference linked');
+      assert([...doc.querySelectorAll('a[target="_blank"]')].every(a => a.relList.contains('noopener')), prefix + 'new-window links use noopener');
+      for (const href of ['index.html#cooling-lab', 'about.html', 'tim.html', 'tim-walkout.html', 'smt.html']) {
+        assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' linked');
+      }
+      frame.remove();
+    }
+    (async () => {
+      try {
+        await check(1280);
+        await check(390);
+        await check(320);
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        messages.push('FAIL ' + error.message);
+        document.getElementById('summary').textContent = error.message;
+        document.querySelector('details').open = true;
+      }
+      document.getElementById('results').textContent = messages.join('\n');
+    })();
+  </script>
+</body>
+</html>

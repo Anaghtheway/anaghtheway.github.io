@@ -3,73 +3,226 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cold Plates &amp; Cooling Devices – Cooling Lab by Anagh Dave</title>
-  <meta name="description" content="Liquid cold plates, heat sinks, and active cooling device design explained by thermal engineer Anagh Dave.">
+  <title>Cold Plates: From Heat Load to Hardware – Cooling Lab by Anagh Dave</title>
+  <meta name="description" content="A practical cold-plate design guide: heat paths, channel layouts, coolant flow, pressure drop, mounting, and a worked 300 W example.">
   <link rel="canonical" href="https://anaghtheway.github.io/cold-plates.html">
   <link rel="icon" href="anagh.jpg" type="image/jpeg">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Cold Plates – Cooling Lab">
-  <meta property="og:description" content="Liquid cold plates, heat sinks, and active cooling device design explained by thermal engineer Anagh Dave.">
+  <meta property="og:title" content="Cold Plates: From Heat Load to Hardware – Cooling Lab">
+  <meta property="og:description" content="A practical cold-plate design guide: heat paths, channel layouts, coolant flow, pressure drop, mounting, and a worked 300 W example.">
   <meta property="og:url" content="https://anaghtheway.github.io/cold-plates.html">
   <meta property="og:image" content="https://anaghtheway.github.io/anagh.jpg">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Cold Plates – Cooling Lab">
-  <meta name="twitter:description" content="Liquid cold plates, heat sinks, and active cooling device design explained by thermal engineer Anagh Dave.">
+  <meta name="twitter:title" content="Cold Plates: From Heat Load to Hardware – Cooling Lab">
+  <meta name="twitter:description" content="A practical cold-plate design guide: heat paths, channel layouts, coolant flow, pressure drop, mounting, and a worked 300 W example.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cold-plates.css">
 </head>
 
 <body class="cold-plates-page">
-<article>
+<article class="cold-plate-guide">
+  <p><a href="index.html#cooling-lab">Cooling Lab</a> / Engineering guide</p>
+  <h1>Cold Plates: From Heat Load to Hardware</h1>
+  <p class="article-deck">A cold plate is not just a metal block with water running through it. It is a heat-spreading structure, a fluid network, and a mechanical interface that must work together.</p>
+  <p>By <a href="about.html">Anagh Dave</a></p>
+  <aside class="cp-note">
+    <p><strong>The design question:</strong> can this plate keep the component below its temperature limit, using the available coolant and pump, without creating mounting or reliability problems?</p>
+    <p>This guide covers single-phase liquid cooling. Boiling cold plates require a different treatment of heat transfer, pressure drop, and stability. The worked example is illustrative, not a tested product or a validated device design.</p>
+  </aside>
 
-  <h1>Cold Plates: Design & Performance</h1>
-  <figure class="article-hero-figure">
-    <img class="article-hero" src="https://www.mikrostechnologies.com/dam/jcr:7ab6c94e-88b9-48ea-8b3b-3179db008cfe/PR_Mikros%20Technologies_AX-NV2_Blackwell.png" alt="Mikros AX-NV2 Cold Plate for NVIDIA Blackwell">
-    <figcaption>Cold plate image courtesy of <a href="https://www.mikrostechnologies.com/" target="_blank" rel="noopener">Mikros Technologies</a> — makers of the AX-NV2 cold plate.</figcaption>
+  <nav class="cp-contents" aria-label="Article contents">
+    <strong>In this guide</strong>
+    <ol>
+      <li><a href="#heat-path">Follow the heat</a></li>
+      <li><a href="#requirements">Start with requirements</a></li>
+      <li><a href="#construction">Choose a construction</a></li>
+      <li><a href="#flow-distribution">Design the flow path</a></li>
+      <li><a href="#thermal-metrics">Read thermal performance correctly</a></li>
+      <li><a href="#hydraulics">Match the plate to the pump</a></li>
+      <li><a href="#worked-example">Work through a 300 W example</a></li>
+      <li><a href="#interfaces">Mounting, materials, and coolant</a></li>
+      <li><a href="#qualification">Test what can go wrong</a></li>
+      <li><a href="#references">References and further reading</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="heat-path">1. Follow the heat, not just the water</h2>
+  <p>The heat path is <strong>device &rarr; package or lid &rarr; thermal interface material (TIM) &rarr; cold-plate base &rarr; coolant</strong>. For direct-die cooling, the lid is absent. Heat conducts through the solids and TIM, spreads within the plate, and transfers from the channel walls to the moving liquid by convection.</p>
+  <figure>
+    <div class="cp-diagram-scroll" tabindex="0" role="region" aria-label="Cold-plate heat path and cooling loop diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 490" role="img" aria-labelledby="heat-path-title heat-path-description">
+        <title id="heat-path-title">Heat capture at a cold plate and heat rejection elsewhere in the loop</title>
+        <desc id="heat-path-description">Heat moves downward from a source through TIM and the cold-plate base into coolant. Warm coolant travels to a heat exchanger or chiller, where heat leaves the loop. A pump returns cooler coolant to the plate. Arrows show heat and flow directions; this is not a scale drawing or a prescribed equipment order.</desc>
+        <defs>
+          <marker id="cp-heat-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#efbd7c"/></marker>
+          <marker id="cp-supply-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#80dce8"/></marker>
+          <marker id="cp-return-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#f6a37c"/></marker>
+        </defs>
+        <rect width="900" height="490" rx="12" fill="#0c1925"/>
+        <g font-family="Arial, sans-serif" font-size="18" fill="#edf3f8">
+          <text x="50" y="40" font-size="22" font-weight="bold">Heat capture</text>
+          <rect x="50" y="75" width="340" height="55" rx="8" fill="#604634" stroke="#efbd7c"/>
+          <text x="220" y="109" text-anchor="middle">Heat source / package surface</text>
+          <rect x="50" y="150" width="340" height="24" rx="4" fill="#565473" stroke="#c7bcf1"/>
+          <text x="220" y="169" text-anchor="middle" font-size="16">TIM + contact interfaces</text>
+          <rect x="50" y="200" width="340" height="115" rx="8" fill="#254052" stroke="#91b4c8"/>
+          <text x="220" y="225" text-anchor="middle">Cold-plate base / channel wall</text>
+          <rect x="65" y="260" width="310" height="34" rx="6" fill="#153e4c" stroke="#80dce8"/>
+          <text x="220" y="283" text-anchor="middle">Coolant absorbs heat</text>
+          <path d="M220 131 V148 M220 175 V198 M220 232 V257" fill="none" stroke="#efbd7c" stroke-width="3" marker-end="url(#cp-heat-arrow)"/>
+          <path d="M375 277 H520 V150 H589" fill="none" stroke="#f6a37c" stroke-width="5" marker-end="url(#cp-return-arrow)"/>
+          <text x="415" y="307" fill="#f6a37c">Warm return</text>
+          <rect x="590" y="95" width="265" height="115" rx="8" fill="#203445" stroke="#91b4c8"/>
+          <text x="722" y="127" text-anchor="middle">Heat exchanger / chiller</text>
+          <text x="722" y="164" text-anchor="middle" font-size="16">Rejects heat outside</text>
+          <text x="722" y="186" text-anchor="middle" font-size="16">this coolant loop</text>
+          <path d="M722 95 V49" fill="none" stroke="#efbd7c" stroke-width="3" marker-end="url(#cp-heat-arrow)"/>
+          <text x="722" y="30" text-anchor="middle" fill="#efbd7c">Heat to air or another fluid circuit</text>
+          <path d="M855 150 H875 V400 H660" fill="none" stroke="#80dce8" stroke-width="5" marker-end="url(#cp-supply-arrow)"/>
+          <circle cx="625" cy="400" r="34" fill="#254052" stroke="#80dce8" stroke-width="2"/>
+          <text x="625" y="406" text-anchor="middle" font-size="16">Pump</text>
+          <path d="M591 400 H30 V277 H64" fill="none" stroke="#80dce8" stroke-width="5" marker-end="url(#cp-supply-arrow)"/>
+          <text x="80" y="387" fill="#80dce8">Cooler supply to plate inlet</text>
+          <text x="50" y="459" fill="#b5c8d7" font-size="16">Gold arrows: heat transfer. Pipe arrows: coolant flow. Schematic, not to scale.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Original explanatory schematic. A cold plate captures heat; another part of the system must reject it. Equipment order and plumbing depend on the application. On small screens, scroll the diagram horizontally.</figcaption>
   </figure>
+  <p>The liquid leaving the plate is warmer than the liquid entering it. A radiator, liquid-to-liquid heat exchanger, or chiller must remove that energy before the coolant returns. <strong>A pump alone does not cool the liquid</strong>; it supplies the pressure rise needed to circulate it and adds some heat of its own. A CDU may transfer heat to a facility-water circuit rather than actively refrigerate the coolant. <a href="#ref-coolit">[1]</a></p>
 
-  <p>
-    Cold plates are one of the most effective liquid cooling solutions for high-heat-flux electronics.
-    They use internal channels to route coolant directly beneath heat-generating components.
-  </p>
+  <h2 id="requirements">2. Define the problem before drawing channels</h2>
+  <p>A wattage alone is not a sufficient specification. The same 300 W spread across a large module or concentrated in a small die creates very different spreading and local heat-flux challenges.</p>
+  <ul>
+    <li><strong>Heat load and map:</strong> steady and transient power, source footprint, hot-spot locations, and how much heat actually enters the plate rather than the PCB or surrounding air.</li>
+    <li><strong>Temperature budget:</strong> maximum permitted junction or case temperature, worst-case inlet temperature, and the package/TIM contribution between that limit and the plate.</li>
+    <li><strong>Fluid and hydraulic budget:</strong> coolant composition, operating temperature range, available branch flow and differential pressure, and minimum flow during faults or control changes.</li>
+    <li><strong>Mechanical envelope:</strong> component height tolerance, contact area, keep-outs, fittings, allowable package load, flatness, mass, and service access.</li>
+    <li><strong>Lifetime requirements:</strong> working pressure, pressure transients, leak criteria, cleanliness, coolant maintenance, corrosion control, and assembly/replacement cycles.</li>
+  </ul>
+  <p>Write the boundary conditions down before comparing supplier curves. A plate characterized on a uniformly heated block is not automatically qualified for a smaller, nonuniform chip.</p>
 
-  <h2>Types of Cold Plates</h2>
+  <h2 id="construction">3. Construction determines more than conductivity</h2>
+  <p>Manufacturing method and channel geometry are related, but not identical categories: a microchannel core can sit inside a brazed or bonded assembly. Select both the heat-transfer structure and a process that can reliably seal it.</p>
+  <div class="cp-table-scroll" tabindex="0" role="region" aria-label="Cold-plate construction comparison">
+    <table>
+      <caption>Construction choices: strengths and questions to resolve, not a universal performance ranking.</caption>
+      <thead><tr><th scope="col">Construction</th><th scope="col">Why use it?</th><th scope="col">What can limit it?</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Tube-in-plate</th><td>A formed tube is embedded in a spreader. The tube defines the wetted material; routing can cover a broad module footprint.</td><td>Spreading distance to the tube and tube-to-plate contact resistance. Verify tube retention, contact quality, and bend restrictions.</td></tr>
+        <tr><th scope="row">Drilled passages</th><td>Intersecting drilled bores provide comparatively simple flow paths through a solid block.</td><td>Bore placement and available wetted area constrain cooling near small hot spots. Cross-hole plugs and port seals need qualification.</td></tr>
+        <tr><th scope="row">Machined channels + sealed lid</th><td>Flexible routing, including serpentine paths and parallel channels, with a welded, brazed, bonded, or gasketed closure.</td><td>Channel/base tolerances, distortion during joining, lid strength, and leak integrity. Closure method must suit the pressure and coolant.</td></tr>
+        <tr><th scope="row">Fin or pin-fin core</th><td>Internal extended surfaces add wetted area and can promote mixing. Cores may be brazed, skived, machined, or otherwise formed.</td><td>Fin efficiency, bypass flow, joining quality, and pressure loss. More metal surface is only useful if heat and coolant reach it.</td></tr>
+        <tr><th scope="row">Microchannel core</th><td>Small passages place substantial heat-transfer area close to a concentrated source.</td><td>Distribution, filtration, debris tolerance, and fabrication control. Pressure drop depends on the entire geometry and flow, not the name alone.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>A thinner base shortens the through-thickness conduction path but reduces stiffness and may limit lateral spreading. A thicker base can spread a localized load more effectively while adding conduction resistance and mass. The right thickness depends on the source map, channel spacing, pressure, and mounting loads.</p>
 
-  <div class="figure">
-    <img src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=800" alt="Server liquid cooling pipes">
-    <figcaption>Internal channel structures determine flow distribution and thermal performance</figcaption>
+  <h2 id="flow-distribution">4. Route coolant to the heat, not just through the plate</h2>
+  <p><strong>Serpentine paths</strong> force flow through one continuous route and avoid channel-to-channel flow splitting, but the coolant warms along the path and long passages and turns consume pressure. A downstream device may see warmer coolant than an upstream one.</p>
+  <p><strong>Parallel channels</strong> shorten individual paths and can reduce hydraulic resistance, but introduce an inlet and outlet distribution problem. Flow divides according to branch resistance and manifold pressure, not simply by channel count. An oversized bypass gap can carry substantial flow while doing little useful cooling.</p>
+  <p><strong>Split-flow or impinging layouts</strong> can deliver fresh coolant near a hot region and shorten the heated flow length. Their benefit depends on inlet placement, distribution, exit routing, and local losses; they are not automatically superior at the same pump power.</p>
+  <aside class="cp-note">
+    <p><strong>Bulk flow can look healthy while a hot spot is starved.</strong> Check local wall temperatures and branch distribution as well as total flow and outlet temperature. The same issue appears when several cold plates share a rack or server manifold. <a href="#ref-system">[2]</a></p>
+  </aside>
+
+  <h2 id="thermal-metrics">5. Separate coolant heating from surface temperature</h2>
+  <h3>First: how much does the liquid warm up?</h3>
+  <p>For steady, single-phase flow with approximately constant properties:</p>
+  <p class="cp-equation">Q = m&#775; c<sub>p</sub> (T<sub>out</sub> &minus; T<sub>in</sub>), &nbsp; m&#775; = &rho; V&#775;</p>
+  <p>Here Q is heat transferred to the liquid in watts, m&#775; is mass flow in kg/s, c<sub>p</sub> is specific heat in J/(kg&middot;K), &rho; is density in kg/m&sup3;, and V&#775; is volumetric flow in m&sup3;/s. Temperatures are bulk-fluid inlet and outlet measurements. Use the properties of the actual coolant mixture at the relevant temperature, not water values for every fluid.</p>
+  <p>This energy balance predicts <strong>coolant temperature rise, not chip temperature</strong>. A poorly mounted plate can have an acceptable outlet temperature while the device overheats.</p>
+  <h3>Second: how far above the coolant is the surface?</h3>
+  <p class="cp-equation">R<sub>b,in</sub> = (T<sub>b</sub> &minus; T<sub>in</sub>) / Q</p>
+  <p>This defines base-to-inlet thermal resistance in K/W, numerically equivalent to &deg;C/W for temperature differences. T<sub>b</sub> must be identified: an area-average base temperature, maximum base temperature, or a specified sensor reading will give different results. State the heat footprint, flow, coolant, inlet temperature, and whether the test includes TIM.</p>
+  <p><strong>Junction-to-coolant resistance includes more than the plate.</strong> It can include the package, lid, TIM, and contact resistances. Do not compare that number with a plate-only base-to-coolant value. Nor should a datasheet junction-to-case metric be added blindly: its test boundary conditions and heat-flow assumptions must match the application. <a href="#ref-ti">[3]</a></p>
+  <aside class="cp-note">
+    <p><strong>Do not count coolant warming twice.</strong> If a resistance is referenced to inlet coolant, use that inlet temperature in the corresponding temperature estimate. Do not then add the full outlet rise. A resistance referenced to mean coolant uses a different reference and generally has a different value.</p>
+    <p>For a uniformly heated, constant-property passage, (T<sub>in</sub> + T<sub>out</sub>)/2 can approximate a mean bulk temperature. It is not a universal local coolant temperature for a distributed, nonuniform heat load.</p>
+  </aside>
+
+  <h2 id="hydraulics">6. Match thermal performance to the available pump</h2>
+  <p>Read <strong>two curves together</strong>: thermal resistance versus flow, and pressure drop versus flow, using the intended fluid and temperature. Higher flow reduces bulk coolant warming and often improves convection, but gains may diminish as conduction or interface resistance dominates. In some fully developed laminar regimes, the heat-transfer coefficient changes little with flow.</p>
+  <p>The operating flow is where the pump's pressure-rise curve intersects the <strong>complete system pressure-loss curve</strong>. Include the plate, tubing, fittings, quick disconnects, filters, manifolds, and heat exchanger. A pump's free-flow rating is not the flow through an assembled loop.</p>
+  <p class="cp-equation">P<sub>hydraulic</sub> = &Delta;p<sub>loop</sub> V&#775; &nbsp; ; &nbsp; P<sub>electrical</sub> = P<sub>hydraulic</sub> / &eta;</p>
+  <p>Use pressure in Pa and volumetric flow in m&sup3;/s to obtain watts. Here &eta; is the combined electrical-to-hydraulic efficiency at the actual operating point, not an assumed universal pump efficiency. Plate-only pressure drop gives plate-associated hydraulic power, not total pump demand.</p>
+  <p>In a series path, the same flow passes through each element and pressure drops add; coolant warms successively across heated plates. Parallel branches share the available differential pressure but may receive different flows. Balancing a branch can improve distribution while increasing the required pump pressure.</p>
+
+  <h2 id="worked-example">7. Worked example: a 300 W heat source</h2>
+  <div class="cp-worked-example">
+    <p><strong>Assumptions:</strong> all <span id="example-power">300</span> W enters one cold plate at steady state. Water enters at <span id="example-inlet">25</span> &deg;C at <span id="example-flow">1.5</span> L/min. Use rounded water properties &rho; = <span id="example-density">1000</span> kg/m&sup3; and c<sub>p</sub> = <span id="example-cp">4180</span> J/(kg&middot;K). These values support a hand calculation, not a coolant specification.</p>
+    <h3>A. Convert flow and calculate coolant rise</h3>
+    <p class="cp-equation">V&#775; = 1.5 &times; 10<sup>&minus;3</sup> / 60 = <span id="example-volume-flow">0.000025</span> m&sup3;/s<br>
+      m&#775; = 1000 &times; 0.000025 = <span id="example-mass-flow">0.025</span> kg/s<br>
+      &Delta;T<sub>coolant</sub> = 300 / (0.025 &times; 4180) &asymp; <span id="example-coolant-rise">2.87</span> K<br>
+      T<sub>out</sub> &asymp; <span id="example-outlet">27.87</span> &deg;C</p>
+    <h3>B. Estimate a source-surface temperature, not a junction temperature</h3>
+    <p>Suppose characterization for this same footprint, fluid, and flow gives base-to-inlet resistance R<sub>b,in</sub> = <span id="example-base-resistance">0.050</span> K/W, excluding TIM. Suppose an effective source-surface-to-base interface resistance of <span id="example-interface-resistance">0.015</span> K/W also applies at the specified clamp load and bond line. These are <strong>assumed example inputs</strong>, not measured results or typical product ratings. Treat the source and base as approximately isothermal nodes so the series-resistance model is meaningful.</p>
+    <p class="cp-equation">T<sub>b</sub> = 25 + 300 &times; 0.050 = <span id="example-base-temperature">40.0</span> &deg;C<br>
+      T<sub>source surface</sub> = 40.0 + 300 &times; 0.015 = <span id="example-source-temperature">44.5</span> &deg;C</p>
+    <p>This does <strong>not predict maximum die-junction temperature</strong>. Package resistance, nonuniform heat generation, local spreading, and sensor locations require a suitable model or measurement. The 2.87 K outlet rise is not added again because R<sub>b,in</sub> already uses the inlet reference.</p>
+    <h3>C. Account for pumping power</h3>
+    <p>Suppose the <strong>entire loop</strong> requires <span id="example-pressure">40</span> kPa at that flow, with combined pump/motor efficiency &eta; = <span id="example-efficiency">0.30</span>.</p>
+    <p class="cp-equation">P<sub>hydraulic</sub> = 40,000 &times; 0.000025 = <span id="example-hydraulic-power">1.00</span> W<br>
+      P<sub>electrical</sub> = 1.00 / 0.30 &asymp; <span id="example-electrical-power">3.33</span> W</p>
+    <p>The heat-rejection device must support the 300 W load plus heat entering the coolant from the pump and other sources while maintaining the assumed inlet temperature. Its required capacity depends on the ambient or facility-water conditions, not just the cold plate.</p>
+    <h3>D. What if flow is cut in half?</h3>
+    <p>At <span id="example-half-flow">0.75</span> L/min, the same heat load gives approximately <span id="example-half-flow-rise">5.74</span> K of bulk coolant rise. But <strong>do not reuse 0.050 K/W without a resistance-versus-flow curve</strong>. Convection and flow distribution may change, so doubling the coolant rise does not by itself predict the new source temperature.</p>
   </div>
 
-  <ul>
-    <li><strong>Tube-in-plate</strong> – copper or stainless tubes pressed into an aluminum plate. Simple, low cost.</li>
-    <li><strong>Brazed fin</strong> – internal fin structures brazed between two plates. High performance, compact.</li>
-    <li><strong>Micro-channel</strong> – very fine channels (< 1 mm). Excellent heat transfer but higher pressure drop.</li>
-    <li><strong>Gun-drilled</strong> – deep-drilled passages in a solid block. Good for custom geometries.</li>
-  </ul>
+  <h2 id="interfaces">8. The plate is only as good as its interfaces</h2>
+  <h3>TIM, flatness, and clamp load</h3>
+  <p>A high-performance channel core cannot compensate for a poor contact patch. Control base flatness, surface finish, parallelism, TIM coverage, and bond-line thickness at the <em>assembled</em> condition. Thermal expansion and internal pressure can deform a plate that looks flat before mounting.</p>
+  <p>Set clamp load from package limits and the TIM's compression/contact requirements, not from a universal torque value. Fastener torque is only an indirect estimate of preload; friction and the load path matter. Check load distribution, hard stops, screw sequence, and fitting or hose forces that can tilt the plate.</p>
+  <p>Assembly motion matters too. A robotic end effector that swivels after contact can shear or displace TIM. Finish orientation before loading the interface where practical, and verify both engagement and release. See the <a href="tim.html">TIM material and failure-mode guide</a> and the <a href="tim-walkout.html">robotic cold-plate engagement case study</a>.</p>
+  <h3>Materials and coolant are a system-level choice</h3>
+  <p>Copper offers greater thermal conductivity than common aluminum alloys but adds mass and cost. Aluminum can be attractive for weight and manufacturing. Neither choice guarantees compatibility: inventory every <strong>wetted material</strong>, including tubes, braze alloys, coatings, fittings, seals, and the heat exchanger.</p>
+  <p>Galvanic corrosion requires dissimilar materials, electrical coupling, and an electrolyte; mixed-metal loops need deliberate compatibility and coolant-chemistry control. A coating is not a substitute for evaluating defects and long-term exposure. Deionized water does not stay ion-free in service and is not a blanket corrosion or electrical-safety solution.</p>
+  <p>Glycol concentration changes freezing protection, viscosity, heat capacity, and conductivity, affecting both curves used for selection. Confirm elastomer compatibility and an approved maintenance plan with the coolant and hardware suppliers. Select filtration for the smallest passages and contamination sources, including assembly debris, without consuming the hydraulic margin. If surfaces can fall below the local dew point, address condensation as well as cooling performance.</p>
 
-  <h2>Key Design Considerations</h2>
-  <ul>
-    <li>Flow rate vs. pressure drop tradeoff</li>
-    <li>Channel geometry and fin density</li>
-    <li>Material selection (Al vs. Cu vs. hybrid)</li>
-    <li>Mounting and TIM interface</li>
-    <li>Corrosion and coolant compatibility</li>
-  </ul>
-
-  <h2>Performance Metrics</h2>
-
-  <div class="figure">
-    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800" alt="Data center cooling infrastructure">
-    <figcaption>Thermal resistance (°C/W) from junction to coolant is the key metric</figcaption>
+  <h2 id="qualification">9. Validate the assembly, not just a CFD image</h2>
+  <p>Use conjugate heat-transfer analysis to examine solid conduction and fluid convection together. Include the actual heat map, manifolds, interface assumptions, fluid properties, and relevant tolerances. Check mesh independence and conservation of mass and energy, then correlate temperature and pressure predictions against a controlled bench test.</p>
+  <div class="cp-table-scroll" tabindex="0" role="region" aria-label="Cold-plate failure modes and diagnostic checks">
+    <table>
+      <caption>Symptoms suggest investigations; none of these observations is a diagnosis by itself.</caption>
+      <thead><tr><th scope="col">Observation</th><th scope="col">Possible mechanism</th><th scope="col">Useful check</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">High device temperature, normal bulk flow</th><td>Poor TIM contact, local flow starvation, or a changed power map.</td><td>Compare local temperatures and interface condition at a controlled load; inspect for bypass and distribution errors.</td></tr>
+        <tr><th scope="row">Higher pressure drop at the same flow and fluid temperature</th><td>Debris, fouling, or a restriction in the measured section.</td><td>Localize pressure measurements, inspect filters/passages, and verify coolant concentration and sensor calibration.</td></tr>
+        <tr><th scope="row">Unstable temperatures or flow after filling</th><td>Trapped gas, inadequate bleeding, or pump inlet problems.</td><td>Check fill/bleed procedure, orientation, reservoir level, and pump inlet conditions.</td></tr>
+        <tr><th scope="row">Performance drifts after repeated mounting</th><td>TIM displacement, preload variation, base damage, or package/plate warpage.</td><td>Track contact condition, bond line, and mounting repeatability, including rotation and release.</td></tr>
+        <tr><th scope="row">Leaks or corrosion products over time</th><td>Seal incompatibility, joint defects, corrosion, or pressure/thermal fatigue.</td><td>Inspect the affected joint and fluid chemistry; qualify the complete wetted assembly across its specified life conditions.</td></tr>
+      </tbody>
+    </table>
   </div>
+  <h3>A useful qualification record includes</h3>
+  <ul>
+    <li><strong>Thermal measurements:</strong> calibrated inlet/outlet sensors, local source/base temperatures, coolant flow, and electrical heat input after stabilization. Compare Q<sub>fluid</sub> = m&#775;c<sub>p</sub>&Delta;T with input power while accounting for heat losses and uncertainty. A small liquid temperature difference can make sensor mismatch significant.</li>
+    <li><strong>Hydraulic measurements:</strong> pressure taps defining exactly what is included, curves over the specified coolant/temperature range, and the operating point with production hoses, fittings, and filters.</li>
+    <li><strong>Mechanical and fluid integrity:</strong> leak checks, proof-pressure and life testing to an approved specification, mounting cycles, and inspection for deformation or joint damage. Proof pressure and allowable leakage are application-specific, not universal multipliers.</li>
+    <li><strong>Off-nominal conditions:</strong> warm inlet coolant, reduced or lost flow, partial restriction, orientation, and pump/control faults, with suitable overtemperature protection rather than relying on a steady-state estimate.</li>
+    <li><strong>Repeatability and aging:</strong> multiple assemblies, TIM variation, coolant exposure, and relevant pressure/thermal cycles. Report uncertainty and degradation, not only the best initial temperature.</li>
+  </ul>
+  <aside class="cp-note">
+    <p><strong>A defensible selection package:</strong> requirements and heat map; thermal and pressure-drop curves under stated conditions; the loop operating point; a mounting/TIM specification; a wetted-material and coolant plan; and model-to-test correlation. A single low K/W value is not enough.</p>
+  </aside>
 
-  <p>
-    Typical values range from 0.01–0.1 °C/W depending on size and design.
-    Lower resistance means better heat transfer to the coolant.
-  </p>
-
-  <a href="index.html">⬅ Back to Home</a>
-
+  <h2 id="references">10. References and further reading</h2>
+  <p>Manufacturer resources provide system context and examples of published performance data. They are not evidence that the illustrative calculation above describes a particular commercial plate.</p>
+  <ol class="cp-references">
+    <li id="ref-coolit"><a href="https://www.coolitsystems.com/coldplate-technology/" target="_blank" rel="noopener">CoolIT Systems: Coldplate Technology</a> &mdash; the cold plate's role as the point of heat capture within a larger cooling system.</li>
+    <li id="ref-system"><a href="https://www.coolitsystems.com/product_technologies/" target="_blank" rel="noopener">CoolIT Systems: Liquid Cooling Product Technology</a> &mdash; CDUs, distribution systems, monitoring, and controls.</li>
+    <li id="ref-ti"><a href="https://www.ti.com/lit/pdf/spra953" target="_blank" rel="noopener">Texas Instruments: Semiconductor and IC Package Thermal Metrics</a> &mdash; interpretation and limitations of package thermal metrics.</li>
+    <li><a href="https://info.boydcorp.com/hubfs/Thermal/Liquid-Cooling/Boyd-Legacy-Liquid-Cooled-Cold-Plates-Technical-Datasheet.pdf" target="_blank" rel="noopener">Boyd: Liquid-Cooled Cold Plates technical datasheet (PDF)</a> &mdash; further reading on construction options and supplier performance information; confirm current specifications before selection.</li>
+  </ol>
+  <nav class="cp-related" aria-label="Related engineering articles">
+    <a href="index.html#cooling-lab">Back to Cooling Lab</a>
+    <a href="tim.html">TIM selection and failure modes</a>
+    <a href="tim-walkout.html">Robotic engagement case study</a>
+    <a href="smt.html">Electronic packaging &amp; SMT</a>
+  </nav>
 </article>
 </body>
 </html>

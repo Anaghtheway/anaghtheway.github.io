@@ -1,0 +1,35 @@
+.cold-plates-page .cold-plate-guide {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 1000px;
+  background: rgba(13, 17, 23, 0.94);
+  line-height: 1.75;
+}
+.cold-plate-guide h1, .cold-plate-guide h2, .cold-plate-guide h3 { line-height: 1.3; }
+.cold-plate-guide h2 { margin-top: 44px; scroll-margin-top: 24px; }
+.cold-plate-guide li { margin-bottom: 10px; }
+.cold-plate-guide a { text-underline-offset: 4px; overflow-wrap: anywhere; }
+.cold-plate-guide a:focus-visible, .cold-plate-guide [tabindex]:focus-visible { outline: 2px solid #80dce8; outline-offset: 4px; }
+.cold-plate-guide .article-deck { font-size: 1.15rem; color: #bed2e1; }
+.cold-plate-guide figure { margin: 28px 0; }
+.cold-plate-guide figcaption { margin-top: 12px; font-size: 0.85rem; color: #b5c8d7; }
+.cp-contents, .cp-note { padding: 20px 24px; background: #102130; border: 1px solid #365064; border-radius: 10px; margin: 24px 0; }
+.cp-contents ol { columns: 2; padding-left: 24px; margin-bottom: 0; }
+.cp-contents li { break-inside: avoid; }
+.cp-note { border-left: 3px solid #80dce8; }
+.cp-note p:first-child { margin-top: 0; }
+.cp-note p:last-child { margin-bottom: 0; }
+.cp-equation { color: #9de5e8; font-family: Consolas, monospace; overflow-wrap: anywhere; }
+.cp-table-scroll, .cp-diagram-scroll { overflow-x: auto; border: 1px solid #365064; border-radius: 10px; margin: 24px 0; }
+.cp-diagram-scroll svg { display: block; width: 100%; min-width: 760px; height: auto; }
+.cold-plate-guide table { width: 100%; min-width: 700px; border-collapse: collapse; background: #102130; font-size: 0.9rem; }
+.cold-plate-guide caption { text-align: left; padding: 16px; color: #bed2e1; }
+.cold-plate-guide th, .cold-plate-guide td { text-align: left; vertical-align: top; padding: 14px; border-top: 1px solid #365064; }
+.cold-plate-guide th { color: #8fdee7; }
+.cp-related { display: flex; flex-wrap: wrap; gap: 12px 24px; border-top: 1px solid #365064; padding-top: 24px; margin-top: 36px; }
+@media (max-width: 600px) {
+  .cold-plates-page .cold-plate-guide { width: calc(100% - 16px); padding: 28px 18px; margin-block: 16px; }
+  .cold-plate-guide h1 { font-size: 1.9rem; }
+  .cp-contents ol { columns: 1; }
+  .cp-contents, .cp-note { padding: 18px; }
+}
