@@ -59,7 +59,7 @@
       } else {
         assert(productBounds[1].top >= productBounds[0].bottom && productBounds[2].top >= productBounds[1].bottom, prefix + 'product gallery stacks on mobile');
       }
-      assert(doc.querySelector('.cp-image-note').textContent.includes('not shown to a common scale'), prefix + 'product scale caveat provided');
+      assert([...doc.querySelectorAll('.cp-image-note')].some(note => note.textContent.includes('not shown to a common scale')), prefix + 'product scale caveat provided');
       const closeup = doc.querySelector('.cp-closeup img');
       assert(closeup && closeup.alt.includes('four copper tube runs') && closeup.getAttribute('aria-describedby') === 'plate-close-up-caption', prefix + 'detailed product photograph has accessible description');
       closeup.loading = 'eager';
@@ -75,6 +75,25 @@
       assert(doc.querySelectorAll('.cp-closeup-features dt').length === 4 && doc.querySelectorAll('.cp-closeup-features dd').length === 4, prefix + 'four visible hardware features explained');
       assert(doc.body.textContent.includes('Exposed tube does not mean exposed coolant'), prefix + 'tube wall and coolant boundary distinguished');
       assert(doc.querySelector('a[href="#plate-close-up"]'), prefix + 'close-up directly accessible from introduction');
+      const annotations = doc.querySelector('.cp-photo-annotations');
+      assert(annotations.querySelector('title') && annotations.querySelector('desc'), prefix + 'photo overlay has accessible title and explanation');
+      assert(!new DOMParser().parseFromString(annotations.outerHTML, 'image/svg+xml').querySelector('parsererror'), prefix + 'photo overlay is valid SVG XML');
+      assert(annotations.querySelectorAll('.cp-fluid-directions path').length === 4 && annotations.querySelectorAll('.cp-heat-directions path').length === 3, prefix + 'four coolant-pass arrows and three heat-input arrows present');
+      assert(annotations.textContent.includes('not manufacturer port assignments'), prefix + 'illustrative plumbing direction is explicit');
+      const overlayBounds = annotations.getBoundingClientRect();
+      assert(Math.abs(overlayBounds.width - closeupBounds.width) < 1 && Math.abs(overlayBounds.height - closeupBounds.height) < 1, prefix + 'annotation overlay remains aligned with photograph');
+      const photoRegion = doc.querySelector('.cp-annotation-scroll');
+      assert(photoRegion.tabIndex === 0 && photoRegion.getAttribute('aria-label'), prefix + 'annotated photograph is keyboard-scrollable');
+      if (width < 680) {
+        assert(photoRegion.scrollWidth > photoRegion.clientWidth, prefix + 'mobile annotations retain readable scale');
+        photoRegion.scrollLeft = 100;
+        assert(photoRegion.scrollLeft > 0, prefix + 'annotated photograph scrolls on mobile');
+        photoRegion.scrollLeft = 0;
+      }
+      for (const text of annotations.querySelectorAll('text')) {
+        const bounds = text.getBBox();
+        assert(bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= 732 && bounds.y + bounds.height <= 660, prefix + 'annotation label fits: ' + text.textContent);
+      }
       const svg = doc.querySelector('svg[role="img"]');
       assert(svg && svg.querySelector('title') && svg.querySelector('desc'), prefix + 'diagram has title and description');
       assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)), prefix + 'diagram accessible-name references resolve');
