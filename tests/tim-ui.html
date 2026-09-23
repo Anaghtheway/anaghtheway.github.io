@@ -48,7 +48,7 @@
       assert(doc.querySelectorAll('.tim-guide > ol:last-of-type > li[id^="ref-"]').length === 5, prefix + 'five source references present');
       assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'image alternative text retained');
       assert(doc.querySelectorAll('a[href^="https://creativecommons.org/licenses/"]').length === 3, prefix + 'all existing image license attributions retained');
-      for (const href of ['index.html#cooling-lab', 'smt.html', 'cold-plates.html']) {
+      for (const href of ['index.html#cooling-lab', 'smt.html', 'cold-plates.html', 'heat-sinks.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' linked');
       }
       doc.querySelector('.tim-contents a[href="#tradeoffs"]').click();

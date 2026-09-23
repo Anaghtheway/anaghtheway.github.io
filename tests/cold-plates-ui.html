@@ -117,7 +117,7 @@
       assert(doc.querySelectorAll('.cp-references a[href^="https://"]').length === 4, prefix + 'four technical references provided');
       assert(doc.querySelector('#ref-ti a').href === 'https://www.ti.com/lit/pdf/spra953', prefix + 'thermal-metric reference linked');
       assert([...doc.querySelectorAll('a[target="_blank"]')].every(a => a.relList.contains('noopener')), prefix + 'new-window links use noopener');
-      for (const href of ['index.html#cooling-lab', 'about.html', 'tim.html', 'tim-walkout.html', 'smt.html']) {
+      for (const href of ['index.html#cooling-lab', 'about.html', 'heat-sinks.html', 'tim.html', 'tim-walkout.html', 'smt.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' linked');
       }
       frame.remove();

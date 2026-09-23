@@ -44,9 +44,14 @@
       assert(publication.querySelector('.result-baseline').textContent === 'vs. straight microchannels with MEPCM slurry', prefix + 'enhancement comparison names baseline');
       assert(publication.querySelector('.publication-caveat').textContent.includes('not experimental validation'), prefix + 'numerical result limitation visible');
       assert(publication.compareDocumentPosition(doc.querySelector('#work')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'research precedes tools and writing');
-      for (const href of ['cold-plates.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
+      for (const href of ['cold-plates.html', 'heat-sinks.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
       }
+      assert(doc.querySelector('.topic-list a[href="cold-plates.html"] h3').textContent === 'Cold plates', prefix + 'cold plates has a dedicated liquid-cooling topic');
+      assert(doc.querySelector('.topic-list a[href="heat-sinks.html"] h3').textContent === 'Heat sinks', prefix + 'heat sinks has a separate air-cooling topic');
+      const topicNumbers = [...doc.querySelectorAll('.topic-number')].map(el => el.textContent);
+      assert(topicNumbers.join(',') === '01,02,03,04,05,06,07', prefix + 'seven topics numbered in order');
+      assert(doc.querySelector('.work-article-links a[href="cold-plates.html"]') && doc.querySelector('.work-article-links a[href="heat-sinks.html"]'), prefix + 'selected writing links to both distinct articles');
       assert(doc.querySelector('#work').compareDocumentPosition(doc.querySelector('#cooling-lab')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'work precedes educational content');
       assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'images have alternative text');
       assert([...doc.images].filter(image => image.loading !== 'lazy').every(image => image.complete && image.naturalWidth > 0), prefix + 'profile photo loads');

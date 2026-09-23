@@ -3,71 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Heat Sinks – Cooling Lab by Anagh Dave</title>
-  <meta name="description" content="Heat sink design principles and thermal management fundamentals, explained by thermal engineer Anagh Dave.">
+  <title>Heat Sinks: Passive and Fan-Cooled Design – Cooling Lab by Anagh Dave</title>
+  <meta name="description" content="An air-cooled heat-sink guide covering natural and forced convection, fin geometry, airflow, thermal budgets, heat pipes, and vapor chambers.">
   <link rel="canonical" href="https://anaghtheway.github.io/heat-sinks.html">
   <link rel="icon" href="anagh.jpg" type="image/jpeg">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Heat Sinks – Cooling Lab">
-  <meta property="og:description" content="Heat sink design principles and thermal management fundamentals, explained by thermal engineer Anagh Dave.">
+  <meta property="og:title" content="Heat Sinks: Passive and Fan-Cooled Design – Cooling Lab">
+  <meta property="og:description" content="An air-cooled heat-sink guide covering natural and forced convection, fin geometry, airflow, thermal budgets, heat pipes, and vapor chambers.">
   <meta property="og:url" content="https://anaghtheway.github.io/heat-sinks.html">
   <meta property="og:image" content="https://anaghtheway.github.io/anagh.jpg">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Heat Sinks – Cooling Lab">
-  <meta name="twitter:description" content="Heat sink design principles and thermal management fundamentals, explained by thermal engineer Anagh Dave.">
+  <meta name="twitter:title" content="Heat Sinks: Passive and Fan-Cooled Design – Cooling Lab">
+  <meta name="twitter:description" content="An air-cooled heat-sink guide covering natural and forced convection, fin geometry, airflow, thermal budgets, heat pipes, and vapor chambers.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="heat-sinks.css">
 </head>
 
-<body>
-<article>
+<body class="heat-sinks-page">
+<main>
+<article class="heat-sink-guide">
+  <p><a href="index.html#cooling-lab">Cooling Lab</a> / Air cooling</p>
+  <h1>Heat Sinks: Passive and Fan-Cooled Design</h1>
+  <p class="article-deck">A heat sink spreads heat into fins and transfers it to the surrounding air. Making it larger, adding more fins, or choosing a faster fan helps only if the full heat path improves.</p>
+  <p>By <a href="about.html">Anagh Dave</a></p>
+  <aside class="hs-note">
+    <p><strong>Two different cooling approaches:</strong> this article covers air-cooled heat sinks. The separate <a href="cold-plates.html">cold-plate article</a> covers heat transfer into liquid coolant, channel design, and hydraulic performance. A heat pipe or vapor chamber may contain liquid internally, but it does not turn a finned air cooler into a pumped liquid-cooling loop.</p>
+  </aside>
+  <nav class="hs-contents" aria-label="Article contents">
+    <strong>In this guide</strong>
+    <ol>
+      <li><a href="#heat-path">Follow the heat to the air</a></li>
+      <li><a href="#passive-cooling">Passive: natural convection</a></li>
+      <li><a href="#fan-cooling">Fan-cooled: forced convection</a></li>
+      <li><a href="#geometry">Fin geometry and construction</a></li>
+      <li><a href="#thermal-budget">A worked thermal budget</a></li>
+      <li><a href="#two-phase-spreaders">Heat pipes and vapor chambers</a></li>
+      <li><a href="#qualification">Mounting and qualification</a></li>
+      <li><a href="#references">References and further reading</a></li>
+    </ol>
+  </nav>
 
-  <h1>Heat Sinks: Fundamentals & Selection</h1>
-  <img class="article-hero" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200" alt="Circuit board with heat sink">
+  <h2 id="heat-path">1. Follow the heat from device to air</h2>
+  <p>The dominant top-side cooling path is <strong>junction &rarr; package or lid &rarr; TIM &rarr; heat-sink base &rarr; fins &rarr; air</strong>. Some heat may also leave through the board. The base spreads a concentrated load; the fins provide additional surface area for convection. Surface radiation also transfers heat to surrounding surfaces.</p>
+  <p>Fins do not create cooling capacity independently of their surroundings. Warm exhaust must leave the enclosure without being drawn back into the inlet. The relevant air temperature is the air approaching the sink, which can be warmer than the room because of upstream components or recirculation.</p>
+  <figure>
+    <div class="hs-diagram-scroll" tabindex="0" role="region" aria-label="Passive and forced-convection heat-sink diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" role="img" aria-labelledby="sink-diagram-title sink-diagram-description">
+        <title id="sink-diagram-title">Two ways to move air through a heat sink</title>
+        <desc id="sink-diagram-description">Left: a front view of a passive heat sink, with heat entering the base from a device below and buoyant air rising between vertical fins. Right: a top view of a forced-air heat sink, with supplied airflow moving horizontally along straight fin channels. The views differ to show each airflow path; geometry and arrow lengths are not quantitative.</desc>
+        <defs>
+          <marker id="hs-air-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#80dce8"/></marker>
+          <marker id="hs-heat-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#efbd7c"/></marker>
+        </defs>
+        <rect width="900" height="470" rx="12" fill="#0c1925"/>
+        <g font-family="Arial, sans-serif" fill="#edf3f8">
+          <text x="40" y="40" font-size="22" font-weight="bold">Natural convection</text>
+          <text x="480" y="40" font-size="22" font-weight="bold">Forced convection</text>
+          <text x="40" y="70" font-size="16" fill="#b5c8d7">Front view / buoyancy-driven flow</text>
+          <text x="480" y="70" font-size="16" fill="#b5c8d7">Top view / fan-driven flow</text>
+          <path d="M450 25 V435" stroke="#365064"/>
+          <g fill="#456176" stroke="#9cbed1">
+            <rect x="50" y="295" width="320" height="22"/>
+            <rect x="70" y="150" width="14" height="145"/>
+            <rect x="125" y="150" width="14" height="145"/>
+            <rect x="180" y="150" width="14" height="145"/>
+            <rect x="235" y="150" width="14" height="145"/>
+            <rect x="290" y="150" width="14" height="145"/>
+            <rect x="345" y="150" width="14" height="145"/>
+            <rect x="505" y="140" width="320" height="14"/>
+            <rect x="505" y="195" width="320" height="14"/>
+            <rect x="505" y="250" width="320" height="14"/>
+            <rect x="505" y="305" width="320" height="14"/>
+          </g>
+          <g fill="none" stroke="#80dce8" stroke-width="4" marker-end="url(#hs-air-arrow)">
+            <path d="M110 275 V110"/>
+            <path d="M220 275 V110"/>
+            <path d="M330 275 V110"/>
+            <path d="M480 175 H860"/>
+            <path d="M480 230 H860"/>
+            <path d="M480 285 H860"/>
+          </g>
+          <rect x="135" y="318" width="150" height="10" fill="#c7bcf1"/>
+          <rect x="135" y="353" width="150" height="40" rx="6" fill="#604634" stroke="#efbd7c"/>
+          <path d="M210 351 V331" stroke="#efbd7c" stroke-width="3" marker-end="url(#hs-heat-arrow)"/>
+          <text x="210" y="379" text-anchor="middle" font-size="17">Heat source</text>
+          <text x="298" y="336" font-size="15" fill="#c7bcf1">TIM</text>
+          <text x="665" y="360" text-anchor="middle" font-size="17">Air travels along fin channels.</text>
+          <text x="665" y="389" text-anchor="middle" font-size="16" fill="#b5c8d7">Fan, duct, and source not shown.</text>
+          <text x="40" y="446" font-size="15" fill="#b5c8d7">Blue: airflow. Gold: heat input. Different viewing directions; schematic, not to scale.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Original diagram contrasting buoyancy-driven and fan-driven flow. Passive performance depends strongly on installed orientation; forced-air performance depends on how much air actually reaches the channels. Scroll horizontally on small screens.</figcaption>
+  </figure>
 
-  <p>
-    Heat sinks dissipate thermal energy by increasing the surface area exposed to a cooling medium (usually air).
-    Choosing the right heat sink depends on power, airflow, and space constraints.
-  </p>
+  <h2 id="passive-cooling">2. Passive cooling: leave room for air to rise</h2>
+  <p>With natural convection, heated air becomes less dense and rises, drawing cooler air into the flow path. No fan supplies pressure, so tightly packed fins, blocked openings, or a nearby enclosure wall can restrict that circulation. For a vertical straight-fin arrangement, align the channels with the buoyant flow and leave an inlet below and an exit above. Other orientations need their own characterization. <a href="#ref-wakefield">[1]</a></p>
+  <p><strong>More fins are not automatically better.</strong> Adding fins increases nominal area but reduces the gaps available for air motion. Useful spacing depends on fin height, temperature rise, orientation, and enclosure geometry; there is no universal gap that fits every passive cooler.</p>
+  <p>Radiation may contribute appreciably, especially for high-emissivity surfaces. Anodizing or an appropriate coating can increase emissivity, but visible color alone is not a thermal specification. Radiative exchange depends on temperature, surface properties, and what the sink can see. It is a parallel heat-loss path, not another resistance to add in series with convection.</p>
+  <aside class="hs-note">
+    <p><strong>A passive rating needs context.</strong> Natural-convection resistance changes with temperature rise. Match the supplier's orientation, mounting, heat input, and surroundings rather than treating one K/W number as constant over every load.</p>
+  </aside>
 
-  <h2>Common Types</h2>
-
-  <div class="figure">
-    <img src="https://images.unsplash.com/photo-1562976540-1502c2145186?w=800" alt="Aluminum fins close-up">
-    <figcaption>Fin geometry directly impacts convective surface area and airflow resistance</figcaption>
-  </div>
-
+  <h2 id="fan-cooling">3. Fan cooling: use delivered airflow, not the fan label</h2>
+  <p>Forced convection can support a denser fin array, but the fan must overcome pressure losses through that array and the rest of the enclosure. The operating point is set by the fan pressure-flow curve and the system resistance curve. A free-air CFM rating does not tell you the flow through the fins.</p>
   <ul>
-    <li><strong>Extruded</strong> – low cost, moderate performance. Great for general-purpose cooling.</li>
-    <li><strong>Bonded fin</strong> – fins bonded to a base plate. Higher fin density possible.</li>
-    <li><strong>Skived</strong> – fins sliced from a single block. Excellent fin-to-base conductance.</li>
-    <li><strong>Forged/Die-cast</strong> – for high-volume, custom geometries.</li>
-    <li><strong>Vapor chamber base</strong> – spreads heat before reaching fins. Ideal for hot-spot mitigation.</li>
+    <li><strong>Prevent bypass:</strong> air may take a low-resistance gap around the heat sink instead of passing through it. A duct or shroud can improve flow delivery, but its own restriction must be included.</li>
+    <li><strong>Prevent recirculation:</strong> separate the cool inlet from warm exhaust. Measure air temperature at the sink entrance, not only at a distant room sensor.</li>
+    <li><strong>Match the velocity definition:</strong> a curve at a stated approach velocity is not automatically a curve at the channel velocity. Volumetric flow divided by the specified flow area gives average velocity; distinguish gross frontal area from open channel area.</li>
+    <li><strong>Design beyond the clean, full-speed condition:</strong> check filter loading, dust, speed control, fan tolerance, acoustics, and reduced-flow or fan-failure behavior.</li>
   </ul>
+  <p>For a steady air stream carrying heat Q<sub>air</sub> with approximately constant properties:</p>
+  <p class="hs-equation">T<sub>out</sub> &minus; T<sub>in</sub> = Q<sub>air</sub> / (m&#775;<sub>air</sub> c<sub>p,air</sub>)</p>
+  <p>This predicts bulk air warming, not device temperature. Heat transferred to the enclosure or by radiation is not necessarily part of Q<sub>air</sub> across that measurement section. Fan selection and measurement have their own <a href="fans.html">dedicated article</a>; here the focus is the heat sink and its integration.</p>
 
-  <h2>Design Parameters</h2>
-  <ul>
-    <li>Fin height, thickness, and spacing</li>
-    <li>Base thickness and spreading resistance</li>
-    <li>Natural vs. forced convection</li>
-    <li>Ducted vs. un-ducted airflow</li>
-    <li>Surface treatments (anodizing, black coating for radiation)</li>
-  </ul>
-
-  <h2>Thermal Resistance</h2>
-
-  <div class="figure">
-    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800" alt="Thermal imaging">
-    <figcaption>Thermal imaging reveals heat distribution across fin arrays</figcaption>
+  <h2 id="geometry">4. Choose geometry for both conduction and airflow</h2>
+  <p>A fin is not perfectly isothermal. Heat must conduct from the base toward its tip while leaving through its surfaces. A very tall, thin fin can have a relatively cool tip that contributes less than its area suggests. <strong>Fin efficiency</strong> describes this reduction relative to a fin entirely at base temperature.</p>
+  <p>Base thickness has a similar tradeoff: a thicker base can spread heat from a small source into more fins, but adds mass and through-thickness conduction distance. Copper generally conducts better than common aluminum alloys but is heavier. Neither material guarantees a better complete cooler at a fixed envelope and airflow.</p>
+  <div class="hs-table-scroll" tabindex="0" role="region" aria-label="Heat-sink construction tradeoffs">
+    <table>
+      <caption>Common construction options. Passive or forced operation depends on the full design, not just the manufacturing method.</caption>
+      <thead><tr><th scope="col">Construction</th><th scope="col">Useful characteristics</th><th scope="col">Design checks</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Extruded plate fins</th><td>Integral base and fins, often a practical starting point for straight flow paths.</td><td>Extrusion limits on spacing and fin aspect ratio; source-to-base spreading; installed flow direction.</td></tr>
+        <tr><th scope="row">Skived fins</th><td>Thin fins cut and raised from the base material without a separate fin-to-base joint.</td><td>Fin fragility, manufacturing tolerances, dust accumulation, and pressure drop at the intended density.</td></tr>
+        <tr><th scope="row">Bonded or brazed fins</th><td>Separate fins allow geometries beyond a single extrusion's manufacturing limits.</td><td>Joint resistance and integrity, differential expansion, and joining-process variation.</td></tr>
+        <tr><th scope="row">Folded or stacked fins</th><td>Compact thin-sheet arrays that can be combined with a base, heat pipes, or a vapor chamber.</td><td>Conduction into each fin, attachment quality, airflow distribution, and service cleaning.</td></tr>
+        <tr><th scope="row">Pin-fin arrays</th><td>Can accommodate flow from multiple directions; may be forged, cast, or machined.</td><td>Spacing, wake interactions, pressure drop, and actual orientation. Pins are not inherently better than straight fins.</td></tr>
+      </tbody>
+    </table>
   </div>
+  <p>Compare alternatives at a meaningful constraint: the same installed airflow, fan power, noise target, or system operating point. A denser sink tested at an artificially fixed high velocity may not outperform a more open design on the available fan.</p>
 
-  <p>
-    Total resistance = R<sub>spreading</sub> + R<sub>conduction</sub> + R<sub>convection</sub>.
-    Optimizing each component yields the best overall performance.
-  </p>
+  <h2 id="thermal-budget">5. Worked example: size the allowable resistance</h2>
+  <p>Define the measurement nodes before calculating. For this article, R<sub>s,a</sub> is the effective resistance from the specified sink-base temperature to <strong>inlet air</strong>. R<sub>c,s</sub> is the case-to-sink interface resistance, including TIM/contact effects. Their values must apply to the same footprint, assembly, and operating condition.</p>
+  <p class="hs-equation">R<sub>s,a,max</sub> = (T<sub>case,max</sub> &minus; T<sub>air,in</sub>) / Q &minus; R<sub>c,s</sub></p>
+  <div class="hs-worked-example">
+    <p><strong>Illustrative assumptions, not measured product data:</strong> <span id="sink-power">80</span> W flows through the top-side interface into the sink. The allowed case temperature is <span id="sink-case-limit">85</span> &deg;C, inlet air is <span id="sink-inlet">40</span> &deg;C, and interface resistance is <span id="sink-interface-resistance">0.10</span> K/W. Use approximately isothermal case/base nodes for this first-pass estimate.</p>
+    <p class="hs-equation">R<sub>total,max</sub> = (85 &minus; 40) / 80 = <span id="sink-total-budget">0.5625</span> K/W<br>
+      R<sub>s,a,max</sub> = 0.5625 &minus; 0.10 = <span id="sink-resistance-budget">0.4625</span> K/W</p>
+    <p>Suppose a candidate has a characterized R<sub>s,a</sub> of <span id="sink-candidate-resistance">0.40</span> K/W under the intended installed airflow and heat footprint:</p>
+    <p class="hs-equation">T<sub>base</sub> = 40 + 80 &times; 0.40 = <span id="sink-base-temperature">72</span> &deg;C<br>
+      T<sub>case</sub> = 72 + 80 &times; 0.10 = <span id="sink-case-temperature">80</span> &deg;C<br>
+      Nominal case margin = 85 &minus; 80 = <span id="sink-case-margin">5</span> K</p>
+    <p>That 5 K must still accommodate uncertainty, variation, aging, and off-nominal conditions. If inlet air rises to <span id="sink-warm-inlet">45</span> &deg;C and the assumed resistances remain unchanged, the estimated case reaches <span id="sink-warm-case">85</span> &deg;C: the nominal margin disappears.</p>
+    <p><strong>This is not a junction-temperature prediction.</strong> A device limited by junction temperature needs an appropriate package model and heat-path assessment. Do not add a datasheet junction-to-ambient value to this path, or assume every junction-to-case rating transfers to the application. <a href="#ref-ti">[2]</a></p>
+  </div>
+  <aside class="hs-note">
+    <p><strong>Keep the reference temperature consistent.</strong> A measured base-to-inlet-air resistance already reflects air warming within its test setup. Do not add the outlet-air rise again. Likewise, do not add spreading or convection terms a second time if the measured sink resistance already includes them.</p>
+    <p>If the calculated resistance budget is zero or negative, the specified air temperature and interface leave no usable sink budget. Revisit the load, interface, inlet conditions, or cooling architecture instead of selecting a nominally larger sink.</p>
+  </aside>
 
-  <a href="index.html">⬅ Back to Home</a>
+  <h2 id="two-phase-spreaders">6. Heat pipes and vapor chambers: improve the path to the fins</h2>
+  <p><strong>Heat pipes</strong> move heat from an evaporator near the source toward a cooler condenser, often in a remote fin stack. Working fluid evaporates, vapor transports energy, and condensate returns through the wick or with gravity assistance. Pipes can also distribute heat across a local base. They do not require an external circulation pump. <a href="#ref-heat-pipe">[3]</a></p>
+  <p><strong>Vapor chambers</strong> use the same evaporation/condensation principle in a flatter geometry to spread heat over an area. They can help engage more of a fin array when a small hot source creates significant spreading resistance in a solid base. <a href="#ref-vapor-chamber">[4]</a></p>
+  <p>Neither is an unlimited-conductivity part or a substitute for air-side heat rejection. Check transport capacity, source heat flux, wick design, orientation, operating temperature, thickness, bends or flattening, and mechanical loading. Performance can deteriorate when liquid return cannot sustain evaporation. Use supplier data for the actual geometry rather than a universal effective conductivity or guaranteed temperature reduction.</p>
 
+  <h2 id="qualification">7. Mount and test the complete assembly</h2>
+  <p>Choose TIM and preload for the package, not just for the heat sink. Control flatness, bond-line thickness, coverage, spring or fastener load, and component tolerances. Heavy sinks and remote fin stacks can impose bending loads during handling or vibration; support them without distorting the contact surface. See the <a href="tim.html">TIM guide</a> for material-specific failure modes.</p>
+  <ul>
+    <li><strong>Reproduce the enclosure:</strong> include the board, neighboring heat sources, ducts, covers, filters, and cables. Test passive units in their intended orientation and forced-air units at the delivered operating point.</li>
+    <li><strong>Define the sensors:</strong> measure local inlet air and the specified case/base locations. Account for thermocouple attachment errors; shiny metal can give misleading infrared readings without emissivity and reflection corrections.</li>
+    <li><strong>Test the envelope:</strong> steady and transient load, warm inlet air, fan-control states, restricted flow, and fan failure with appropriate protective controls. Added thermal mass delays heating but does not create steady-state dissipation capacity.</li>
+    <li><strong>Check repeatability:</strong> multiple assemblies, remounting, TIM aging, dust loading, and vibration where relevant. Record temperature uncertainty and mounting variation alongside the nominal result.</li>
+    <li><strong>Diagnose the bottleneck:</strong> a hot case with a relatively cool base suggests checking the interface; a hot base with cool remote fins suggests spreading or joint limitations. Confirm with measurements rather than treating either pattern as proof.</li>
+  </ul>
+  <p>A defensible heat-sink selection includes a thermal budget, documented air conditions, a mounting specification, and evidence that the assembled system meets its limits. If the air-side solution cannot meet the temperature, acoustic, or space constraints, compare it with <a href="cold-plates.html">liquid cold plates</a> at the system level rather than assuming liquid cooling is automatically necessary.</p>
+
+  <h2 id="references">8. References and further reading</h2>
+  <ol>
+    <li id="ref-wakefield"><a href="https://wakefieldthermal.com/thermal-solutions/air-cooled/">Wakefield Thermal: Air Cooled Heatsinks</a> &mdash; construction families and natural/forced convection considerations.</li>
+    <li id="ref-ti"><a href="https://www.ti.com/lit/pdf/spra953">Texas Instruments: Semiconductor and IC Package Thermal Metrics (PDF)</a> &mdash; definitions and limitations of package thermal metrics.</li>
+    <li id="ref-heat-pipe"><a href="https://celsiainc.com/heat-sink-blog/heat-pipe-design-guide/">Celsia: Heat Pipe Design Guide</a> &mdash; transport capacity, orientation, and integration for the supplier's stated heat-pipe configurations.</li>
+    <li id="ref-vapor-chamber"><a href="https://celsiainc.com/heat-sink-blog/vapor-chamber-cooling-design-guide/">Celsia: Vapor Chamber Cooling Design Guide</a> &mdash; two-phase spreading and mechanical integration within its stated product scope.</li>
+  </ol>
+  <p>The diagram and calculation are educational. They are not evidence of measured hardware performance or substitutes for component-specific design limits.</p>
+  <nav class="hs-related" aria-label="Related Cooling Lab pages">
+    <a href="index.html#cooling-lab">Back to Cooling Lab</a>
+    <a href="cold-plates.html">Cold plates: liquid cooling</a>
+    <a href="fans.html">Fans: air movers and testing</a>
+    <a href="tim.html">Thermal interface materials</a>
+    <a href="smt.html">Electronic packaging &amp; SMT</a>
+  </nav>
 </article>
+</main>
 </body>
 </html>

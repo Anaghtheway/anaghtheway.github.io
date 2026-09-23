@@ -52,7 +52,7 @@
       assert(doc.querySelector('.worked-example').textContent.includes('not a solder-void acceptance rule'), prefix + 'example limitations are explicit');
       assert(doc.querySelector('#ref-ti a').href === 'https://www.ti.com/lit/pdf/spra953', prefix + 'TI source linked');
       assert(doc.querySelector('#ref-nxp a').href === 'https://www.nxp.com/docs/en/application-note/AN1902.pdf', prefix + 'NXP source linked');
-      for (const href of ['index.html#cooling-lab', 'tim.html', 'cold-plates.html', 'chip.html']) {
+      for (const href of ['index.html#cooling-lab', 'tim.html', 'cold-plates.html', 'heat-sinks.html', 'chip.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' linked');
       }
     }
