@@ -27,7 +27,7 @@
   <h1>Cold Plates: From Heat Load to Hardware</h1>
   <p class="article-deck">A cold plate is not just a metal block with water running through it. It is a heat-spreading structure, a fluid network, and a mechanical interface that must work together.</p>
   <p>By <a href="about.html">Anagh Dave</a></p>
-  <p><a href="#catalog-examples">See real catalog cold plates: rolled-tube, exposed-tube, and friction-stir-welded designs.</a></p>
+  <p><a href="#plate-close-up">Explore a real cold plate in detail</a>, or <a href="#catalog-examples">compare rolled-tube, exposed-tube, and friction-stir-welded products</a>.</p>
   <aside class="cp-note">
     <p><strong>The design question:</strong> can this plate keep the component below its temperature limit, using the available coolant and pump, without creating mounting or reliability problems?</p>
     <p>This guide covers single-phase liquid cooling. For passive or fan-cooled fins, read the separate <a href="heat-sinks.html">air-cooled heat-sink guide</a>. Boiling cold plates require a different treatment of heat transfer, pressure drop, and stability. The worked example is illustrative, not a tested product or a validated device design.</p>
@@ -107,6 +107,23 @@
 
   <h2 id="construction">3. Construction determines more than conductivity</h2>
   <p>Manufacturing method and channel geometry are related, but not identical categories: a microchannel core can sit inside a brazed or bonded assembly. Select both the heat-transfer structure and a process that can reliably seal it.</p>
+  <h3 id="plate-close-up">A real cold plate, up close</h3>
+  <p>The <strong>Wakefield Thermal 120456</strong> is an exposed-tube, four-pass cold plate. This larger manufacturer photograph makes the copper routing and mounting face visible without removing a lid or inventing an internal cutaway.</p>
+  <figure class="cp-closeup">
+    <a class="cp-closeup-image" href="https://cdn11.bigcommerce.com/s-5cxhelh0x6/images/stencil/1280x1280/products/503/2302/120456__22130.1617740248.png?c=1" target="_blank" rel="noopener">
+      <img src="https://cdn11.bigcommerce.com/s-5cxhelh0x6/images/stencil/1280x1280/products/503/2302/120456__22130.1617740248.png?c=1" width="732" height="660" loading="lazy" decoding="async" alt="Detailed product photograph of the Wakefield Thermal 120456: four copper tube runs lie flush with an aluminum plate, with three external return bends and two projecting tube ends" aria-describedby="plate-close-up-caption">
+    </a>
+    <figcaption id="plate-close-up-caption">Manufacturer product photo: <a href="https://wakefieldthermal.com/wakefield-thermal-cold-plate-heatsink-exposed-120456/" target="_blank" rel="noopener">Wakefield Thermal 120456</a>. <a href="https://cdn11.bigcommerce.com/s-5cxhelh0x6/images/stencil/1280x1280/products/503/2302/120456__22130.1617740248.png?c=1" target="_blank" rel="noopener">Open the full-size image</a>. Image remains hosted by Wakefield Thermal; this is not a photograph of my own test hardware.</figcaption>
+  </figure>
+  <dl class="cp-closeup-features">
+    <div><dt>Aluminum mounting face</dt><dd>The broad face supports the heat source and spreads heat toward the coolant path. The source footprint, TIM, and mounting load determine which areas make useful thermal contact.</dd></div>
+    <div><dt>Four exposed copper runs</dt><dd>The straight copper strips are tube walls exposed at the contact face. They bring the source interface closer to the coolant without requiring all heat to first pass through the aluminum spreader.</dd></div>
+    <div><dt>Three return bends</dt><dd>The U-shaped bends connect successive runs into one four-pass route. These are not four independent parallel channels; coolant follows the tube from one connection to the other.</dd></div>
+    <div><dt>Two tube connections</dt><dd>The projecting open ends connect to the external loop. The photograph alone does not specify an inlet direction, fitting arrangement, or allowable hose load; use the supplier's integration guidance.</dd></div>
+  </dl>
+  <aside class="cp-note">
+    <p><strong>Exposed tube does not mean exposed coolant.</strong> The liquid stays inside the copper tube; the device contacts the outside through its interface. This photograph illustrates tube-in-plate construction, not the internal geometry of a microchannel cold plate.</p>
+  </aside>
   <h3 id="catalog-examples">What off-the-shelf cold plates look like</h3>
   <p>These are real catalog products, not concept designs. The supplier images show three different approaches to packaging the coolant path. Catalog availability does not guarantee current stock or suitability for a particular device; use the linked product pages for drawings, specifications, and availability.</p>
   <div class="cp-product-gallery">

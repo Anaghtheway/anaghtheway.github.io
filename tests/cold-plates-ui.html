@@ -60,6 +60,21 @@
         assert(productBounds[1].top >= productBounds[0].bottom && productBounds[2].top >= productBounds[1].bottom, prefix + 'product gallery stacks on mobile');
       }
       assert(doc.querySelector('.cp-image-note').textContent.includes('not shown to a common scale'), prefix + 'product scale caveat provided');
+      const closeup = doc.querySelector('.cp-closeup img');
+      assert(closeup && closeup.alt.includes('four copper tube runs') && closeup.getAttribute('aria-describedby') === 'plate-close-up-caption', prefix + 'detailed product photograph has accessible description');
+      closeup.loading = 'eager';
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error(prefix + 'Close-up image load timed out')), 15000);
+        closeup.decode().then(() => { clearTimeout(timeout); resolve(); }, error => { clearTimeout(timeout); reject(error); });
+      });
+      assert(closeup.naturalWidth >= 700 && closeup.naturalHeight >= 600, prefix + 'close-up loads at full catalog resolution');
+      const closeupBounds = closeup.getBoundingClientRect();
+      assert(Math.abs(closeupBounds.width / closeupBounds.height - closeup.naturalWidth / closeup.naturalHeight) < 0.001, prefix + 'close-up preserves full photo aspect ratio');
+      assert(width < 760 || closeupBounds.width >= 700, prefix + 'desktop photograph is at least 700px wide');
+      assert(doc.querySelector('.cp-closeup-image').href === closeup.src && doc.querySelector('.cp-closeup figcaption a[href="' + closeup.src + '"]'), prefix + 'image and caption open the full-size source');
+      assert(doc.querySelectorAll('.cp-closeup-features dt').length === 4 && doc.querySelectorAll('.cp-closeup-features dd').length === 4, prefix + 'four visible hardware features explained');
+      assert(doc.body.textContent.includes('Exposed tube does not mean exposed coolant'), prefix + 'tube wall and coolant boundary distinguished');
+      assert(doc.querySelector('a[href="#plate-close-up"]'), prefix + 'close-up directly accessible from introduction');
       const svg = doc.querySelector('svg[role="img"]');
       assert(svg && svg.querySelector('title') && svg.querySelector('desc'), prefix + 'diagram has title and description');
       assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)), prefix + 'diagram accessible-name references resolve');

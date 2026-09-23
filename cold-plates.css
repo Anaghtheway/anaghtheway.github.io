@@ -34,7 +34,12 @@
 .cp-product figcaption > strong, .cp-product figcaption > a { display: block; }
 .cp-product figcaption > strong { color: #edf3f8; font-size: 1rem; margin-bottom: 6px; }
 .cp-product small, .cp-image-note { color: #b5c8d7; font-size: 0.8rem; }
-#catalog-examples { scroll-margin-top: 24px; }
+#catalog-examples, #plate-close-up { scroll-margin-top: 24px; }
+.cp-closeup-image { display: block; background: #fff; border: 1px solid #365064; border-radius: 10px; overflow: hidden; }
+.cold-plate-guide .cp-closeup-image img { display: block; width: 100%; max-width: 732px; height: auto; margin-inline: auto; object-fit: contain; }
+.cp-closeup-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; margin: 24px 0; }
+.cp-closeup-features dt { font-weight: bold; color: #8fdee7; margin-bottom: 6px; }
+.cp-closeup-features dd { margin: 0; }
 .cp-related { display: flex; flex-wrap: wrap; gap: 12px 24px; border-top: 1px solid #365064; padding-top: 24px; margin-top: 36px; }
 @media (max-width: 800px) {
   .cp-product-gallery { grid-template-columns: minmax(0, 1fr); }
@@ -44,5 +49,6 @@
   .cold-plates-page .cold-plate-guide { width: calc(100% - 16px); padding: 28px 18px; margin-block: 16px; }
   .cold-plate-guide h1 { font-size: 1.9rem; }
   .cp-contents ol { columns: 1; }
+  .cp-closeup-features { grid-template-columns: minmax(0, 1fr); }
   .cp-contents, .cp-note { padding: 18px; }
 }
