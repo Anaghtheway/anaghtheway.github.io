@@ -36,6 +36,30 @@
       assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'all fragment links resolve');
       assert(new Set([...doc.querySelectorAll('[id]')].map(el => el.id)).size === doc.querySelectorAll('[id]').length, prefix + 'unique IDs');
       assert([...doc.querySelectorAll('link[rel="stylesheet"]')].some(link => link.getAttribute('href') === 'cold-plates.css' && link.sheet), prefix + 'article stylesheet loaded');
+      const products = [...doc.querySelectorAll('.cp-product')];
+      assert(products.length === 3, prefix + 'three real catalog products shown');
+      for (const product of products) product.querySelector('img').loading = 'eager';
+      doc.querySelector('.cp-product-gallery').scrollIntoView();
+      await new Promise(resolve => frame.contentWindow.requestAnimationFrame(resolve));
+      for (const product of products) {
+        const image = product.querySelector('img');
+        assert(image.alt.length > 30 && image.width > 0 && image.height > 0, prefix + 'product image has descriptive alt text and reserved dimensions');
+        assert(product.querySelector('figcaption small').textContent.includes('catalog'), prefix + 'product image has a source credit');
+        assert(product.querySelector('.cp-product-image').href === product.querySelector('figcaption > a').href, prefix + 'image and caption link to the same product');
+        assert(frame.contentWindow.getComputedStyle(image).objectFit === 'contain', prefix + 'product image is not cropped');
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error(prefix + 'Product image load timed out: ' + image.src)), 15000);
+          image.decode().then(() => { clearTimeout(timeout); resolve(); }, error => { clearTimeout(timeout); reject(error); });
+        });
+        assert(image.naturalWidth > 100 && image.naturalHeight > 100, prefix + 'supplier image loads and decodes');
+      }
+      const productBounds = products.map(product => product.getBoundingClientRect());
+      if (width > 800) {
+        assert(productBounds.every(bounds => Math.abs(bounds.top - productBounds[0].top) < 1), prefix + 'product gallery uses a desktop row');
+      } else {
+        assert(productBounds[1].top >= productBounds[0].bottom && productBounds[2].top >= productBounds[1].bottom, prefix + 'product gallery stacks on mobile');
+      }
+      assert(doc.querySelector('.cp-image-note').textContent.includes('not shown to a common scale'), prefix + 'product scale caveat provided');
       const svg = doc.querySelector('svg[role="img"]');
       assert(svg && svg.querySelector('title') && svg.querySelector('desc'), prefix + 'diagram has title and description');
       assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)), prefix + 'diagram accessible-name references resolve');
