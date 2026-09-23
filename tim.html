@@ -17,38 +17,7 @@
   <meta name="twitter:description" content="Explore the failure modes and selection tradeoffs of grease, liquid metal, graphene, graphite, pads, and phase-change thermal interfaces.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .tim-guide { line-height: 1.75; }
-    .tim-guide h1, .tim-guide h2, .tim-guide h3 { line-height: 1.3; }
-    .tim-guide h2 { margin-top: 44px; scroll-margin-top: 24px; }
-    .tim-guide li { margin-bottom: 10px; }
-    .tim-guide a { text-underline-offset: 4px; overflow-wrap: anywhere; }
-    .tim-guide a:focus-visible, .tim-guide [tabindex]:focus-visible { outline: 2px solid #83e6eb; outline-offset: 4px; }
-    .tim-guide figure, .tim-guide .figure { margin-inline: 0; }
-    .tim-guide figcaption { font-size: 0.8rem; color: #b5c8d7; }
-    .tim-guide img { max-width: 100%; height: auto; }
-    .tim-guide .walkout-diagram img { display: block; width: 100%; border-radius: 10px; }
-    .walkout-diagram figcaption { margin-top: 12px; line-height: 1.6; }
-    .tim-contents, .tim-note { padding: 20px 24px; background: #102130; border: 1px solid #365064; border-radius: 10px; margin: 24px 0; }
-    .tim-contents ul { columns: 2; padding-left: 20px; margin-bottom: 0; }
-    .tim-contents li { break-inside: avoid; }
-    .tim-note { border-left: 3px solid #71d8df; }
-    .tim-note p:first-child { margin-top: 0; }
-    .tim-note p:last-child { margin-bottom: 0; }
-    .tim-caution { border-left-color: #e5b277; }
-    .tim-equation { color: #9de5e8; font-family: Consolas, monospace; overflow-wrap: anywhere; }
-    .tim-table-scroll { overflow-x: auto; border: 1px solid #365064; border-radius: 8px; margin: 24px 0; }
-    .tim-guide table { width: 100%; min-width: 680px; border-collapse: collapse; background: #102130; font-size: 0.85rem; }
-    .tim-guide caption { text-align: left; padding: 16px; color: #bed2e1; }
-    .tim-guide th, .tim-guide td { text-align: left; vertical-align: top; padding: 14px; border-top: 1px solid #365064; }
-    .tim-guide th { color: #8fdee7; }
-    .tim-related { display: flex; flex-wrap: wrap; gap: 12px 24px; border-top: 1px solid #365064; padding-top: 24px; margin-top: 36px; }
-    @media (max-width: 600px) {
-      .tim-guide { padding: 28px 18px; }
-      .tim-contents ul { columns: 1; }
-      .tim-contents, .tim-note { padding: 18px; }
-    }
-  </style>
+  <link rel="stylesheet" href="tim.css">
 </head>
 
 <body>
@@ -184,39 +153,10 @@
   </ul>
 
   <h2 id="robotic-engagement">Case study: robotic cold-plate engagement and TIM &ldquo;walk-out&rdquo;</h2>
-  <p><strong>Illustrative scenario, not a report of measured test results:</strong> a robotic arm swivels a cold plate into position and presses it onto a die/TIM stack. If rotation or lateral motion continues <em>after first contact</em>, the interface sees shear as well as compression. A plausible failure mode is assembly-induced TIM migration, informally described here as &ldquo;walk-out.&rdquo;</p>
-  <figure class="walkout-diagram" id="walkout-diagram">
-    <a href="tim-walkout.svg" aria-label="Open full-size diagram of robotic cold-plate engagement and TIM walk-out">
-      <img src="tim-walkout.svg" width="1080" height="1030" loading="lazy" alt="Robot compression and post-contact twist compared with an aligned normal approach. A plan view shows possible sheet TIM displacement under asymmetric contact, leaving part of the die uncovered.">
-    </a>
-    <figcaption>Fz is the normal compressive load; Mz is the twisting moment about the surface normal. The shifted sheet is one possible outcome, not a prediction. <a href="tim-walkout.svg">Open full-size diagram</a> &middot; <a href="tim-walkout.svg" download>Download SVG</a></figcaption>
-  </figure>
-  <h3>What motion reaches the interface?</h3>
-  <ul>
-    <li><strong>Twist about the surface normal:</strong> relative plate rotation imposes tangential surface motion that grows with distance from the rotation axis. Friction or adhesion can transmit that motion into the TIM until it deforms or slips.</li>
-    <li><strong>Tilt or an off-center normal load:</strong> a bending moment creates uneven pressure. One edge can touch first and drag or locally squeeze the material as the plate seats.</li>
-    <li><strong>Repeated engagement:</strong> asymmetric loading, unequal adhesion at the two surfaces, or a biased approach/release path may produce incremental migration across cycles.</li>
-  </ul>
-  <p class="tim-equation">&delta; &asymp; r&theta; &nbsp; (small rotation; &theta; in radians)</p>
-  <p>For example, at <span id="walkout-radius">10 mm</span> from the axis, a <span id="walkout-angle">1&deg;</span> rotation produces approximately <strong id="walkout-travel">0.175 mm</strong> of tangential surface travel. This is a geometric estimate of plate motion, <strong>not a prediction of TIM migration distance</strong>; the material response depends on friction, adhesion, compliance, thickness, and load.</p>
-  <aside class="tim-note"><p><strong>Rotation alone does not establish directional walk-out.</strong> Perfectly centered rotation under symmetric conditions can shear the TIM without translating it in one direction. Net migration indicates an asymmetry or another mechanism to investigate. Also distinguish normal-load squeeze-out from shear-driven displacement and from classical thermal-cycle pump-out.</p></aside>
-  <h3>The material changes the outcome</h3>
-  <ul>
-    <li><strong>Graphene/graphite sheet:</strong> the sheet may slip or rotate as a whole, wrinkle, tear, or lose die coverage. Fragments or shifted edges can introduce electrical risk.</li>
-    <li><strong>Compliant pad:</strong> shear deformation, edge extrusion, and permanent displacement may change contact area and thickness.</li>
-    <li><strong>Grease or softened phase-change TIM:</strong> material may smear or redistribute, leaving locally depleted regions rather than moving as an intact sheet.</li>
-  </ul>
-  <h3>Reduce shear in the engagement sequence</h3>
-  <p>Complete the positioning swivel before contact, approach along the interface normal, and avoid commanded lateral or rotational correction while loaded. Review the release path too: swiveling away while the surfaces remain in contact can undo a clean engagement.</p>
-  <p>Consider alignment features or controlled fixture compliance that establish parallel contact without scrubbing the TIM. Any retention feature belongs outside the active interface unless its thermal and electrical effects are explicitly qualified. Do not assume that adding adhesive or increasing clamp force solves the problem: greater load can increase frictional shear, squeeze-out, or package stress. Respect the die, package, and board limits.</p>
-  <h3>A controlled comparison to test the hypothesis</h3>
-  <ol>
-    <li><strong>Compare motion profiles.</strong> Start with straight-down engagement versus swivel-under-contact at matched normal load, interface temperature, dwell time, and initial TIM placement. Control approach speed and document any remaining differences.</li>
-    <li><strong>Record contact loads and motion.</strong> Capture normal force, lateral forces, twisting/bending moments, and robot position around first contact and release where instrumentation permits. Distinguish measured motion from commanded motion.</li>
-    <li><strong>Track the material.</strong> Measure translation, rotation, coverage, and damage over repeated cycles. Use visible edges or a validated inspection method without placing markers in the thermal contact area. Disassembly can move the TIM and confound the observation.</li>
-    <li><strong>Correlate with thermal behavior.</strong> Compare interface resistance under matched power and cooling conditions, including measurement uncertainty and replicate assemblies. Define acceptable migration and coverage from the actual die geometry, electrical clearances, and thermal budget rather than an arbitrary universal limit.</li>
-  </ol>
-  <p>A reduction in migration when post-contact motion is removed would support the shear-displacement hypothesis, but inspection and load data are still needed to distinguish slip, material deformation, and squeeze-out.</p>
+  <aside class="tim-note" id="walkout-diagram">
+    <p>What happens when a robotic arm keeps swiveling a cold plate after it touches the TIM? Explore possible shear-induced migration, material-specific responses, and a controlled test approach in a standalone illustrative case study.</p>
+    <p><a href="tim-walkout.html">Read the full robotic TIM walk-out case study</a> &middot; <a href="tim-walkout.html#walkout-diagram">View the diagram</a></p>
+  </aside>
 
   <h2 id="qualification">A practical qualification plan</h2>
   <ol>

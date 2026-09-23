@@ -42,16 +42,9 @@
       assert(text.includes('do not apply gallium-based liquid-metal TIM to bare aluminum'), prefix + 'aluminum compatibility warning present');
       assert(text.includes('KryoSheet explicitly carries an electrical-conductivity warning'), prefix + 'carbon sheet electrical risk explicit');
       assert(text.includes('Graphene-filled grease') && text.includes('through-plane') && text.includes('in-plane'), prefix + 'carbon formulations and heat-flow directions distinguished');
-      assert(text.includes('Illustrative scenario, not a report of measured test results'), prefix + 'case study is not presented as measured evidence');
-      assert(text.includes('not a prediction of TIM migration distance'), prefix + 'surface travel is distinguished from TIM migration');
-      assert(text.includes('Rotation alone does not establish directional walk-out'), prefix + 'symmetry limitation is explicit');
-      const diagram = doc.querySelector('#walkout-diagram img');
-      assert(diagram?.getAttribute('src') === 'tim-walkout.svg' && diagram.alt.includes('asymmetric contact'), prefix + 'original walk-out schematic included with descriptive alternative text');
-      assert(doc.querySelector('#walkout-diagram a[download]')?.getAttribute('href') === 'tim-walkout.svg', prefix + 'reusable SVG download linked');
-      const radius = Number.parseFloat(doc.getElementById('walkout-radius').textContent);
-      const angle = Number.parseFloat(doc.getElementById('walkout-angle').textContent);
-      const travel = Number.parseFloat(doc.getElementById('walkout-travel').textContent);
-      assert(Math.abs(travel - radius * angle * Math.PI / 180) <= 0.0005, prefix + 'rotation example matches small-angle calculation to displayed precision');
+      assert(doc.querySelector('#walkout-diagram a[href="tim-walkout.html"]'), prefix + 'legacy case-study anchor links to standalone article');
+      assert(doc.querySelector('#walkout-diagram a[href="tim-walkout.html#walkout-diagram"]'), prefix + 'legacy diagram anchor links to new diagram location');
+      assert(!doc.getElementById('walkout-travel'), prefix + 'full case study extracted rather than duplicated');
       assert(doc.querySelectorAll('.tim-guide > ol:last-of-type > li[id^="ref-"]').length === 5, prefix + 'five source references present');
       assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'image alternative text retained');
       assert(doc.querySelectorAll('a[href^="https://creativecommons.org/licenses/"]').length === 3, prefix + 'all existing image license attributions retained');
@@ -63,11 +56,44 @@
       doc.querySelector('.tim-contents a[href="#robotic-engagement"]').click();
       assert(frame.contentWindow.location.hash === '#robotic-engagement', prefix + 'case study reachable from contents');
     }
+    async function checkCaseStudy(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px case study';
+      const loaded = new Promise(resolve => { frame.onload = resolve; });
+      frame.src = '../tim-walkout.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const prefix = 'Case study ' + width + 'px: ';
+      const text = doc.body.textContent;
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no horizontal overflow');
+      assert(doc.querySelectorAll('h1').length === 1, prefix + 'standalone article heading');
+      assert(doc.querySelector('link[rel="canonical"]').href === 'https://anaghtheway.github.io/tim-walkout.html', prefix + 'distinct canonical URL');
+      assert(doc.querySelector('meta[property="og:url"]').content === 'https://anaghtheway.github.io/tim-walkout.html', prefix + 'distinct sharing URL');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'section anchors resolve');
+      assert(text.includes('Illustrative scenario, not a report of measured test results'), prefix + 'case study is not presented as measured evidence');
+      assert(text.includes('not a prediction of TIM migration distance'), prefix + 'surface travel is distinguished from TIM migration');
+      assert(text.includes('Rotation alone does not establish directional walk-out'), prefix + 'symmetry limitation is explicit');
+      const diagram = doc.querySelector('#walkout-diagram img');
+      assert(diagram?.getAttribute('src') === 'tim-walkout.svg' && diagram.alt.includes('asymmetric contact'), prefix + 'schematic includes descriptive alternative text');
+      assert(diagram.complete && diagram.naturalWidth > 0, prefix + 'SVG loads');
+      assert(doc.querySelector('#walkout-diagram a[download]')?.getAttribute('href') === 'tim-walkout.svg', prefix + 'SVG download retained');
+      const radius = Number.parseFloat(doc.getElementById('walkout-radius').textContent);
+      const angle = Number.parseFloat(doc.getElementById('walkout-angle').textContent);
+      const travel = Number.parseFloat(doc.getElementById('walkout-travel').textContent);
+      assert(Math.abs(travel - radius * angle * Math.PI / 180) <= 0.0005, prefix + 'geometric example preserved');
+      assert(doc.querySelector('a[href="tim.html"]') && doc.querySelector('a[href="index.html#cooling-lab"]'), prefix + 'return navigation present');
+      assert(frame.contentWindow.getComputedStyle(doc.querySelector('article')).lineHeight === '28px', prefix + 'shared TIM stylesheet applied');
+    }
     (async () => {
       try {
         await check(1280);
         await check(390);
         await check(320);
+        await checkCaseStudy(1280);
+        await checkCaseStudy(390);
+        await checkCaseStudy(320);
         document.body.dataset.result = 'passed';
         document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
       } catch (error) {
