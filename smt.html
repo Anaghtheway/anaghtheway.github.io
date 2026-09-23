@@ -4,58 +4,221 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Electronic Packaging &amp; SMT – Cooling Lab by Anagh Dave</title>
-  <meta name="description" content="PCB, substrate, solder joints, and surface-mount technology in electronic packaging, explained by thermal engineer Anagh Dave.">
+  <meta name="description" content="A practical guide to electronic packaging and SMT: package heat paths, reflow assembly, thermal vias, solder voiding, thermal metrics, and reliability.">
   <link rel="canonical" href="https://anaghtheway.github.io/smt.html">
   <link rel="icon" href="anagh.jpg" type="image/jpeg">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Electronic Packaging &amp; SMT – Cooling Lab">
-  <meta property="og:description" content="PCB, substrate, solder joints, and surface-mount technology in electronic packaging, explained by thermal engineer Anagh Dave.">
+  <meta property="og:description" content="Package heat paths, SMT assembly, thermal vias, solder quality, and reliability, with a worked thermal-resistance example.">
   <meta property="og:url" content="https://anaghtheway.github.io/smt.html">
   <meta property="og:image" content="https://anaghtheway.github.io/anagh.jpg">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Electronic Packaging &amp; SMT – Cooling Lab">
-  <meta name="twitter:description" content="PCB, substrate, solder joints, and surface-mount technology in electronic packaging, explained by thermal engineer Anagh Dave.">
+  <meta name="twitter:description" content="Package heat paths, SMT assembly, thermal vias, solder quality, and reliability, with a worked thermal-resistance example.">
   <meta name="twitter:image" content="https://anaghtheway.github.io/anagh.jpg">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .packaging-guide { line-height: 1.75; }
+    .packaging-guide h1, .packaging-guide h2, .packaging-guide h3 { line-height: 1.3; }
+    .packaging-guide h2 { margin-top: 48px; scroll-margin-top: 24px; }
+    .packaging-guide h3 { margin-top: 28px; }
+    .packaging-guide li { margin-bottom: 10px; }
+    .packaging-guide a { text-underline-offset: 4px; }
+    .packaging-guide a:focus-visible, .packaging-guide [tabindex]:focus-visible { outline: 2px solid #83e6eb; outline-offset: 4px; }
+    .guide-intro { font-size: 1.1rem; color: #c3d5e3; }
+    .guide-contents, .guide-note, .worked-example { border: 1px solid #365064; background: #102130; border-radius: 10px; padding: 20px 24px; margin: 24px 0; }
+    .guide-contents strong { display: block; margin-bottom: 10px; }
+    .guide-contents ol { columns: 2; column-gap: 30px; padding-left: 22px; margin: 0; }
+    .guide-contents li { break-inside: avoid; }
+    .guide-note { border-left: 3px solid #71d8df; }
+    .guide-note p, .worked-example p:last-child { margin-bottom: 0; }
+    .guide-note p:first-child { margin-top: 0; }
+    .packaging-guide .figure { margin-inline: 0; }
+    .diagram-scroll { overflow-x: auto; }
+    .package-diagram { box-sizing: border-box; display: block; width: 100%; min-width: 620px; height: auto; background: #0c1c2a; border: 1px solid #365064; border-radius: 10px; }
+    .table-scroll { overflow-x: auto; margin: 24px 0; border: 1px solid #365064; border-radius: 8px; }
+    .packaging-guide table { width: 100%; min-width: 620px; border-collapse: collapse; font-size: 0.9rem; background: #102130; }
+    .packaging-guide caption { text-align: left; padding: 16px; color: #bad0e0; }
+    .packaging-guide th, .packaging-guide td { text-align: left; vertical-align: top; padding: 14px 16px; border-top: 1px solid #365064; }
+    .packaging-guide th { color: #8fdee7; }
+    .packaging-guide td:first-child { font-weight: 600; }
+    .equation { font-family: Consolas, monospace; color: #9de5e8; padding: 12px 0; overflow-wrap: anywhere; }
+    .worked-example h3 { margin-top: 0; }
+    .process-list { padding-left: 26px; }
+    .process-list li::marker { color: #8fdee7; font-weight: bold; }
+    .guide-footer { display: flex; flex-wrap: wrap; gap: 12px 26px; margin-top: 40px; border-top: 1px solid #365064; padding-top: 24px; }
+    @media (max-width: 600px) {
+      .packaging-guide { padding: 28px 18px; }
+      .guide-contents ol { columns: 1; }
+      .guide-contents, .guide-note, .worked-example { padding: 18px; }
+    }
+  </style>
 </head>
 
 <body>
-<article>
+<main>
+<article class="packaging-guide">
 
+  <a href="index.html#cooling-lab">Cooling Lab / Technical notes</a>
   <h1>Electronic Packaging &amp; SMT</h1>
-  <img class="article-hero" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800" alt="PCB and electronic packaging">
+  <p class="guide-intro">Cooling does not begin at the heat sink. It begins inside the package, where the die, interfaces, interconnects, and board determine how heat reaches the rest of the system.</p>
+  <p>Electronic packaging provides electrical connections, mechanical support, and protection for the silicon. <strong>Surface-mount technology (SMT)</strong> is the process of assembling components onto the surface of a printed circuit board (PCB). Their thermal behavior is linked, but package construction and board assembly are not the same thing.</p>
 
-  <p>
-    The foundation of the thermal stack — the substrate, PCB, and solder joints that connect
-    the chip to the rest of the system. Packaging affects both electrical performance and thermal pathways.
-  </p>
+  <nav class="guide-contents" aria-label="On this page">
+    <strong>In this guide</strong>
+    <ol>
+      <li><a href="#heat-paths">Follow the heat paths</a></li>
+      <li><a href="#package-types">Understand the package types</a></li>
+      <li><a href="#assembly">From solder paste to assembled board</a></li>
+      <li><a href="#board-design">Design the board-side heat path</a></li>
+      <li><a href="#resistance-example">Work through a resistance estimate</a></li>
+      <li><a href="#thermal-metrics">Read thermal metrics correctly</a></li>
+      <li><a href="#reliability">Connect temperature to reliability</a></li>
+      <li><a href="#advanced-packaging">Think beyond a single die</a></li>
+      <li><a href="#checklist">Review a design</a></li>
+      <li><a href="#references">References and further reading</a></li>
+    </ol>
+  </nav>
 
-  <h2>Surface Mount Technology (SMT)</h2>
+  <h2 id="heat-paths">1. Follow the heat paths</h2>
+  <p>Heat can leave a device through its top surface, through the board, and through its other exposed surfaces. The fraction taking each route depends on the package, PCB stack-up, mounting interfaces, and cooling boundary conditions. Treating every physical layer as one series resistance misses these parallel paths.</p>
+  <figure class="figure">
+    <div class="diagram-scroll" role="region" tabindex="0" aria-label="Package cross-section, horizontally scrollable">
+    <svg class="package-diagram" viewBox="0 0 760 420" role="img" aria-labelledby="package-title package-description">
+      <title id="package-title">Simplified heat paths in a lidded flip-chip BGA package</title>
+      <desc id="package-description">A cooling device sits above an external thermal interface, lid, internal interface, and silicon die. Bumps and underfill connect the die to a package substrate. Solder balls connect the substrate to the PCB. Heat can flow upward to the cooler or downward into the board.</desc>
+      <defs>
+        <marker id="package-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#8ee0e5"/></marker>
+      </defs>
+      <g font-family="Arial, sans-serif" font-size="16" text-anchor="middle">
+        <rect x="65" y="25" width="345" height="50" rx="6" fill="#16415a" stroke="#71d8df"/><text x="237" y="56" fill="#edf3f8">Heat sink / cold plate</text>
+        <rect x="85" y="85" width="305" height="24" rx="3" fill="#4b3e65"/><text x="237" y="102" fill="#edf3f8">External TIM</text>
+        <rect x="85" y="117" width="305" height="32" rx="4" fill="#354e62"/><text x="237" y="139" fill="#edf3f8">Lid / heat spreader</text>
+        <rect x="135" y="158" width="205" height="22" rx="3" fill="#4b3e65"/><text x="237" y="174" fill="#edf3f8">Internal interface</text>
+        <rect x="135" y="189" width="205" height="38" rx="4" fill="#693f30" stroke="#edab86"/><text x="237" y="214" fill="#fff0e5">Silicon die</text>
+        <rect x="120" y="235" width="235" height="25" fill="#263e52"/>
+        <g fill="#afc6d7"><circle cx="145" cy="247" r="6"/><circle cx="182" cy="247" r="6"/><circle cx="219" cy="247" r="6"/><circle cx="256" cy="247" r="6"/><circle cx="293" cy="247" r="6"/><circle cx="330" cy="247" r="6"/></g>
+        <rect x="65" y="269" width="345" height="36" rx="4" fill="#224938"/><text x="237" y="293" fill="#edf3f8">Package substrate</text>
+        <g fill="#a5bdd0"><circle cx="100" cy="322" r="9"/><circle cx="155" cy="322" r="9"/><circle cx="210" cy="322" r="9"/><circle cx="265" cy="322" r="9"/><circle cx="320" cy="322" r="9"/><circle cx="375" cy="322" r="9"/></g>
+        <rect x="40" y="341" width="395" height="44" rx="4" fill="#254e42"/><text x="237" y="369" fill="#edf3f8">PCB copper, dielectric, and vias</text>
+      </g>
+      <g fill="none" stroke="#8ee0e5" stroke-width="2.5" marker-end="url(#package-arrow)">
+        <path d="M345 202H468V50H418"/>
+        <path d="M345 217H493V363H443"/>
+      </g>
+      <g font-family="Arial, sans-serif" font-size="16" fill="#bdd3e1">
+        <text x="512" y="76">Top-side cooling</text><text x="512" y="98">through the lid and TIM</text>
+        <text x="512" y="308">Board-side heat path</text><text x="512" y="330">through interconnects</text><text x="512" y="352">and PCB spreading</text>
+        <text x="512" y="253" font-size="13">Bumps + underfill</text>
+        <text x="50" y="406" font-size="13">Illustrative cross-section; not to scale. Construction varies by device.</text>
+      </g>
+    </svg>
+    </div>
+    <figcaption>A lidded flip-chip BGA is one example, not a universal package stack. An exposed-pad QFN may rely much more strongly on heat transfer into the PCB.</figcaption>
+  </figure>
+  <p>A top-side cooler needs a continuous path through the die-to-lid interface, lid, external <a href="tim.html">thermal interface material (TIM)</a>, and cooler. On the board side, heat must spread from the package into copper and ultimately reach air, a chassis, or another cooling surface. A copper plane spreads heat; it is not, by itself, a heat sink to a fixed temperature.</p>
+
+  <h2 id="package-types">2. Understand the package types</h2>
+  <p><strong>BGA, LGA, and QFN describe package connection formats.</strong> Flip-chip and wire bonding describe how a die is interconnected inside a package. For example, a BGA package can contain either a flip-chip or wire-bonded die.</p>
+  <div class="table-scroll" role="region" tabindex="0" aria-label="Package comparison, horizontally scrollable">
+    <table>
+      <caption>Package and interconnect choices: what changes for thermal design</caption>
+      <thead><tr><th scope="col">Type</th><th scope="col">What it means</th><th scope="col">What to check</th></tr></thead>
+      <tbody>
+        <tr><td>BGA</td><td>Ball grid array: solder balls join package lands to the PCB.</td><td>Top-side versus board-side cooling, substrate spreading, ball layout, and solder-joint fatigue. Hidden joints often need X-ray inspection.</td></tr>
+        <tr><td>LGA</td><td>Land grid array: flat package lands mate to a socket or are soldered to a board, depending on the device.</td><td>Do not assume every LGA is socketed. For socketed devices, check retention loads, board deflection, and the supplier's mechanical limits.</td></tr>
+        <tr><td>QFN / DFN</td><td>Quad / dual flat no-lead packages use underside terminations; many include an exposed pad.</td><td>Exposed-pad attachment, solder coverage, and PCB copper/vias can strongly affect the heat path. Follow the specified pad's electrical connection.</td></tr>
+        <tr><td>Flip-chip</td><td>The die's active face connects to a substrate or interposer through bumps or pillars.</td><td>Bump geometry, underfill, die-backside cooling, and expansion mismatch. The interconnect process depends on the package generation.</td></tr>
+        <tr><td>Wire-bonded die</td><td>Fine wires connect die pads to a leadframe or substrate.</td><td>Die attach, paddle/substrate construction, and mold compound often matter more thermally than the fine bond wires.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="assembly">3. From solder paste to assembled board</h2>
+  <p>SMT assembly quality can change the thermal path even when the CAD geometry is unchanged. A typical reflow-based process includes:</p>
+  <ol class="process-list">
+    <li><strong>Prepare and verify.</strong> Confirm the land pattern, board finish, component orientation, solder paste, and moisture-sensitive handling requirements. Use the component supplier's assembly guidance.</li>
+    <li><strong>Print solder paste.</strong> Stencil thickness and aperture geometry set the deposited volume. Segmented apertures on large exposed pads can help control solder distribution and process behavior; the pattern is package-specific.</li>
+    <li><strong>Inspect and place.</strong> Solder-paste inspection checks the deposit before pick-and-place positions the components. Paste volume, placement accuracy, and package coplanarity affect joint formation.</li>
+    <li><strong>Reflow.</strong> Develop a profile for the actual board, paste alloy, and component limits. Thermocouples on representative locations reveal differences between small parts and high-thermal-mass areas. There is no single peak temperature or soak time suitable for every assembly.</li>
+    <li><strong>Inspect and verify.</strong> Automated optical inspection checks visible features; X-ray helps inspect hidden solder joints and voids. Electrical testing checks function, while thermal testing evaluates whether the cooling path performs as intended.</li>
+  </ol>
+  <aside class="guide-note"><p><strong>A void percentage is not the whole story.</strong> Void location, size, and distribution matter, especially beneath a localized hot spot. Use the applicable package guidance and product acceptance criteria rather than treating one percentage as a universal pass/fail limit. <a href="#ref-nxp">[2]</a></p></aside>
+
+  <h2 id="board-design">4. Design the board-side heat path</h2>
+  <h3>Copper spreading and thermal vias</h3>
+  <p>PCB copper conducts heat much more effectively than the surrounding laminate. Connected copper regions and thermal vias can carry heat from an exposed pad into internal or backside planes. Their benefit depends on where the heat can go next: a small enclosed board with little airflow may still run hot.</p>
   <ul>
-    <li><strong>BGA (Ball Grid Array)</strong> – Solder balls connect the chip package to the PCB. Widely used for processors and FPGAs.</li>
-    <li><strong>LGA (Land Grid Array)</strong> – Contact pads with spring-loaded pins in the socket. Common in server CPUs.</li>
-    <li><strong>Flip Chip</strong> – Die is flipped and directly bonded to the substrate via micro-bumps.</li>
-    <li><strong>Wire Bonding</strong> – Traditional method using thin gold/copper wires. Still used in many IC packages.</li>
+    <li><strong>Vias are not all solid copper cylinders.</strong> For a conventional plated through-hole, the copper barrel is a thin annulus. Its axial conduction area is approximately &pi;(D<sub>outer</sub><sup>2</sup> &minus; D<sub>inner</sub><sup>2</sup>)/4, not the area of the entire hole.</li>
+    <li><strong>Filled does not necessarily mean copper-filled.</strong> Resin fill and copper fill have different thermal properties. Use the actual construction, plating thickness, and connected layer geometry in a model.</li>
+    <li><strong>Via-in-pad is also an assembly decision.</strong> Open holes can wick solder from the joint. Discuss filling, capping, tenting, and stencil design with the board fabricator and assembler; follow package-specific recommendations.</li>
+    <li><strong>Thermal and electrical needs interact.</strong> Clearances, isolated nets, thermal-relief spokes, and copper discontinuities can restrict spreading. Never connect an exposed pad to an arbitrary plane just because it improves a thermal model.</li>
+  </ul>
+  <h3>Underfill, die attach, and contact</h3>
+  <p>Underfill helps redistribute mechanical stresses around die interconnects, but its conductivity, coefficient of thermal expansion (CTE), modulus, and adhesion all matter. It is not automatically a high-performance thermal interface. Likewise, a thin bond line is useful only if the assembly still achieves adequate coverage, contact, and reliability.</p>
+
+  <h2 id="resistance-example">5. Work through a resistance estimate</h2>
+  <p>For uniform, one-dimensional conduction through a layer:</p>
+  <p class="equation">R<sub>cond</sub> = t / (kA) &nbsp; [K/W]<br>&Delta;T = Q<sub>path</sub> R<sub>cond</sub></p>
+  <p>Here, <em>t</em> is thickness in meters, <em>k</em> is thermal conductivity in W/(m&middot;K), and <em>A</em> is conduction area in m&sup2;. Q<sub>path</sub> is the heat passing through that layer, not automatically the device's total dissipation.</p>
+  <div class="worked-example">
+    <h3>Illustrative exposed-pad solder layer</h3>
+    <p>Assume a 5 mm &times; 5 mm solder contact, a 75 &micro;m bond-line thickness, k = 50 W/(m&middot;K), and 10 W passing through the joint. These are example inputs, not a material specification or assembly recommendation.</p>
+    <p class="equation">A = 25 &times; 10<sup>&minus;6</sup> m&sup2;<br>R = (75 &times; 10<sup>&minus;6</sup>) / (50 &times; 25 &times; 10<sup>&minus;6</sup>)<br>R = <strong id="solder-resistance">0.060 K/W</strong><br>&Delta;T = 10 &times; 0.060 = <strong id="solder-rise">0.60 K</strong></p>
+    <p>If a simplified model treats 20% of the area as completely nonconducting, A<sub>effective</sub> = 0.8A. The estimated resistance becomes <strong id="void-resistance">0.075 K/W</strong>, and the temperature rise becomes <strong id="void-rise">0.75 K</strong>.</p>
+    <p><strong>Limit of this estimate:</strong> it ignores spreading, contact resistance, nonuniform heat flux, and the actual shape of voids. It is an area-loss sensitivity calculation, not a solder-void acceptance rule. The complete package and PCB can contribute much more resistance than this single layer.</p>
+  </div>
+
+  <h2 id="thermal-metrics">6. Read thermal metrics correctly</h2>
+  <p>Datasheet thermal numbers only make sense with their test conditions. TI's thermal-metrics guide distinguishes thermal resistances from characterization parameters and explains why board and boundary conditions matter. <a href="#ref-ti">[1]</a></p>
+  <ul>
+    <li><strong>&theta;<sub>JA</sub>, junction-to-ambient:</strong> reflects a device on a specified test board in a specified environment. It is not an intrinsic package constant that can be transferred unchanged to a different PCB or enclosure.</li>
+    <li><strong>&theta;<sub>JC</sub>, junction-to-case:</strong> is measured with a controlled heat path to a specified case surface. Check whether the reported value refers to the top or bottom and whether the real cooling arrangement resembles that condition.</li>
+    <li><strong>&psi;<sub>JT</sub>, junction-to-top characterization parameter:</strong> relates junction temperature to measured package-top temperature using total device power. It is not a pure thermal resistance because heat leaves by other routes too.</li>
+  </ul>
+  <p class="equation">T<sub>j</sub> &asymp; T<sub>top</sub> + &psi;<sub>JT</sub> P<sub>device</sub></p>
+  <p>Use that estimate only with a compatible characterization condition and the specified top-surface measurement location. An infrared camera needs appropriate emissivity treatment; a thermocouple's attachment can disturb a small package's temperature. Neither directly measures an internal junction hot spot.</p>
+
+  <h2 id="reliability">7. Connect temperature to reliability</h2>
+  <p>Silicon, organic substrates, solder, copper, and PCB laminates expand differently. Temperature changes therefore create differential displacement. A first-order free-expansion estimate is:</p>
+  <p class="equation">&Delta;L<sub>mismatch</sub> &asymp; (&alpha;<sub>1</sub> &minus; &alpha;<sub>2</sub>) L &Delta;T</p>
+  <p>This explains why CTE mismatch, temperature swing, and distance from a package's neutral point matter. It is <strong>not</strong> a solder-fatigue life model: real joints experience constraint, creep, plastic deformation, and a time-dependent temperature history.</p>
+  <ul>
+    <li><strong>Thermal cycling:</strong> evaluate solder fatigue, interfacial delamination, and changes in thermal contact under relevant cycle ranges, dwell times, and ramp rates.</li>
+    <li><strong>Warpage and mounting:</strong> package/board bending can affect joint formation during reflow and cooler contact during operation. Cooler preload must remain within device and board limits.</li>
+    <li><strong>Moisture and reflow:</strong> follow moisture-sensitivity handling and storage instructions. Absorbed moisture can contribute to package damage during heating.</li>
+    <li><strong>Failure investigation:</strong> compare electrical symptoms, measured temperature changes, inspection images, and, when appropriate, cross-sections rather than attributing every failure to overheating.</li>
   </ul>
 
-  <h2>Thermal Considerations in Packaging</h2>
+  <h2 id="advanced-packaging">8. Think beyond a single die</h2>
+  <p>In <strong>2.5D packaging</strong>, dies sit side by side on an interposer or connect through a bridge structure. In <strong>3D packaging</strong>, dies are stacked vertically. Both can create thermal coupling: one die's temperature depends on its neighbors' power as well as its own.</p>
+  <p>A single average package power is often insufficient for a useful model. Start with a per-die power map, die dimensions, interface properties, and realistic cooling boundaries. Consider heat spreading through the lid, constrained heat-removal routes from buried dies, and different allowable temperatures for logic and memory.</p>
+  <p>More detailed simulation is useful only when its assumptions are credible. Correlate the model with measurements, account for sensor location and uncertainty, and examine multiple workloads rather than tuning to one operating point. The external <a href="cold-plates.html">cold plate or heat sink</a> remains part of that coupled system.</p>
+
+  <h2 id="checklist">9. A practical design-review checklist</h2>
   <ul>
-    <li>Solder joint thermal resistance and reliability under thermal cycling</li>
-    <li>Substrate material (organic vs. ceramic) and its thermal conductivity</li>
-    <li>Thermal vias in PCBs for heat conduction to bottom layers</li>
-    <li>Underfill materials to reduce stress and improve thermal contact</li>
-    <li>CTE mismatch between die, substrate, and PCB causing warpage</li>
+    <li><strong>Inputs:</strong> power per device/die, operating and transient loads, temperature limits, ambient/coolant conditions, and manufacturing tolerances.</li>
+    <li><strong>Package:</strong> cross-section, dominant heat paths, interface properties, supplier thermal-model guidance, and mechanical loading limits.</li>
+    <li><strong>Board:</strong> stack-up, copper connectivity, thermal-via construction, available spreading area, and the eventual heat-rejection surface.</li>
+    <li><strong>Assembly:</strong> land pattern, stencil, paste, moisture controls, measured reflow profile, and inspection/acceptance criteria agreed with manufacturing.</li>
+    <li><strong>Validation:</strong> defined sensor locations, calibrated instruments, measurement uncertainty, repeatability, and model-to-test comparisons over relevant conditions.</li>
+    <li><strong>Reliability:</strong> thermal cycling, board strain, mounting loads, and inspection of interfaces after representative stresses.</li>
   </ul>
 
-  <h2>Advanced Packaging</h2>
-  <p>
-    Technologies like TSMC's CoWoS, Intel's EMIB, and 2.5D/3D packaging create
-    new thermal challenges with multiple dies on a single interposer, requiring
-    innovative cooling approaches at the package level.
-  </p>
-
-  <a href="index.html">⬅ Back to Home</a>
+  <h2 id="references">10. References and further reading</h2>
+  <ol>
+    <li id="ref-ti"><a href="https://www.ti.com/lit/pdf/spra953">Texas Instruments: Semiconductor and IC Package Thermal Metrics (SPRA953, PDF)</a> &mdash; interpretation and limitations of package thermal metrics.</li>
+    <li id="ref-nxp"><a href="https://www.nxp.com/docs/en/application-note/AN1902.pdf">NXP: Assembly guidelines for QFN and SON packages (AN1902, PDF)</a> &mdash; board design, solder-paste printing, reflow, and inspection. Apply its guidance within its stated package scope.</li>
+  </ol>
+  <p>Use the current datasheet and assembly guidance for the specific device alongside these general references. The illustrations and worked example here are educational, not a qualified product design.</p>
+  <nav class="guide-footer" aria-label="Related Cooling Lab pages">
+    <a href="index.html#cooling-lab">Back to Cooling Lab</a>
+    <a href="tim.html">Thermal interface materials</a>
+    <a href="cold-plates.html">Cold plates &amp; cooling devices</a>
+    <a href="chip.html">Chips &amp; heat sources</a>
+  </nav>
 
 </article>
+</main>
 </body>
 </html>
