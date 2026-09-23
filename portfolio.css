@@ -110,7 +110,6 @@
 .portfolio-footer span { padding: 0 10px; color: #7dcfdc; }
 .portfolio-footer a { white-space: nowrap; text-decoration: none; }
 .about-page { animation: none; background: radial-gradient(ellipse at 85% 5%, #153142, #08131e 60%); }
-.about-page .about-loop { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.45; pointer-events: none; z-index: 0; }
 .about-page > header, .about-page > main, .about-page > footer { position: relative; z-index: 1; }
 .portfolio-nav nav a[aria-current="page"] { color: #92e1e6; text-decoration: underline; text-underline-offset: 7px; }
 .about-hero { display: grid; grid-template-columns: 1.3fr 0.85fr; align-items: center; gap: 72px; padding-block: 80px; }
@@ -178,6 +177,5 @@
   .portfolio-footer p { margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .about-page .about-loop { display: none; }
   .portfolio-page *, .portfolio-page *::before, .portfolio-page *::after { animation: none !important; transition: none !important; }
 }

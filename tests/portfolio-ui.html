@@ -78,7 +78,7 @@
       assert(doc.documentElement.scrollWidth <= width, prefix + 'no horizontal overflow');
       assert(doc.querySelectorAll('h1').length === 1 && doc.querySelector('h1').textContent.includes('Anagh'), prefix + 'single personal heading');
       assert(doc.querySelector('nav a[aria-current="page"]').getAttribute('href') === 'about.html', prefix + 'current navigation page marked');
-      assert(doc.querySelector('.about-loop').getAttribute('src') === 'coolant-loop.svg', prefix + 'coolant loop retained');
+      assert(!doc.querySelector('.about-loop, img[src="coolant-loop.svg"], video'), prefix + 'no coolant illustration or background video');
       assert([...doc.querySelectorAll('a[href^="#"]')].every(link => doc.getElementById(link.hash.slice(1))), prefix + 'in-page links resolve');
       for (const href of ['resume.pdf', 'index.html', 'index.html#publications', 'index.html#cooling-lab', 'https://github.com/Ubuntu805', 'https://www.linkedin.com/in/anaghdave/']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' accessible');
@@ -88,11 +88,7 @@
       assert([...doc.images].every(image => image.complete && image.naturalWidth > 0 && image.hasAttribute('alt')), prefix + 'images load with alt attributes');
       assert(JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent).name === 'Anagh Dave', prefix + 'person metadata preserved');
       assert(win.getComputedStyle(doc.querySelector('.about-hero')).display === 'grid', prefix + 'shared portfolio styles loaded');
-      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        assert(win.getComputedStyle(doc.querySelector('.about-loop')).display === 'none', prefix + 'animated SVG suppressed for reduced motion');
-      } else {
-        assert(win.getComputedStyle(doc.querySelector('.about-loop')).display !== 'none', prefix + 'coolant background visible');
-      }
+      assert(win.getComputedStyle(doc.body).backgroundImage.startsWith('radial-gradient('), prefix + 'clean gradient background');
     }
     (async () => {
       try {
