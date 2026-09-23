@@ -75,6 +75,7 @@
       <li><a href="#liquid-metal">Liquid metal: compatibility and containment</a></li>
       <li><a href="#graphene">Graphene and graphite: form and direction</a></li>
       <li><a href="#other-materials">Pads, phase-change materials, and indium</a></li>
+      <li><a href="#robotic-engagement">Case study: robotic engagement and TIM walk-out</a></li>
       <li><a href="#qualification">A practical qualification plan</a></li>
       <li><a href="#references">References</a></li>
     </ul>
@@ -179,6 +180,35 @@
     <li><strong>Phase-change TIMs:</strong> verify that the interface reaches the specified transition range under the intended conditioning process. Initial and post-conditioning performance may differ. Products may resist grease-like pump-out and dry-out, but long-term stability and material movement remain formulation- and assembly-dependent; no material family is universally immune. <a href="#ref-phase-change">[4]</a></li>
     <li><strong>Indium foil:</strong> conformity depends on surface condition and applied load. Oxide films can affect contact, and time-dependent deformation can alter pressure or cause extrusion. Check electrical isolation, substrate compatibility, and the manufacturer's rework guidance.</li>
   </ul>
+
+  <h2 id="robotic-engagement">Case study: robotic cold-plate engagement and TIM &ldquo;walk-out&rdquo;</h2>
+  <p><strong>Illustrative scenario, not a report of measured test results:</strong> a robotic arm swivels a cold plate into position and presses it onto a die/TIM stack. If rotation or lateral motion continues <em>after first contact</em>, the interface sees shear as well as compression. A plausible failure mode is assembly-induced TIM migration, informally described here as &ldquo;walk-out.&rdquo;</p>
+  <h3>What motion reaches the interface?</h3>
+  <ul>
+    <li><strong>Twist about the surface normal:</strong> relative plate rotation imposes tangential surface motion that grows with distance from the rotation axis. Friction or adhesion can transmit that motion into the TIM until it deforms or slips.</li>
+    <li><strong>Tilt or an off-center normal load:</strong> a bending moment creates uneven pressure. One edge can touch first and drag or locally squeeze the material as the plate seats.</li>
+    <li><strong>Repeated engagement:</strong> asymmetric loading, unequal adhesion at the two surfaces, or a biased approach/release path may produce incremental migration across cycles.</li>
+  </ul>
+  <p class="tim-equation">&delta; &asymp; r&theta; &nbsp; (small rotation; &theta; in radians)</p>
+  <p>For example, at <span id="walkout-radius">10 mm</span> from the axis, a <span id="walkout-angle">1&deg;</span> rotation produces approximately <strong id="walkout-travel">0.175 mm</strong> of tangential surface travel. This is a geometric estimate of plate motion, <strong>not a prediction of TIM migration distance</strong>; the material response depends on friction, adhesion, compliance, thickness, and load.</p>
+  <aside class="tim-note"><p><strong>Rotation alone does not establish directional walk-out.</strong> Perfectly centered rotation under symmetric conditions can shear the TIM without translating it in one direction. Net migration indicates an asymmetry or another mechanism to investigate. Also distinguish normal-load squeeze-out from shear-driven displacement and from classical thermal-cycle pump-out.</p></aside>
+  <h3>The material changes the outcome</h3>
+  <ul>
+    <li><strong>Graphene/graphite sheet:</strong> the sheet may slip or rotate as a whole, wrinkle, tear, or lose die coverage. Fragments or shifted edges can introduce electrical risk.</li>
+    <li><strong>Compliant pad:</strong> shear deformation, edge extrusion, and permanent displacement may change contact area and thickness.</li>
+    <li><strong>Grease or softened phase-change TIM:</strong> material may smear or redistribute, leaving locally depleted regions rather than moving as an intact sheet.</li>
+  </ul>
+  <h3>Reduce shear in the engagement sequence</h3>
+  <p>Complete the positioning swivel before contact, approach along the interface normal, and avoid commanded lateral or rotational correction while loaded. Review the release path too: swiveling away while the surfaces remain in contact can undo a clean engagement.</p>
+  <p>Consider alignment features or controlled fixture compliance that establish parallel contact without scrubbing the TIM. Any retention feature belongs outside the active interface unless its thermal and electrical effects are explicitly qualified. Do not assume that adding adhesive or increasing clamp force solves the problem: greater load can increase frictional shear, squeeze-out, or package stress. Respect the die, package, and board limits.</p>
+  <h3>A controlled comparison to test the hypothesis</h3>
+  <ol>
+    <li><strong>Compare motion profiles.</strong> Start with straight-down engagement versus swivel-under-contact at matched normal load, interface temperature, dwell time, and initial TIM placement. Control approach speed and document any remaining differences.</li>
+    <li><strong>Record contact loads and motion.</strong> Capture normal force, lateral forces, twisting/bending moments, and robot position around first contact and release where instrumentation permits. Distinguish measured motion from commanded motion.</li>
+    <li><strong>Track the material.</strong> Measure translation, rotation, coverage, and damage over repeated cycles. Use visible edges or a validated inspection method without placing markers in the thermal contact area. Disassembly can move the TIM and confound the observation.</li>
+    <li><strong>Correlate with thermal behavior.</strong> Compare interface resistance under matched power and cooling conditions, including measurement uncertainty and replicate assemblies. Define acceptable migration and coverage from the actual die geometry, electrical clearances, and thermal budget rather than an arbitrary universal limit.</li>
+  </ol>
+  <p>A reduction in migration when post-contact motion is removed would support the shear-displacement hypothesis, but inspection and load data are still needed to distinguish slip, material deformation, and squeeze-out.</p>
 
   <h2 id="qualification">A practical qualification plan</h2>
   <ol>

@@ -30,7 +30,7 @@
       assert(doc.querySelectorAll('h1').length === 1, prefix + 'one article heading');
       assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'contents and citation anchors resolve');
       assert(new Set([...doc.querySelectorAll('[id]')].map(el => el.id)).size === doc.querySelectorAll('[id]').length, prefix + 'unique IDs');
-      for (const id of ['types', 'interface-resistance', 'tradeoffs', 'grease', 'liquid-metal', 'graphene', 'other-materials', 'qualification', 'references']) {
+      for (const id of ['types', 'interface-resistance', 'tradeoffs', 'grease', 'liquid-metal', 'graphene', 'other-materials', 'robotic-engagement', 'qualification', 'references']) {
         assert(doc.getElementById(id)?.tagName === 'H2', prefix + id + ' section present');
       }
       assert(doc.querySelectorAll('tbody th[scope="row"]').length === 7 && doc.querySelectorAll('thead th[scope="col"]').length === 4, prefix + 'seven material forms compared with accessible table headers');
@@ -42,6 +42,13 @@
       assert(text.includes('do not apply gallium-based liquid-metal TIM to bare aluminum'), prefix + 'aluminum compatibility warning present');
       assert(text.includes('KryoSheet explicitly carries an electrical-conductivity warning'), prefix + 'carbon sheet electrical risk explicit');
       assert(text.includes('Graphene-filled grease') && text.includes('through-plane') && text.includes('in-plane'), prefix + 'carbon formulations and heat-flow directions distinguished');
+      assert(text.includes('Illustrative scenario, not a report of measured test results'), prefix + 'case study is not presented as measured evidence');
+      assert(text.includes('not a prediction of TIM migration distance'), prefix + 'surface travel is distinguished from TIM migration');
+      assert(text.includes('Rotation alone does not establish directional walk-out'), prefix + 'symmetry limitation is explicit');
+      const radius = Number.parseFloat(doc.getElementById('walkout-radius').textContent);
+      const angle = Number.parseFloat(doc.getElementById('walkout-angle').textContent);
+      const travel = Number.parseFloat(doc.getElementById('walkout-travel').textContent);
+      assert(Math.abs(travel - radius * angle * Math.PI / 180) <= 0.0005, prefix + 'rotation example matches small-angle calculation to displayed precision');
       assert(doc.querySelectorAll('.tim-guide > ol:last-of-type > li[id^="ref-"]').length === 5, prefix + 'five source references present');
       assert([...doc.images].every(image => image.hasAttribute('alt')), prefix + 'image alternative text retained');
       assert(doc.querySelectorAll('a[href^="https://creativecommons.org/licenses/"]').length === 3, prefix + 'all existing image license attributions retained');
@@ -50,6 +57,8 @@
       }
       doc.querySelector('.tim-contents a[href="#tradeoffs"]').click();
       assert(frame.contentWindow.location.hash === '#tradeoffs', prefix + 'contents link navigates to comparison');
+      doc.querySelector('.tim-contents a[href="#robotic-engagement"]').click();
+      assert(frame.contentWindow.location.hash === '#robotic-engagement', prefix + 'case study reachable from contents');
     }
     (async () => {
       try {
