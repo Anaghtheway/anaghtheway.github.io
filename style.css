@@ -363,36 +363,3 @@ article a {
 @media (prefers-reduced-motion: reduce) {
   .sim-cta { animation: none; }
 }
-
-/* COLD PLATES PAGE BACKGROUND */
-.cold-plates-page {
-  background: none;
-  animation: none;
-}
-
-.cold-plates-page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background: url("bg-cold-plates.jpg") center center / cover no-repeat fixed;
-}
-
-.cold-plates-page::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: rgba(7, 11, 18, 0.7);
-}
-
-.cold-plates-page article {
-  position: relative;
-  z-index: 1;
-  background: rgba(13, 17, 23, 0.78);
-  border: 1px solid rgba(48, 54, 61, 0.6);
-  border-radius: 14px;
-  padding: 40px 32px;
-  margin: 40px auto;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-}

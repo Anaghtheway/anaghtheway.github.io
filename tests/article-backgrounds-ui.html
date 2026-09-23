@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Article background checks</title>
+  <style>
+    body { margin: 0; background: #08131e; color: #edf3f8; font: 14px monospace; }
+    iframe { display: block; border: 0; height: 1600px; }
+  </style>
+</head>
+<body>
+  <details><summary id="summary">Running...</summary><pre id="results"></pre></details>
+  <script>
+    const pages = [
+      ['cold-plates', 'liquid'], ['heat-sinks', 'fins'], ['fans', 'fan'],
+      ['chip', 'chip'], ['smt', 'packaging'], ['tim', 'interface'],
+      ['tim-walkout', 'interface'], ['materials', 'interface'], ['phase-change-slurries', 'fluid']
+    ];
+    const messages = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    function luminance(rgb) {
+      const linear = rgb.map(value => {
+        const channel = value / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+    }
+    function contrast(foreground, background) {
+      const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+      return (values[0] + 0.05) / (values[1] + 0.05);
+    }
+    const channels = color => color.match(/[\d.]+/g).map(Number);
+    async function check(page, image, width) {
+      const frame = document.createElement('iframe');
+      frame.title = page + ' at ' + width + 'px';
+      frame.style.width = width + 'px';
+      frame.src = '../' + page + '.html';
+      document.body.appendChild(frame);
+      // Existing remote article illustrations need not finish loading to check local backgrounds.
+      await new Promise((resolve, reject) => {
+        const end = Date.now() + 10000;
+        const poll = () => {
+          const doc = frame.contentDocument;
+          if (doc?.URL.endsWith('/' + page + '.html') && doc.readyState !== 'loading' &&
+              doc.querySelector('link[href="article-backgrounds.css"]')?.sheet) resolve();
+          else if (Date.now() > end) reject(new Error(page + ': local stylesheet did not load'));
+          else setTimeout(poll, 50);
+        };
+        poll();
+      });
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const prefix = page + ' ' + width + 'px: ';
+      const before = win.getComputedStyle(doc.body, '::before');
+      const url = before.backgroundImage.match(/url\("([^"]+)"\)/)?.[1];
+      assert(url && url.endsWith('article-bg-' + image + '.jpg'), prefix + 'correct topic-specific image');
+      assert(new URL(url).origin === new URL(doc.URL).origin, prefix + 'background is hosted with the article');
+      const picture = new win.Image();
+      picture.src = url;
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error(prefix + 'background image did not decode')), 10000);
+        picture.decode().then(() => { clearTimeout(timeout); resolve(); }, error => { clearTimeout(timeout); reject(error); });
+      });
+      assert(picture.naturalWidth >= 350 && picture.naturalHeight >= 450, prefix + 'background decodes at intended resolution');
+      assert(before.position === 'fixed' && before.pointerEvents === 'none' && before.zIndex === '0', prefix + 'decorative layer stays behind interactive content');
+      assert(before.backgroundImage.includes('linear-gradient'), prefix + 'image has a dark overlay');
+      assert(win.getComputedStyle(doc.body, '::after').content === 'none', prefix + 'obsolete shared background overlay removed');
+      assert(win.getComputedStyle(doc.body).animationName === 'none' && before.animationName === 'none', prefix + 'background is static');
+      const article = doc.querySelector('article');
+      const style = win.getComputedStyle(article);
+      assert(Number.parseFloat(style.lineHeight) >= 26, prefix + 'comfortable reading line height');
+      const panel = channels(style.backgroundColor);
+      const alpha = panel[3] ?? 1;
+      assert(alpha >= 0.95, prefix + 'reading panel is at least 95 percent opaque');
+      const worstBackground = panel.slice(0, 3).map(value => value * alpha + 255 * (1 - alpha));
+      assert(contrast(channels(style.color).slice(0, 3), worstBackground) >= 4.5, prefix + 'body text meets WCAG AA even over white image pixels');
+      assert(contrast(channels(win.getComputedStyle(article.querySelector('a')).color).slice(0, 3), worstBackground) >= 4.5, prefix + 'article link meets WCAG AA');
+      const credit = article.querySelector('.article-background-credit');
+      assert(credit && contrast(channels(win.getComputedStyle(credit).color).slice(0, 3), worstBackground) >= 4.5, prefix + 'readable image provenance provided');
+      const bounds = article.getBoundingClientRect();
+      assert(bounds.left >= 10 && bounds.right <= width - 10 && bounds.top >= 90, prefix + 'background is visible around the panel');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'no page-level horizontal overflow');
+      assert(doc.querySelectorAll('h1').length === 1, prefix + 'article structure retained');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(a => doc.getElementById(a.hash.slice(1))), prefix + 'in-page navigation intact');
+      if (page === 'materials' && width < 620) {
+        const table = doc.querySelector('.article-table-scroll');
+        assert(table.tabIndex === 0 && table.scrollWidth > table.clientWidth, prefix + 'material table remains keyboard-scrollable within panel');
+      }
+      frame.remove();
+    }
+    (async () => {
+      try {
+        for (const width of [1440, 390, 320]) {
+          for (const [page, image] of pages) await check(page, image, width);
+        }
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        messages.push('FAIL ' + error.message);
+        document.getElementById('summary').textContent = error.message;
+        document.querySelector('details').open = true;
+      }
+      document.getElementById('results').textContent = messages.join('\n');
+    })();
+  </script>
+</body>
+</html>
