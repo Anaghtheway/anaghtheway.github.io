@@ -102,6 +102,62 @@
           <figcaption><strong>Geometry and simulated flow.</strong> (a) Channel array and herringbone-rib geometry; (b) flow trajectories through the ribbed channel; (c) cross-sectional enthalpy distribution and flow vectors under bottom heat input. Numerical visualization, not experimental imaging.</figcaption>
           <a class="publication-figure-link" href="herringbone-research-figure.png" target="_blank" rel="noopener">Open full-size figure <span aria-hidden="true">&#8599;</span></a>
         </figure>
+        <figure id="herringbone-animation" class="publication-animation">
+          <div class="mixing-heading">
+            <div><p class="eyebrow">The mechanism / Illustrative animation</p><h3>Forward flow. Cross-channel mixing.</h3></div>
+            <button id="mixingToggle" class="portfolio-button" type="button" aria-controls="mixing-diagrams" disabled>Play schematic</button>
+          </div>
+          <div id="mixing-diagrams" class="mixing-diagrams">
+            <svg viewBox="0 0 420 260" role="img" aria-labelledby="mixing-plan-title mixing-plan-desc">
+              <title id="mixing-plan-title">Flow along a ribbed microchannel</title>
+              <desc id="mixing-plan-desc">Top-view schematic. Cyan traces travel left to right over repeated herringbone ribs, with sideways deflections representing transverse transport. Paths are illustrative, not computed streamlines.</desc>
+              <defs>
+                <marker id="mixing-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L9 5L1 9Z" fill="#83e6eb"/></marker>
+              </defs>
+              <text x="24" y="30" class="mixing-label">01 / Along the channel</text>
+              <rect x="24" y="68" width="372" height="130" rx="8" fill="#102e40" stroke="#66889f"/>
+              <path d="M82 77L111 115L82 189M145 77L174 115L145 189M208 77L237 115L208 189M271 77L300 115L271 189M334 77L363 115L334 189" fill="none" stroke="#587b91" stroke-width="9" stroke-linejoin="round"/>
+              <g class="mixing-track">
+                <path id="mixing-lane-one" d="M28 97C65 97 72 137 110 137S148 97 186 97S224 137 262 137S300 97 338 97S372 115 392 115"/>
+                <path id="mixing-lane-two" d="M28 158C65 158 72 118 110 118S148 158 186 158S224 118 262 118S300 158 338 158S372 146 392 146"/>
+              </g>
+              <g class="mixing-tracer">
+                <use href="#mixing-lane-one"/>
+                <use href="#mixing-lane-two"/>
+              </g>
+              <path d="M40 51H125" stroke="#83e6eb" stroke-width="2" marker-end="url(#mixing-flow-arrow)"/>
+              <text x="145" y="56" class="mixing-small">Bulk flow</text>
+              <text x="24" y="228" class="mixing-small">Top view / rib pattern simplified</text>
+            </svg>
+            <svg viewBox="0 0 420 260" role="img" aria-labelledby="mixing-section-title mixing-section-desc">
+              <title id="mixing-section-title">Secondary circulation across the channel</title>
+              <desc id="mixing-section-desc">Cross-sectional schematic of two counter-rotating circulation loops above a heated wall. Orange arrows indicate heat entering from below. Actual vortex structure varies with geometry and operating conditions.</desc>
+              <defs>
+                <marker id="mixing-heat-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffbb85"/></marker>
+              </defs>
+              <text x="24" y="30" class="mixing-label">02 / Across the channel</text>
+              <rect x="24" y="68" width="372" height="130" rx="8" fill="#102e40" stroke="#66889f"/>
+              <g class="mixing-track">
+                <path id="mixing-vortex-one" d="M185 133C185 85 62 85 62 133S185 181 185 133Z"/>
+                <path id="mixing-vortex-two" d="M235 133C235 85 358 85 358 133S235 181 235 133Z"/>
+              </g>
+              <g class="mixing-tracer">
+                <use href="#mixing-vortex-one"/>
+                <use href="#mixing-vortex-two"/>
+              </g>
+              <path d="M183 142L185 128L190 137M233 142L235 128L240 137" fill="none" stroke="#83e6eb" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M27 198H393" stroke="#ffbb85" stroke-width="5"/>
+              <g stroke="#ffbb85" stroke-width="2" marker-end="url(#mixing-heat-arrow)">
+                <path d="M95 231V207"/><path d="M210 231V207"/><path d="M325 231V207"/>
+              </g>
+              <text x="24" y="56" class="mixing-small">Secondary circulation / schematic</text>
+              <text x="210" y="252" text-anchor="middle" class="mixing-small mixing-heat-label">Heat input through the bottom wall</text>
+            </svg>
+          </div>
+          <figcaption><strong>How to read this schematic.</strong> Cyan moving traces represent downstream transport and cross-channel circulation; orange arrows indicate heat input. Secondary motion can bring slurry between the warmer wall region and the channel interior, promoting heat exchange and particle melting. These are hand-drawn explanatory paths, not CFD results or tracked particles. Geometry, vortex structure, speed, and color are not quantitative; this animation does not show enthalpy or melting fraction. The original research figure above remains unchanged.</figcaption>
+          <p id="mixingStatus" class="mixing-status" role="status">Static view. Use Play schematic to start the illustrative motion.</p>
+          <noscript><p class="mixing-status">JavaScript is required for playback; both schematic views remain readable without it.</p></noscript>
+        </figure>
       </article>
     </section>
 
@@ -222,6 +278,29 @@
     });
     updateBackgroundControl();
     if (!reducedMotion.matches) playBackground();
+
+    const mixingDiagrams = document.getElementById('mixing-diagrams');
+    const mixingToggle = document.getElementById('mixingToggle');
+    const mixingStatus = document.getElementById('mixingStatus');
+    function setMixingPlayback(playing) {
+      mixingDiagrams.classList.toggle('is-playing', playing);
+      mixingToggle.textContent = playing ? 'Pause schematic' : 'Play schematic';
+      mixingStatus.textContent = reducedMotion.matches
+        ? 'Static view. Animation is disabled by your reduced-motion preference.'
+        : playing ? 'Playing illustrative flow and mixing; not simulation data.' : 'Paused. Static paths remain visible.';
+    }
+    function updateMixingPreference() {
+      mixingToggle.disabled = reducedMotion.matches;
+      setMixingPlayback(false);
+    }
+    mixingToggle.addEventListener('click', () => {
+      setMixingPlayback(!reducedMotion.matches && !mixingDiagrams.classList.contains('is-playing'));
+    });
+    reducedMotion.addEventListener('change', updateMixingPreference);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) setMixingPlayback(false);
+    });
+    updateMixingPreference();
   </script>
 </body>
 </html>

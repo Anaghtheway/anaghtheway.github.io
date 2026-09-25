@@ -60,6 +60,38 @@
       assert(win.getComputedStyle(figure).gridColumnStart === '1' && win.getComputedStyle(figure).gridColumnEnd === '-1', prefix + 'figure spans the publication card');
       assert([...figure.querySelectorAll('a')].every(a => a.getAttribute('href') === 'herringbone-research-figure.png' && a.target === '_blank' && a.relList.contains('noopener')), prefix + 'photo and full-size link open the original image safely');
       assert(doc.documentElement.scrollWidth <= width, prefix + 'loaded figure does not introduce mobile overflow');
+      const animation = publication.querySelector('#herringbone-animation');
+      const diagrams = animation.querySelector('#mixing-diagrams');
+      const mixingToggle = animation.querySelector('#mixingToggle');
+      const tracer = diagrams.querySelector('.mixing-tracer');
+      assert(animation.getBoundingClientRect().top >= figureBounds.bottom - 1, prefix + 'separate schematic follows the unchanged research figure');
+      assert(diagrams.querySelectorAll('svg[role="img"]').length === 2, prefix + 'both flow views have accessible descriptions');
+      assert([...diagrams.querySelectorAll('[aria-labelledby]')].every(svg => svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id))), prefix + 'schematic accessible names resolve');
+      assert(animation.querySelector('figcaption').textContent.includes('not CFD results') && animation.textContent.includes('does not show enthalpy'), prefix + 'animation is explicitly qualitative, not research data');
+      assert(!diagrams.classList.contains('is-playing'), prefix + 'schematic never autoplays');
+      assert(mixingToggle.getAttribute('aria-controls') === diagrams.id, prefix + 'playback control targets the schematic');
+      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        assert(mixingToggle.disabled && win.getComputedStyle(tracer).animationName === 'none', prefix + 'reduced-motion disables animation and its playback control');
+        assert(animation.querySelector('[role="status"]').textContent.includes('reduced-motion'), prefix + 'reduced-motion status is explained');
+      } else {
+        assert(!mixingToggle.disabled && win.getComputedStyle(tracer).animationPlayState === 'paused', prefix + 'motion starts paused with an enabled control');
+        mixingToggle.click();
+        assert(diagrams.classList.contains('is-playing') && mixingToggle.textContent === 'Pause schematic', prefix + 'play starts motion and updates control');
+        const motion = tracer.getAnimations()[0];
+        assert(motion && motion.playState === 'running', prefix + 'browser starts a real animation');
+        await new Promise(resolve => win.setTimeout(resolve, 120));
+        const firstTime = motion.currentTime;
+        await new Promise(resolve => win.setTimeout(resolve, 120));
+        assert(motion.currentTime > firstTime, prefix + 'animation actually advances');
+        mixingToggle.click();
+        assert(win.getComputedStyle(tracer).animationPlayState === 'paused' && mixingToggle.textContent === 'Play schematic', prefix + 'pause freezes motion and restores play label');
+        await new Promise(resolve => win.setTimeout(resolve, 50));
+        const pausedTime = motion.currentTime;
+        await new Promise(resolve => win.setTimeout(resolve, 100));
+        assert(motion.currentTime === pausedTime, prefix + 'paused animation remains frozen');
+      }
+      assert([...diagrams.querySelectorAll('svg')].every(svg => svg.getBoundingClientRect().width <= diagrams.clientWidth), prefix + 'schematic fits its container');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'animation causes no horizontal overflow');
       assert(publication.compareDocumentPosition(doc.querySelector('#work')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'research precedes tools and writing');
       for (const href of ['cold-plates.html', 'heat-sinks.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
