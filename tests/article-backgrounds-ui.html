@@ -78,8 +78,7 @@
       const worstBackground = panel.slice(0, 3).map(value => value * alpha + 255 * (1 - alpha));
       assert(contrast(channels(style.color).slice(0, 3), worstBackground) >= 4.5, prefix + 'body text meets WCAG AA even over white image pixels');
       assert(contrast(channels(win.getComputedStyle(article.querySelector('a')).color).slice(0, 3), worstBackground) >= 4.5, prefix + 'article link meets WCAG AA');
-      const credit = article.querySelector('.article-background-credit');
-      assert(credit && contrast(channels(win.getComputedStyle(credit).color).slice(0, 3), worstBackground) >= 4.5, prefix + 'readable image provenance provided');
+      assert(!article.querySelector('.article-background-credit'), prefix + 'decorative background credit note removed');
       const bounds = article.getBoundingClientRect();
       assert(bounds.left >= 10 && bounds.right <= width - 10 && bounds.top >= 90, prefix + 'background is visible around the panel');
       assert(doc.documentElement.scrollWidth <= width, prefix + 'no page-level horizontal overflow');

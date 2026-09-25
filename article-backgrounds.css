@@ -35,7 +35,6 @@
 .article-page a:focus-visible, .article-page [tabindex]:focus-visible { outline: 2px solid var(--article-accent); outline-offset: 4px; }
 .article-page figure { margin-inline: 0; }
 .article-page img { max-width: 100%; }
-.article-page .article-background-credit { font-size: 0.75rem; line-height: 1.6; color: #b5c8d7; border-top: 1px solid #365064; margin-top: 32px; padding-top: 18px; }
 .article-table-scroll { overflow-x: auto; margin-block: 24px; }
 .article-table-scroll table { min-width: 620px; }
 
