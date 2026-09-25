@@ -77,6 +77,12 @@
 .publication-results .inline-unit { font-size: 1rem; font-weight: 400; }
 .publication-results .result-baseline { font-size: 0.75rem; line-height: 1.6; color: #b6c9d8; font-weight: 400; margin-top: 8px; }
 .publication-caveat { font-size: 0.7rem; color: #b6c9d8; margin: 24px 0 0; }
+.publication-figure { grid-column: 1 / -1; min-width: 0; margin: 0; padding: 28px 34px; border-top: 1px solid #617e934d; scroll-margin-top: 24px; }
+.publication-figure-image { display: block; max-width: 729px; margin-inline: auto; background: #fff; border-radius: 8px; overflow: hidden; }
+.publication-figure-image img { display: block; width: 100%; height: auto; }
+.publication-figure figcaption { max-width: 729px; margin: 18px auto 0; color: #b6c9d8; font-size: 0.8rem; line-height: 1.7; }
+.publication-figure figcaption strong { color: #edf3f8; }
+.portfolio-page .publication-figure-link { display: block; width: fit-content; max-width: 100%; margin: 14px auto 0; color: #92e1e6; font-size: 0.8rem; text-underline-offset: 4px; }
 .work-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; }
 .portfolio-page .work-card { padding: 0; margin: 0; max-width: none; background: #0e1e2eed; border: 1px solid #617e934d; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
 .loop-preview, .work-image { height: 230px; width: 100%; object-fit: cover; border-bottom: 1px solid #617e934d; }
@@ -154,6 +160,7 @@
   .about-portrait { width: min(100%, 380px); justify-self: center; }
   .portfolio-page .publication-card { grid-template-columns: 1fr; }
   .publication-copy { padding: 22px; }
+  .publication-figure { padding: 22px; }
   .publication-results { padding: 24px; border-left: 0; border-top: 1px solid #617e934d; }
   .portfolio-page .page-width { width: calc(100% - 36px); }
   .portfolio-nav { align-items: flex-start; padding-block: 20px; gap: 20px; }

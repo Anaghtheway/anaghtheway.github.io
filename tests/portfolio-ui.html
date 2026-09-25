@@ -43,6 +43,23 @@
       assert(publication.querySelector('cite').textContent === 'IEEE Transactions on Components, Packaging and Manufacturing Technology' && publication.querySelector('time').dateTime === '2026', prefix + 'journal and year');
       assert(publication.querySelector('.result-baseline').textContent === 'vs. straight microchannels with MEPCM slurry', prefix + 'enhancement comparison names baseline');
       assert(publication.querySelector('.publication-caveat').textContent.includes('not experimental validation'), prefix + 'numerical result limitation visible');
+      const figure = publication.querySelector('#herringbone-figure');
+      const researchImage = figure.querySelector('img');
+      researchImage.loading = 'eager';
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error(prefix + 'Research image load timed out')), 10000);
+        researchImage.decode().then(() => { clearTimeout(timeout); resolve(); }, error => { clearTimeout(timeout); reject(error); });
+      });
+      assert(researchImage.getAttribute('src') === 'herringbone-research-figure.png' && researchImage.naturalWidth === 729 && researchImage.naturalHeight === 466, prefix + 'original research figure loads at supplied resolution');
+      assert(researchImage.alt.includes('enthalpy') && researchImage.alt.includes('flow trajectories'), prefix + 'figure alternative text describes the actual panels');
+      assert(figure.querySelector('figcaption').textContent.includes('not experimental imaging'), prefix + 'numerical figure is not presented as experimental evidence');
+      const researchBounds = researchImage.getBoundingClientRect();
+      assert(Math.abs(researchBounds.width / researchBounds.height - 729 / 466) < 0.001 && researchBounds.width <= 729, prefix + 'research figure preserves aspect ratio without upscaling');
+      const figureBounds = figure.getBoundingClientRect();
+      assert(figureBounds.top >= publication.querySelector('.publication-results').getBoundingClientRect().bottom - 1, prefix + 'figure appears below publication summary and results');
+      assert(win.getComputedStyle(figure).gridColumnStart === '1' && win.getComputedStyle(figure).gridColumnEnd === '-1', prefix + 'figure spans the publication card');
+      assert([...figure.querySelectorAll('a')].every(a => a.getAttribute('href') === 'herringbone-research-figure.png' && a.target === '_blank' && a.relList.contains('noopener')), prefix + 'photo and full-size link open the original image safely');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'loaded figure does not introduce mobile overflow');
       assert(publication.compareDocumentPosition(doc.querySelector('#work')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'research precedes tools and writing');
       for (const href of ['cold-plates.html', 'heat-sinks.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
