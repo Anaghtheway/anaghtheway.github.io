@@ -102,6 +102,9 @@
       const heatFigure = explainer.querySelector('#heat-distribution');
       const heatViews = [...heatFigure.querySelectorAll('svg[role="img"]')];
       assert(heatViews.length === 2, prefix + 'limited-transport and mixed-flow heat schematics provided');
+      assert(researchImage.alt.includes('sidewall and bottom') && figure.querySelector('figcaption').textContent.includes('sidewalls and bottom'), prefix + 'original figure descriptions identify sidewall and bottom heating');
+      const heatedSections = [diagrams.querySelectorAll('svg')[1], ...heatViews];
+      assert(heatedSections.every(svg => svg.querySelectorAll('.side-heat-input path').length === 4 && svg.querySelector('.mixing-heat-label').textContent.includes('sidewalls and bottom')), prefix + 'all cross-sections show inward sidewall heat arrows as well as bottom heating');
       assert(heatFigure.querySelector('figcaption').textContent.includes('not CFD contours') && heatFigure.textContent.includes('not their melting fraction'), prefix + 'schematic color and capsule limitations explained');
       for (const svg of heatViews) {
         assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)?.textContent.length > 0), prefix + 'heat schematic accessible descriptions resolve');

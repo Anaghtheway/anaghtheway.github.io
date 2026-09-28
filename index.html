@@ -98,9 +98,9 @@
         </aside>
         <figure id="herringbone-figure" class="publication-figure">
           <a class="publication-figure-image" href="herringbone-research-figure.png" target="_blank" rel="noopener" aria-label="Open the herringbone microchannel research figure at full size in a new tab">
-            <img src="herringbone-research-figure.png" width="729" height="466" loading="lazy" decoding="async" alt="Herringbone microchannel research figure showing the channel array and rib geometry, simulated flow trajectories, and a cross-sectional enthalpy map with flow vectors under bottom heating">
+            <img src="herringbone-research-figure.png" width="729" height="466" loading="lazy" decoding="async" alt="Herringbone microchannel research figure showing the channel array and rib geometry, simulated flow trajectories, and a cross-sectional enthalpy map with flow vectors under sidewall and bottom heating">
           </a>
-          <figcaption><strong>Geometry and simulated flow.</strong> (a) Channel array and herringbone-rib geometry; (b) flow trajectories through the ribbed channel; (c) cross-sectional enthalpy distribution and flow vectors under bottom heat input. Numerical visualization, not experimental imaging.</figcaption>
+          <figcaption><strong>Geometry and simulated flow.</strong> (a) Channel array and herringbone-rib geometry; (b) flow trajectories through the ribbed channel; (c) cross-sectional enthalpy distribution and flow vectors with heat entering through the sidewalls and bottom. Numerical visualization, not experimental imaging.</figcaption>
           <a class="publication-figure-link" href="herringbone-research-figure.png" target="_blank" rel="noopener">Open full-size figure <span aria-hidden="true">&#8599;</span></a>
         </figure>
         <figure id="herringbone-animation" class="publication-animation">
@@ -132,7 +132,7 @@
             </svg>
             <svg viewBox="0 0 420 260" role="img" aria-labelledby="mixing-section-title mixing-section-desc">
               <title id="mixing-section-title">Secondary circulation across the channel</title>
-              <desc id="mixing-section-desc">Cross-sectional schematic of two counter-rotating circulation loops above a heated wall. Orange arrows indicate heat entering from below. Actual vortex structure varies with geometry and operating conditions.</desc>
+              <desc id="mixing-section-desc">Cross-sectional schematic of two counter-rotating circulation loops between heated sidewalls and above a heated bottom wall. Orange arrows indicate heat entering from both sides and below. Actual vortex structure varies with geometry and operating conditions.</desc>
               <defs>
                 <marker id="mixing-heat-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffbb85"/></marker>
               </defs>
@@ -147,12 +147,15 @@
                 <use href="#mixing-vortex-two"/>
               </g>
               <path d="M183 142L185 128L190 137M233 142L235 128L240 137" fill="none" stroke="#83e6eb" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M27 198H393" stroke="#ffbb85" stroke-width="5"/>
+              <path d="M24 72V198H396V72" fill="none" stroke="#ffbb85" stroke-width="5"/>
+              <g class="side-heat-input" stroke="#ffbb85" stroke-width="2" marker-end="url(#mixing-heat-arrow)">
+                <path d="M2 105H18"/><path d="M2 165H18"/><path d="M418 105H402"/><path d="M418 165H402"/>
+              </g>
               <g stroke="#ffbb85" stroke-width="2" marker-end="url(#mixing-heat-arrow)">
                 <path d="M95 231V207"/><path d="M210 231V207"/><path d="M325 231V207"/>
               </g>
               <text x="24" y="56" class="mixing-small">Secondary circulation / schematic</text>
-              <text x="210" y="252" text-anchor="middle" class="mixing-small mixing-heat-label">Heat input through the bottom wall</text>
+              <text x="210" y="252" text-anchor="middle" class="mixing-small mixing-heat-label">Heat through sidewalls and bottom</text>
             </svg>
           </div>
           <figcaption><strong>How to read this schematic.</strong> Cyan moving traces represent downstream transport and cross-channel circulation; orange arrows indicate heat input. Secondary motion can bring slurry between the warmer wall region and the channel interior, promoting heat exchange and particle melting. These are hand-drawn explanatory paths, not CFD results or tracked particles. Geometry, vortex structure, speed, and color are not quantitative; this animation does not show enthalpy or melting fraction. The original research figure above remains unchanged.</figcaption>
@@ -165,20 +168,25 @@
           <p class="research-takeaway">Adding a heat-absorbing material to a coolant is only part of the solution. The channel must also help that material reach the heat. This study connects coolant behavior, rib geometry, and pumping requirements rather than treating them as separate design choices.</p>
           <figure id="heat-distribution" class="heat-distribution">
             <h4>How mixing spreads the wall's heat into the coolant</h4>
-            <p>Cross-sectional views looking along the flow. In both views, coolant also travels downstream, out of the page. The heated wall is at the bottom.</p>
+            <p>Cross-sectional views looking along the flow. In both views, coolant also travels downstream, out of the page. Heat enters through both sidewalls and the bottom wall; orange edges and inward arrows mark these heated surfaces.</p>
             <div class="heat-comparison">
               <div class="heat-panel">
                 <h5>Limited cross-channel transport</h5>
                 <svg viewBox="0 0 420 290" role="img" aria-labelledby="heat-unmixed-title heat-unmixed-desc">
-                  <title id="heat-unmixed-title">Heat concentrated near the wall with limited transverse transport</title>
-                  <desc id="heat-unmixed-desc">An orange band near the bottom heated wall fades into a blue channel interior. Short upward arrows represent heat diffusion away from the wall. Capsules near the interior have less thermal exposure. This is a qualitative concept, not a computed temperature field.</desc>
+                  <title id="heat-unmixed-title">Heat concentrated near the sidewalls and bottom with limited transverse transport</title>
+                  <desc id="heat-unmixed-desc">Orange regions near both sidewalls and the bottom fade into a blue channel interior. Inward arrows outside these three walls show heat input, and short arrows inside represent heat diffusion. Capsules near the interior have less thermal exposure. This is a qualitative concept, not a computed temperature field.</desc>
                   <defs>
                     <linearGradient id="heat-unmixed-fill" x1="0" y1="1" x2="0" y2="0">
                       <stop offset="0" stop-color="#bb6639"/><stop offset=".25" stop-color="#455269"/><stop offset=".6" stop-color="#143d56"/>
                     </linearGradient>
+                    <linearGradient id="heat-unmixed-sides">
+                      <stop offset="0" stop-color="#bb6639" stop-opacity=".9"/><stop offset=".22" stop-color="#bb6639" stop-opacity="0"/>
+                      <stop offset=".78" stop-color="#bb6639" stop-opacity="0"/><stop offset="1" stop-color="#bb6639" stop-opacity=".9"/>
+                    </linearGradient>
                     <marker id="heat-diffusion-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffcf9e"/></marker>
                   </defs>
                   <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-unmixed-fill)" stroke="#8ca8b9"/>
+                  <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-unmixed-sides)"/>
                   <g fill="#143d56" stroke="#e6f3fa" stroke-width="2">
                     <circle cx="65" cy="68" r="9"/><circle cx="210" cy="65" r="9"/><circle cx="351" cy="73" r="9"/>
                     <circle cx="115" cy="118" r="9"/><circle cx="299" cy="123" r="9"/>
@@ -187,12 +195,16 @@
                   <text x="210" y="97" text-anchor="middle" class="mixing-small">Less-exposed interior</text>
                   <g fill="none" stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-diffusion-arrow)">
                     <path d="M117 191V157"/><path d="M210 168V145"/><path d="M298 191V157"/>
+                    <path d="M35 145H64"/><path d="M385 145H356"/>
                   </g>
-                  <path d="M28 212H392" stroke="#ffbb85" stroke-width="5"/>
+                  <path d="M25 26V212H395V26" fill="none" stroke="#ffbb85" stroke-width="5"/>
+                  <g class="side-heat-input" stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-diffusion-arrow)">
+                    <path d="M2 95H18"/><path d="M2 165H18"/><path d="M418 95H402"/><path d="M418 165H402"/>
+                  </g>
                   <g stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-diffusion-arrow)">
                     <path d="M90 245V222"/><path d="M210 245V222"/><path d="M330 245V222"/>
                   </g>
-                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat enters through the wall</text>
+                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat through sidewalls and bottom</text>
                 </svg>
                 <p>Heat still diffuses into the fluid, but weak transverse motion limits exchange with the interior. Near-wall fluid warms while some particles farther away receive less thermal exposure.</p>
               </div>
@@ -200,15 +212,20 @@
                 <h5>Herringbone-induced mixing</h5>
                 <svg viewBox="0 0 420 290" role="img" aria-labelledby="heat-mixed-title heat-mixed-desc">
                   <title id="heat-mixed-title">Secondary circulation redistributes energy across the channel</title>
-                  <desc id="heat-mixed-desc">Two circulation loops transport warmer fluid up from the wall toward the channel center and return cooler fluid toward the wall along the sides. Capsules are carried between regions. Mixing redistributes energy but does not make temperature perfectly uniform or remove the absorbed heat.</desc>
+                  <desc id="heat-mixed-desc">Heat enters through both sidewalls and the bottom wall. Two circulation loops exchange fluid between these heated surfaces and the channel interior. Relatively cooler fluid warms as it returns along the heated sidewalls and bottom. Capsules are carried between regions. Mixing redistributes energy but does not make temperature perfectly uniform or remove the absorbed heat.</desc>
                   <defs>
                     <linearGradient id="heat-mixed-fill" x1="0" y1="1" x2="0" y2="0">
                       <stop offset="0" stop-color="#94604b"/><stop offset=".65" stop-color="#48556a"/><stop offset="1" stop-color="#23445a"/>
+                    </linearGradient>
+                    <linearGradient id="heat-mixed-sides">
+                      <stop offset="0" stop-color="#94604b" stop-opacity=".85"/><stop offset=".38" stop-color="#94604b" stop-opacity="0"/>
+                      <stop offset=".62" stop-color="#94604b" stop-opacity="0"/><stop offset="1" stop-color="#94604b" stop-opacity=".85"/>
                     </linearGradient>
                     <marker id="heat-warm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffcf9e"/></marker>
                     <marker id="heat-cool-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#83e6eb"/></marker>
                   </defs>
                   <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-mixed-fill)" stroke="#8ca8b9"/>
+                  <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-mixed-sides)"/>
                   <g fill="none" stroke-width="3">
                     <path d="M72 173C120 197 185 169 185 113S152 60 122 64" stroke="#ffcf9e" marker-end="url(#heat-warm-arrow)"/>
                     <path d="M122 64C66 61 50 123 72 173" stroke="#83e6eb" marker-end="url(#heat-cool-arrow)"/>
@@ -220,13 +237,16 @@
                     <circle cx="359" cy="118" r="9"/><circle cx="277" cy="177" r="9"/><circle cx="239" cy="91" r="9"/>
                   </g>
                   <text x="210" y="44" text-anchor="middle" class="mixing-small">Exchange with the interior</text>
-                  <path d="M28 212H392" stroke="#ffbb85" stroke-width="5"/>
+                  <path d="M25 26V212H395V26" fill="none" stroke="#ffbb85" stroke-width="5"/>
+                  <g class="side-heat-input" stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-warm-arrow)">
+                    <path d="M2 95H18"/><path d="M2 165H18"/><path d="M418 95H402"/><path d="M418 165H402"/>
+                  </g>
                   <g stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-warm-arrow)">
                     <path d="M90 245V222"/><path d="M210 245V222"/><path d="M330 245V222"/>
                   </g>
-                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat enters through the wall</text>
+                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat through sidewalls and bottom</text>
                 </svg>
-                <p>Secondary circulation carries warmed fluid away from the wall and brings relatively cooler fluid back toward it. This exchange spreads energy through more of the flowing slurry and renews the fluid next to the wall.</p>
+                <p>Secondary circulation exchanges fluid between the heated sidewalls, bottom, and channel interior. Relatively cooler return fluid absorbs heat as it passes these surfaces. This exchange spreads energy through more of the flowing slurry and renews the fluid next to the heated walls.</p>
               </div>
             </div>
             <figcaption><strong>Conceptual comparison, not CFD contours.</strong> Background colors suggest warmer wall regions and cooler interior regions; orange arrows show heat input or transport of warmer fluid, and cyan arrows show the cooler return flow. Outlined circles represent capsules, not their melting fraction. Geometry, colors, and paths are qualitative, not quantitative temperature or enthalpy data. Ribs are omitted from these cross-sections for clarity; real vortex patterns vary along the channel.</figcaption>
