@@ -163,6 +163,81 @@
           <p class="eyebrow">Behind the results</p>
           <h3 id="research-explained-title">Why mixing matters for phase-change cooling.</h3>
           <p class="research-takeaway">Adding a heat-absorbing material to a coolant is only part of the solution. The channel must also help that material reach the heat. This study connects coolant behavior, rib geometry, and pumping requirements rather than treating them as separate design choices.</p>
+          <figure id="heat-distribution" class="heat-distribution">
+            <h4>How mixing spreads the wall's heat into the coolant</h4>
+            <p>Cross-sectional views looking along the flow. In both views, coolant also travels downstream, out of the page. The heated wall is at the bottom.</p>
+            <div class="heat-comparison">
+              <div class="heat-panel">
+                <h5>Limited cross-channel transport</h5>
+                <svg viewBox="0 0 420 290" role="img" aria-labelledby="heat-unmixed-title heat-unmixed-desc">
+                  <title id="heat-unmixed-title">Heat concentrated near the wall with limited transverse transport</title>
+                  <desc id="heat-unmixed-desc">An orange band near the bottom heated wall fades into a blue channel interior. Short upward arrows represent heat diffusion away from the wall. Capsules near the interior have less thermal exposure. This is a qualitative concept, not a computed temperature field.</desc>
+                  <defs>
+                    <linearGradient id="heat-unmixed-fill" x1="0" y1="1" x2="0" y2="0">
+                      <stop offset="0" stop-color="#bb6639"/><stop offset=".25" stop-color="#455269"/><stop offset=".6" stop-color="#143d56"/>
+                    </linearGradient>
+                    <marker id="heat-diffusion-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffcf9e"/></marker>
+                  </defs>
+                  <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-unmixed-fill)" stroke="#8ca8b9"/>
+                  <g fill="#143d56" stroke="#e6f3fa" stroke-width="2">
+                    <circle cx="65" cy="68" r="9"/><circle cx="210" cy="65" r="9"/><circle cx="351" cy="73" r="9"/>
+                    <circle cx="115" cy="118" r="9"/><circle cx="299" cy="123" r="9"/>
+                    <circle cx="65" cy="187" r="9"/><circle cx="210" cy="183" r="9"/><circle cx="351" cy="187" r="9"/>
+                  </g>
+                  <text x="210" y="97" text-anchor="middle" class="mixing-small">Less-exposed interior</text>
+                  <g fill="none" stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-diffusion-arrow)">
+                    <path d="M117 191V157"/><path d="M210 168V145"/><path d="M298 191V157"/>
+                  </g>
+                  <path d="M28 212H392" stroke="#ffbb85" stroke-width="5"/>
+                  <g stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-diffusion-arrow)">
+                    <path d="M90 245V222"/><path d="M210 245V222"/><path d="M330 245V222"/>
+                  </g>
+                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat enters through the wall</text>
+                </svg>
+                <p>Heat still diffuses into the fluid, but weak transverse motion limits exchange with the interior. Near-wall fluid warms while some particles farther away receive less thermal exposure.</p>
+              </div>
+              <div class="heat-panel">
+                <h5>Herringbone-induced mixing</h5>
+                <svg viewBox="0 0 420 290" role="img" aria-labelledby="heat-mixed-title heat-mixed-desc">
+                  <title id="heat-mixed-title">Secondary circulation redistributes energy across the channel</title>
+                  <desc id="heat-mixed-desc">Two circulation loops transport warmer fluid up from the wall toward the channel center and return cooler fluid toward the wall along the sides. Capsules are carried between regions. Mixing redistributes energy but does not make temperature perfectly uniform or remove the absorbed heat.</desc>
+                  <defs>
+                    <linearGradient id="heat-mixed-fill" x1="0" y1="1" x2="0" y2="0">
+                      <stop offset="0" stop-color="#94604b"/><stop offset=".65" stop-color="#48556a"/><stop offset="1" stop-color="#23445a"/>
+                    </linearGradient>
+                    <marker id="heat-warm-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#ffcf9e"/></marker>
+                    <marker id="heat-cool-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9Z" fill="#83e6eb"/></marker>
+                  </defs>
+                  <rect x="25" y="22" width="370" height="190" rx="8" fill="url(#heat-mixed-fill)" stroke="#8ca8b9"/>
+                  <g fill="none" stroke-width="3">
+                    <path d="M72 173C120 197 185 169 185 113S152 60 122 64" stroke="#ffcf9e" marker-end="url(#heat-warm-arrow)"/>
+                    <path d="M122 64C66 61 50 123 72 173" stroke="#83e6eb" marker-end="url(#heat-cool-arrow)"/>
+                    <path d="M348 173C300 197 235 169 235 113S268 60 298 64" stroke="#ffcf9e" marker-end="url(#heat-warm-arrow)"/>
+                    <path d="M298 64C354 61 370 123 348 173" stroke="#83e6eb" marker-end="url(#heat-cool-arrow)"/>
+                  </g>
+                  <g fill="#143d56" stroke="#e6f3fa" stroke-width="2">
+                    <circle cx="61" cy="118" r="9"/><circle cx="143" cy="177" r="9"/><circle cx="181" cy="91" r="9"/>
+                    <circle cx="359" cy="118" r="9"/><circle cx="277" cy="177" r="9"/><circle cx="239" cy="91" r="9"/>
+                  </g>
+                  <text x="210" y="44" text-anchor="middle" class="mixing-small">Exchange with the interior</text>
+                  <path d="M28 212H392" stroke="#ffbb85" stroke-width="5"/>
+                  <g stroke="#ffcf9e" stroke-width="2" marker-end="url(#heat-warm-arrow)">
+                    <path d="M90 245V222"/><path d="M210 245V222"/><path d="M330 245V222"/>
+                  </g>
+                  <text x="210" y="271" text-anchor="middle" class="mixing-small mixing-heat-label">Heat enters through the wall</text>
+                </svg>
+                <p>Secondary circulation carries warmed fluid away from the wall and brings relatively cooler fluid back toward it. This exchange spreads energy through more of the flowing slurry and renews the fluid next to the wall.</p>
+              </div>
+            </div>
+            <figcaption><strong>Conceptual comparison, not CFD contours.</strong> Background colors suggest warmer wall regions and cooler interior regions; orange arrows show heat input or transport of warmer fluid, and cyan arrows show the cooler return flow. Outlined circles represent capsules, not their melting fraction. Geometry, colors, and paths are qualitative, not quantitative temperature or enthalpy data. Ribs are omitted from these cross-sections for clarity; real vortex patterns vary along the channel.</figcaption>
+          </figure>
+          <div class="heat-mechanism">
+            <h4>From fluid motion to better heat transfer</h4>
+            <p><strong>1. Renew the near-wall fluid.</strong> Cooler fluid arriving near the wall can sustain a steeper local temperature gradient, increasing heat transfer for a given wall-to-bulk temperature difference. Equivalently, a higher effective heat transfer coefficient can reduce the temperature difference needed to remove a fixed heat load.</p>
+            <p><strong>2. Give more particles access to heat.</strong> Circulation changes particle thermal histories. If the PCM reaches its melting range and has enough time to absorb heat, some of the added energy melts the core rather than only raising its temperature. More stored enthalpy therefore does not necessarily mean a proportionally higher temperature.</p>
+            <p><strong>3. Carry the absorbed energy downstream.</strong> Mixing redistributes heat; it does not destroy it. At steady state, with the same heat input to the coolant and the same mass flow, the bulk specific-enthalpy rise remains <span class="heat-equation">Q&#775; / m&#775;</span>, neglecting other energy terms. The wall temperature and cross-sectional distribution can change even when that bulk energy rise is unchanged. A downstream heat exchanger must still reject the heat.</p>
+            <p class="research-source">Mixing does not guarantee complete melting or a perfectly uniform temperature. The benefit depends on inlet state, residence time, geometry, and the additional pressure drop.</p>
+          </div>
           <details open>
             <summary>1. The problem: available latent heat is not always fully used</summary>
             <p>A microencapsulated phase-change material (MEPCM) slurry carries tiny capsules in a liquid. The material inside each capsule absorbs latent heat as it melts, in addition to the sensible heat absorbed as the coolant warms. The shell keeps the phase-change material contained.</p>
