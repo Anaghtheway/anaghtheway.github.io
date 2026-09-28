@@ -85,6 +85,7 @@
             <li>Microchannel cooling</li><li>MEPCM slurries</li><li>NSGA-II optimization</li>
           </ul>
           <a class="portfolio-button primary publication-link" href="https://ieeexplore.ieee.org/document/11655222">View publication on IEEE <span aria-hidden="true">&#8599;</span></a>
+          <a class="research-explainer-link" href="#research-explained">Read the research explained <span aria-hidden="true">&#8595;</span></a>
         </div>
         <aside class="publication-results" aria-label="Selected numerical results">
           <p class="eyebrow">Selected balanced design</p>
@@ -158,6 +159,38 @@
           <p id="mixingStatus" class="mixing-status" role="status">Static view. Use Play schematic to start the illustrative motion.</p>
           <noscript><p class="mixing-status">JavaScript is required for playback; both schematic views remain readable without it.</p></noscript>
         </figure>
+        <section id="research-explained" class="research-explainer" aria-labelledby="research-explained-title">
+          <p class="eyebrow">Behind the results</p>
+          <h3 id="research-explained-title">Why mixing matters for phase-change cooling.</h3>
+          <p class="research-takeaway">Adding a heat-absorbing material to a coolant is only part of the solution. The channel must also help that material reach the heat. This study connects coolant behavior, rib geometry, and pumping requirements rather than treating them as separate design choices.</p>
+          <details open>
+            <summary>1. The problem: available latent heat is not always fully used</summary>
+            <p>A microencapsulated phase-change material (MEPCM) slurry carries tiny capsules in a liquid. The material inside each capsule absorbs latent heat as it melts, in addition to the sensible heat absorbed as the coolant warms. The shell keeps the phase-change material contained.</p>
+            <p>That extra heat capacity is useful only when the particles experience suitable temperatures for long enough. With limited cross-channel transport, particles near a heated wall and those in the cooler channel interior can have different thermal histories. Simply adding more particles does not ensure that their melting capacity will be used effectively.</p>
+          </details>
+          <details>
+            <summary>2. The mechanism: ribs move coolant across the channel</summary>
+            <p>The angled herringbone ribs redirect part of the downstream flow into secondary, cross-channel motion. This circulation exchanges fluid between the wall region and the channel interior, improving transverse mixing and promoting particle melting.</p>
+            <p>The ribs are passive features: they have no moving parts, but they are not energetically free. They also resist flow. The design question is therefore not just how to strengthen mixing, but how much additional pressure drop is justified by the thermal benefit.</p>
+          </details>
+          <details>
+            <summary>3. The method: numerical study, correlations, and optimization</summary>
+            <p>The numerical study examines rib height and thickness, Reynolds number, and particle concentration. Reynolds number characterizes the balance of inertial and viscous effects in the flow; concentration changes how much phase-change material is carried by the slurry.</p>
+            <p>Regression correlations summarize the computed heat-transfer and friction behavior. NSGA-II, a multi-objective genetic algorithm, uses those relationships to search for trade-offs between heat-transfer enhancement and flow resistance. A Pareto trade-off means improving one objective requires sacrificing the other; it is not a single universally best design.</p>
+          </details>
+          <details>
+            <summary>4. The findings: stronger heat transfer, with a hydraulic cost</summary>
+            <p>The selected balanced numerical design has a heat transfer coefficient of <strong>7.3 &times; 10<sup>4</sup> W/(m&sup2;&middot;K)</strong> and a pressure drop of <strong>37.9 kPa</strong>. A larger heat transfer coefficient indicates stronger heat exchange for a given area and wall-to-fluid temperature difference, using the study's definitions.</p>
+            <p>The reported enhancement is approximately <strong>3.8&times; relative to straight microchannels with MEPCM slurry</strong> and <strong>1.6&times; relative to herringbone microchannels with single-phase water</strong>. The first comparison changes the channel geometry; the second changes the coolant. These are distinct baselines, not interchangeable performance claims.</p>
+            <p>Neither ratio means the device runs that many times cooler or uses that much less pump power. Hydraulic power depends on both pressure drop and volumetric flow rate; electrical input also depends on pump efficiency. The comparisons should not be interpreted as equal-pumping-power results.</p>
+          </details>
+          <details>
+            <summary>5. The significance: design the channel and coolant together</summary>
+            <p>The engineering takeaway is that latent-heat capacity and access to the heated region must work together. Herringbone geometry can help a slurry make better use of phase change, but its value depends on the operating conditions and the acceptable pressure-drop budget.</p>
+            <p>This is numerical research, not experimental validation of a production cooler. The correlations should stay within their fitted ranges. Hardware adoption would additionally require checking slurry stability, capsule durability, material compatibility, manufacturing constraints, and performance in a complete cooling loop; those are qualification needs, not results established by this visualization.</p>
+          </details>
+          <p class="research-source">This explanation summarizes the study and provides engineering context. For model assumptions, parameter ranges, and comparison conditions, see the <a href="https://ieeexplore.ieee.org/document/11655222">full IEEE publication</a>.</p>
+        </section>
       </article>
     </section>
 

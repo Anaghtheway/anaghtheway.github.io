@@ -92,6 +92,19 @@
       }
       assert([...diagrams.querySelectorAll('svg')].every(svg => svg.getBoundingClientRect().width <= diagrams.clientWidth), prefix + 'schematic fits its container');
       assert(doc.documentElement.scrollWidth <= width, prefix + 'animation causes no horizontal overflow');
+      const explainer = publication.querySelector('#research-explained');
+      assert(explainer && doc.querySelector('.research-explainer-link').hash === '#research-explained', prefix + 'research explanation linked from summary');
+      assert(doc.getElementById(explainer.getAttribute('aria-labelledby')).textContent.includes('mixing'), prefix + 'research explanation has an accessible heading');
+      const researchDetails = [...explainer.querySelectorAll('details')];
+      assert(researchDetails.length === 5 && researchDetails[0].open, prefix + 'five explanations with the problem expanded initially');
+      assert(explainer.textContent.includes('latent heat') && explainer.textContent.includes('Pareto') && explainer.textContent.includes('not experimental validation'), prefix + 'mechanism, optimization and evidence limits explained');
+      assert(explainer.textContent.includes('single-phase water') && explainer.textContent.includes('equal-pumping-power'), prefix + 'second baseline and pumping-power limitation stated');
+      for (const detail of researchDetails) {
+        if (!detail.open) detail.querySelector('summary').click();
+        assert(detail.open && detail.querySelector('p').getBoundingClientRect().height > 0, prefix + 'research explanation expands: ' + detail.querySelector('summary').textContent);
+      }
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'fully expanded research explanation has no overflow');
+      for (const detail of researchDetails) detail.open = detail === researchDetails[0];
       assert(publication.compareDocumentPosition(doc.querySelector('#work')) & win.Node.DOCUMENT_POSITION_FOLLOWING, prefix + 'research precedes tools and writing');
       for (const href of ['cold-plates.html', 'heat-sinks.html', 'tim.html', 'chip.html', 'smt.html', 'fans.html', 'simulator.html', 'about.html']) {
         assert(doc.querySelector('a[href="' + href + '"]'), prefix + href + ' remains discoverable');
