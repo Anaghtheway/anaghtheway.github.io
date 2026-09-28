@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Herringbone research article checks</title>
+  <style>
+    body { margin: 0; background: #08131e; color: #edf3f8; font: 14px monospace; }
+    details { padding: 12px; }
+    iframe { display: block; border: 0; height: 3000px; }
+  </style>
+</head>
+<body>
+  <details><summary id="summary">Running...</summary><pre id="results"></pre></details>
+  <script>
+    const messages = [];
+    function assert(condition, message) {
+      if (!condition) throw new Error(message);
+      messages.push('PASS ' + message);
+    }
+    async function check(width) {
+      const frame = document.createElement('iframe');
+      frame.style.width = width + 'px';
+      frame.title = width + 'px research article';
+      const loaded = new Promise(resolve => { frame.onload = resolve; });
+      frame.src = '../herringbone-research.html';
+      document.body.appendChild(frame);
+      await loaded;
+      const doc = frame.contentDocument;
+      const win = frame.contentWindow;
+      const prefix = width + 'px: ';
+      const publication = doc.querySelector('article');
+      assert(doc.querySelectorAll('h1').length === 1, prefix + 'standalone article has one primary heading');
+      assert(doc.querySelector('link[rel="canonical"]').href === 'https://anaghtheway.github.io/herringbone-research.html', prefix + 'article has its own canonical URL');
+      assert(!doc.querySelector('video'), prefix + 'article does not load homepage video');
+      assert(doc.querySelector('script[src="herringbone-research.js"]'), prefix + 'article loads its playback controller');
+      assert([...doc.querySelectorAll('a[href^="#"]')].every(link => doc.getElementById(link.hash.slice(1))), prefix + 'all article section links resolve');
+      assert(doc.querySelector('a[href="index.html#publications"]') && doc.querySelector('a[href="phase-change-slurries.html"]'), prefix + 'return and related-article navigation available');
+      assert(publication.querySelector('.publication-authors').textContent.includes('Anagh Dave, Vivek'), prefix + 'publication authors preserved');
+      assert(publication.querySelector('a.publication-link').href === 'https://ieeexplore.ieee.org/document/11655222', prefix + 'source publication retained');
+      assert(win.getComputedStyle(publication).paddingTop === '0px', prefix + 'article-specific grid styles override generic panel padding');
+      const background = win.getComputedStyle(doc.body, '::before').backgroundImage.match(/url\("([^"]+)"\)/)?.[1];
+      assert(background?.endsWith('article-bg-fluid.jpg'), prefix + 'article uses existing fluid background');
+      const image = new win.Image();
+      image.src = background;
+      await image.decode();
+      assert(image.naturalWidth > 0, prefix + 'article background loads');
+      const figure = publication.querySelector('#herringbone-figure');
+      const researchImage = figure.querySelector('img');
+      researchImage.loading = 'eager';
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error(prefix + 'Research image load timed out')), 10000);
+        researchImage.decode().then(() => { clearTimeout(timeout); resolve(); }, error => { clearTimeout(timeout); reject(error); });
+      });
+      assert(researchImage.getAttribute('src') === 'herringbone-research-figure.png' && researchImage.naturalWidth === 729 && researchImage.naturalHeight === 466, prefix + 'original research figure loads at supplied resolution');
+      assert(researchImage.alt.includes('enthalpy') && researchImage.alt.includes('flow trajectories'), prefix + 'figure alternative text describes the actual panels');
+      assert(figure.querySelector('figcaption').textContent.includes('not experimental imaging'), prefix + 'numerical figure is not presented as experimental evidence');
+      const researchBounds = researchImage.getBoundingClientRect();
+      assert(Math.abs(researchBounds.width / researchBounds.height - 729 / 466) < 0.001 && researchBounds.width <= 729, prefix + 'research figure preserves aspect ratio without upscaling');
+      const figureBounds = figure.getBoundingClientRect();
+      assert(figureBounds.top >= publication.querySelector('.publication-results').getBoundingClientRect().bottom - 1, prefix + 'figure appears below publication summary and results');
+      assert(win.getComputedStyle(figure).gridColumnStart === '1' && win.getComputedStyle(figure).gridColumnEnd === '-1', prefix + 'figure spans the publication card');
+      assert([...figure.querySelectorAll('a')].every(a => a.getAttribute('href') === 'herringbone-research-figure.png' && a.target === '_blank' && a.relList.contains('noopener')), prefix + 'photo and full-size link open the original image safely');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'loaded figure does not introduce mobile overflow');
+      const animation = publication.querySelector('#herringbone-animation');
+      const diagrams = animation.querySelector('#mixing-diagrams');
+      const mixingToggle = animation.querySelector('#mixingToggle');
+      const tracer = diagrams.querySelector('.mixing-tracer');
+      assert(animation.getBoundingClientRect().top >= figureBounds.bottom - 1, prefix + 'separate schematic follows the unchanged research figure');
+      assert(diagrams.querySelectorAll('svg[role="img"]').length === 2, prefix + 'both flow views have accessible descriptions');
+      assert([...diagrams.querySelectorAll('[aria-labelledby]')].every(svg => svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id))), prefix + 'schematic accessible names resolve');
+      assert(animation.querySelector('figcaption').textContent.includes('not CFD results') && animation.textContent.includes('does not show enthalpy'), prefix + 'animation is explicitly qualitative, not research data');
+      assert(!diagrams.classList.contains('is-playing'), prefix + 'schematic never autoplays');
+      assert(mixingToggle.getAttribute('aria-controls') === diagrams.id, prefix + 'playback control targets the schematic');
+      if (win.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        assert(mixingToggle.disabled && win.getComputedStyle(tracer).animationName === 'none', prefix + 'reduced-motion disables animation and its playback control');
+        assert(animation.querySelector('[role="status"]').textContent.includes('reduced-motion'), prefix + 'reduced-motion status is explained');
+      } else {
+        assert(!mixingToggle.disabled && win.getComputedStyle(tracer).animationPlayState === 'paused', prefix + 'motion starts paused with an enabled control');
+        mixingToggle.click();
+        assert(diagrams.classList.contains('is-playing') && mixingToggle.textContent === 'Pause schematic', prefix + 'play starts motion and updates control');
+        const motion = tracer.getAnimations()[0];
+        assert(motion && motion.playState === 'running', prefix + 'browser starts a real animation');
+        await new Promise(resolve => win.setTimeout(resolve, 120));
+        const firstTime = motion.currentTime;
+        await new Promise(resolve => win.setTimeout(resolve, 120));
+        assert(motion.currentTime > firstTime, prefix + 'animation actually advances');
+        mixingToggle.click();
+        assert(win.getComputedStyle(tracer).animationPlayState === 'paused' && mixingToggle.textContent === 'Play schematic', prefix + 'pause freezes motion and restores play label');
+        await new Promise(resolve => win.setTimeout(resolve, 50));
+        const pausedTime = motion.currentTime;
+        await new Promise(resolve => win.setTimeout(resolve, 100));
+        assert(motion.currentTime === pausedTime, prefix + 'paused animation remains frozen');
+      }
+      assert([...diagrams.querySelectorAll('svg')].every(svg => svg.getBoundingClientRect().width <= diagrams.clientWidth), prefix + 'schematic fits its container');
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'animation causes no horizontal overflow');
+      const explainer = publication.querySelector('#research-explained');
+      assert(explainer && doc.querySelector('.research-explainer-link').hash === '#research-explained', prefix + 'research explanation linked from summary');
+      assert(doc.getElementById(explainer.getAttribute('aria-labelledby')).textContent.includes('mixing'), prefix + 'research explanation has an accessible heading');
+      const researchDetails = [...explainer.querySelectorAll('details')];
+      assert(researchDetails.length === 5 && researchDetails[0].open, prefix + 'five explanations with the problem expanded initially');
+      assert(explainer.textContent.includes('latent heat') && explainer.textContent.includes('Pareto') && explainer.textContent.includes('not experimental validation'), prefix + 'mechanism, optimization and evidence limits explained');
+      assert(explainer.textContent.includes('single-phase water') && explainer.textContent.includes('equal-pumping-power'), prefix + 'second baseline and pumping-power limitation stated');
+      const heatFigure = explainer.querySelector('#heat-distribution');
+      const heatViews = [...heatFigure.querySelectorAll('svg[role="img"]')];
+      assert(heatViews.length === 2, prefix + 'limited-transport and mixed-flow heat schematics provided');
+      assert(researchImage.alt.includes('sidewall and bottom') && figure.querySelector('figcaption').textContent.includes('sidewalls and bottom'), prefix + 'original figure descriptions identify sidewall and bottom heating');
+      const heatedSections = [diagrams.querySelectorAll('svg')[1], ...heatViews];
+      assert(heatedSections.every(svg => svg.querySelectorAll('.side-heat-input path').length === 4 && svg.querySelector('.mixing-heat-label').textContent.includes('sidewalls and bottom')), prefix + 'all cross-sections show inward sidewall heat arrows as well as bottom heating');
+      assert(heatFigure.querySelector('figcaption').textContent.includes('not CFD contours') && heatFigure.textContent.includes('not their melting fraction'), prefix + 'schematic color and capsule limitations explained');
+      for (const svg of heatViews) {
+        assert(svg.getAttribute('aria-labelledby').split(' ').every(id => doc.getElementById(id)?.textContent.length > 0), prefix + 'heat schematic accessible descriptions resolve');
+        for (const text of svg.querySelectorAll('text')) {
+          const bounds = text.getBBox();
+          assert(bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= 420 && bounds.y + bounds.height <= 290, prefix + 'heat schematic labels stay within viewBox');
+        }
+      }
+      assert(explainer.querySelector('.heat-mechanism').textContent.includes('same mass flow') && explainer.querySelector('.heat-mechanism').textContent.includes('enthalpy'), prefix + 'heat redistribution preserves bulk energy balance');
+      const panels = [...heatFigure.querySelectorAll('.heat-panel')].map(panel => panel.getBoundingClientRect());
+      assert(width <= 680 ? panels[1].top >= panels[0].bottom : Math.abs(panels[0].top - panels[1].top) < 1, prefix + 'heat comparison stacks on mobile and aligns on desktop');
+      for (const detail of researchDetails) {
+        if (!detail.open) detail.querySelector('summary').click();
+        assert(detail.open && detail.querySelector('p').getBoundingClientRect().height > 0, prefix + 'research explanation expands: ' + detail.querySelector('summary').textContent);
+      }
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'fully expanded research explanation has no overflow');
+      for (const detail of researchDetails) detail.open = detail === researchDetails[0];
+
+      assert(doc.documentElement.scrollWidth <= width, prefix + 'article fits viewport');
+      frame.remove();
+    }
+    (async () => {
+      try {
+        for (const width of [1280, 390, 320]) await check(width);
+        document.body.dataset.result = 'passed';
+        document.getElementById('summary').textContent = 'All ' + messages.length + ' checks passed';
+      } catch (error) {
+        document.body.dataset.result = 'failed';
+        messages.push('FAIL ' + error.message);
+        document.getElementById('summary').textContent = error.message;
+        document.querySelector('details').open = true;
+      }
+      document.getElementById('results').textContent = messages.join('\n');
+    })();
+  </script>
+</body>
+</html>
